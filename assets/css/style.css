@@ -1,0 +1,146 @@
+:root {
+    --cor-primaria: #FAF9F6;
+    --cor-secundaria: #6B4EFF;
+    --cor-terciaria: #17A34A;
+    --cor-preto: #2A2A2A;
+    --bg-cor-info: #C9F0FF;
+    --bg-cor-aviso: #FFEFD7;
+    --bg-cor-sucesso: #ECFCE5;
+    --text-cor-info: #0065D0;
+    --text-cor-aviso: #A05E03;
+    --text-cor-sucesso: #198155;
+}
+
+/* Geral */
+
+body {
+    background-color: var(--cor-primaria);
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+/* Fontes */
+
+h1, h2 {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+}
+
+h3 {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+}
+
+h4 {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+}
+
+h5 {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.corpo {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;   
+    font-size: 18px;
+}
+
+.corpo-lg {
+    font-size: 20px !important;
+}
+.corpo-sm {
+    font-size: 16px !important;
+}
+.corpo-micro {
+    font-weight: 500 !important;
+    font-size: 14px !important;
+}
+
+/* Botão */
+
+.botao-arca {
+    display: inline-block;
+    padding: 12px 41px;
+    font-size: 18px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--cor-primaria);
+    background-color: transparent;
+    border: var(--cor-primaria);
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 48px;
+    transition: 250ms ease-out;
+
+    &:hover {
+        background-color: var(--cor-terciaria);
+    }
+}
+
+.botao-roxo {
+    color: var(--cor-secundaria) !important;
+    border: 1px solid var(--cor-secundaria) !important;
+
+    &:hover {
+        color: var(--cor-primaria) !important;
+        background-color: var(--cor-secundaria) !important;
+    }
+}
+
+/* Badges */
+
+.badge-arca {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--cor-preto);
+    background-color: #DFDFDF;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 32px;
+}
+
+.badge-arca-info {
+    color: var(--text-cor-info) !important;
+    background-color: var(--bg-cor-info) !important;
+}
+
+.badge-arca-aviso {
+    color: var(--text-cor-aviso) !important;
+    background-color: var(--bg-cor-aviso) !important;
+}
+
+.badge-arca-sucesso {
+    color: var(--text-cor-sucesso) !important;
+    background-color: var(--bg-cor-sucesso) !important;
+}
+
+.badge-arca-roxa {
+    color: var(--cor-preto) !important;
+    background-color: #B093FE !important;
+}
+
+/* Cards de campanha */
+
+.card-campanha {
+    border-radius: 24px !important;
+    border-color: #E5E5E5;
+}
