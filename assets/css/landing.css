@@ -17,9 +17,11 @@ header {
 }
 
 main {
+    width: 100vw;
+
     section {
         width: 100vw;
-        height: 100vh;
+        min-height: 100vh;
     }
 }
 
@@ -57,7 +59,7 @@ main {
 
     .main-cachorro {
         width: clamp(350px, 60vw, 700px);
-        height: clamp(350px, 90vh, 700px);
+        height: clamp(350px, 60vw, 700px);
         position: absolute;
         left: calc(100vw/2 - clamp(350px, 60vw, 700px)/2);
         bottom: 0%;
@@ -116,8 +118,12 @@ main {
 /* ADOÇÃO */
 
 .adoption {
+    position: relative;
+
     .adoption-botoes {
         z-index: 2;
+        position: absolute;
+        top: 50%;
 
         button {
             width: 66px;
@@ -139,15 +145,43 @@ main {
         }
     }
 
+    .adoption-carousel {
+        height: 100%;
+    }
+
     .adoption-card {
         position: absolute;
         background-image: url('../imgs/luna.png');
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
+        color: #FFFFFF;
+
+        .adoption-card-infos {
+            position: absolute;
+            bottom: 10%;
+            left: 10%;
+            max-width: 500px;
+            z-index: 2;
+        }
     }
 }
 
+/* CAMPANHAS */
+
+.campaigns {
+    .campaign-title {
+        color: var(--cor-secundaria);
+    }
+}
+
+/* ORGANIZAÇÕES */
+
+.organizations {
+    .organizations-title {
+        color: var(--cor-terciaria);
+    }
+}
 
 /* Breakpoints Forçados */
 

@@ -14,9 +14,13 @@
 /* Geral */
 
 body {
+    width: 100vw;
     background-color: var(--cor-primaria);
     scroll-behavior: smooth;
     overflow-x: hidden;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 /* Fontes */
@@ -79,7 +83,7 @@ h5 {
     line-height: 1;
     color: var(--cor-primaria);
     background-color: transparent;
-    border: var(--cor-primaria);
+    border: 1px solid var(--cor-primaria);
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
@@ -87,7 +91,7 @@ h5 {
     transition: 250ms ease-out;
 
     &:hover {
-        background-color: var(--cor-terciaria);
+        background-color: var(--cor-terciaria) !important;
     }
 }
 
@@ -140,7 +144,7 @@ h5 {
 
 /* Cards de campanha */
 
-.card-campanha {
+.card-campanha, .card-org {
     border-radius: 24px !important;
     border-color: #E5E5E5;
 }
