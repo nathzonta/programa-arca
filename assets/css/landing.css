@@ -12,14 +12,17 @@ header {
         text-decoration: none;
         color: var(--cor-preto);
         font-family: "Montserrat", sans-serif;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: clamp(18px, 12vw, 20px);
     }
 }
 
 main {
+    width: 100vw;
+
     section {
         width: 100vw;
-        height: 100vh;
+        min-height: 100vh;
     }
 }
 
@@ -57,7 +60,7 @@ main {
 
     .main-cachorro {
         width: clamp(350px, 60vw, 700px);
-        height: clamp(350px, 90vh, 700px);
+        height: clamp(350px, 60vw, 700px);
         position: absolute;
         left: calc(100vw/2 - clamp(350px, 60vw, 700px)/2);
         bottom: 0%;
@@ -102,6 +105,8 @@ main {
         position: absolute;
         bottom: 38vh;
         left: 15vw;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 700 !important;
         font-size: clamp(12px, 1vw, 18px) !important;
     }
 
@@ -109,6 +114,8 @@ main {
         position: absolute;
         top: 20vh;
         left: 13vw;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 700 !important;
         font-size: clamp(12px, 1vw, 18px) !important;
     }
 }
@@ -116,8 +123,12 @@ main {
 /* ADOÇÃO */
 
 .adoption {
+    position: relative;
+
     .adoption-botoes {
         z-index: 2;
+        position: absolute;
+        top: 50%;
 
         button {
             width: 66px;
@@ -139,21 +150,160 @@ main {
         }
     }
 
+    .adoption-carousel {
+        height: 100%;
+    }
+
     .adoption-card {
         position: absolute;
-        background-image: url('../imgs/luna.png');
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
+        color: #FFFFFF;
+
+        .adoption-card-infos {
+            position: absolute;
+            bottom: 10%;
+            left: 10%;
+            max-width: 500px;
+            /* z-index: 2; */
+        }
+    }
+
+    #carousel-1 {
+        background-image: url('../imgs/luna.png');
+    }
+
+    #carousel-2 {
+        background-image: url('../imgs/tobias.png');
     }
 }
 
+/* CAMPANHAS */
+
+.campaigns {
+    .campaign-title {
+        color: var(--cor-secundaria);
+        font-size: clamp(30px, 12vw, 40px);
+    }
+
+    #filtro-campanhas {
+        .badge-arca {
+            transition: .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+            &:hover {
+                cursor: pointer;
+                transform: scaleX(1.08);
+            }
+        }
+    }
+}
+
+/* ORGANIZAÇÕES */
+
+.organizations {
+    .organizations-title {
+        color: var(--cor-terciaria);
+        font-size: clamp(30px, 12vw, 40px);
+    }
+
+    #card-main {
+        img {
+            position: absolute; 
+            width: 20%; 
+            bottom: 0%; 
+            right: 0%;
+        }
+    }
+
+    #card-1 {
+        width: 100%;
+
+        img {
+            position: absolute; 
+            width: 20%; 
+            bottom: 0%; 
+            right: 0%;
+        }
+    }
+
+    #card-2 {
+        width: 100%;
+    }
+
+    #card-3 {
+        width: 100%;
+
+        img {
+            position: absolute;
+            width: 20%;
+            bottom: 0%;
+            left: 0%;
+        }
+    }
+}
 
 /* Breakpoints Forçados */
+
+@media (max-width: 500px) {
+    #card-3 {
+        .botao-arca {
+            font-size: 10px;
+        }
+    }
+}
 
 @media (min-width: 992px) { 
     .main-title {
         left: calc((50vw - clamp(50px, 12vw, 210px)/2) - 36vw) !important;
+    }
+
+    .organizations {
+        position: relative;
+        .org-container {
+            max-width: 100%;
+        }
+
+        #card-main {
+            min-height: 600px; 
+            min-width: 350px;
+
+            img {
+                position: absolute; 
+                width: 300px; 
+                bottom: 0%; 
+                right: 0%;
+            }
+        }
+
+        #card-1 {
+            min-height: 230px;
+            min-width: 800px;
+
+            img {
+                position: absolute; 
+                width: 300px; 
+                bottom: 0%; 
+                right: 0%;
+            }
+        }
+
+        #card-2 {
+            min-height: 80px;
+            min-width: 800px;
+        }
+
+        #card-3 {
+            min-height: 200px; 
+            min-width: 800px;
+
+            img {
+                position: absolute;
+                width: 300px;
+                bottom: 0%;
+                left: 0%;
+            }
+        }
     }
 }
 
@@ -163,3 +313,4 @@ main {
         left: calc(10vw + ((100vw - 1400px) * 0.25)) !important;
     } 
 }
+
