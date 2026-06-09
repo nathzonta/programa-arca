@@ -12,7 +12,8 @@ header {
         text-decoration: none;
         color: var(--cor-preto);
         font-family: "Montserrat", sans-serif;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: clamp(18px, 12vw, 20px);
     }
 }
 
@@ -155,7 +156,6 @@ main {
 
     .adoption-card {
         position: absolute;
-        background-image: url('../imgs/luna.png');
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -166,8 +166,16 @@ main {
             bottom: 10%;
             left: 10%;
             max-width: 500px;
-            z-index: 2;
+            /* z-index: 2; */
         }
+    }
+
+    #carousel-1 {
+        background-image: url('../imgs/luna.png');
+    }
+
+    #carousel-2 {
+        background-image: url('../imgs/tobias.png');
     }
 }
 
@@ -177,6 +185,17 @@ main {
     .campaign-title {
         color: var(--cor-secundaria);
         font-size: clamp(30px, 12vw, 40px);
+    }
+
+    #filtro-campanhas {
+        .badge-arca {
+            transition: .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+            &:hover {
+                cursor: pointer;
+                transform: scaleX(1.08);
+            }
+        }
     }
 }
 

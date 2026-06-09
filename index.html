@@ -34,7 +34,7 @@
             <img class="folhinha-3" src="./assets/imgs/folhinha.png" alt="">
             <img class="main-cachorro" src="./assets/imgs/main-cachorro.png" alt="">
             <h1 class="main-title d-flex">PRO<span class="d-none d-lg-block"></span>JETO</h1>
-            <h1 class="main-subtitle">ARCA</h1>
+            <h1 class="main-subtitle p-1">ARCA</h1>
             <span class="main-badge-1 badge-arca badge-arca-roxa">Adote agora</span>         
             <span class="main-badge-2 badge-arca badge-arca-roxa">Apoio às ONGs</span>         
             <span class="main-badge-3 badge-arca badge-arca-roxa">Encontre seu novo companheiro</span>         
@@ -45,7 +45,7 @@
                     <button><span><img src="./assets/imgs/icons/seta.svg" alt=""></span></button>
                     <button><span><img style="transform: translateY(90deg);"  src="./assets/imgs/icons/seta.svg" alt=""></span></button>
                 </div>
-                <div class="adoption-card w-100 h-100">
+                <div id="carousel-1" class="adoption-card w-100 h-100">
                     <div class="p-1 adoption-card-infos">
                         <h2>Luna</h2>
                         <p class="corpo corpo-sm">
@@ -54,29 +54,38 @@
                         <button class="botao-arca">Adotar agora!</button>
                     </div>
                 </div>
+                <div id="carousel-2" class="adoption-card w-100 h-100">
+                    <div class="p-1 adoption-card-infos">
+                        <h2>Tobias</h2>
+                        <p class="corpo corpo-sm">
+                            Tobias é um cãozinho de 4 anos, alegre e companheiro, sempre pronto para um passeio ou alguns minutos de brincadeira. Muito sociável e afetuoso, ele adora estar por perto e encher os dias da família de carinho e diversão.
+                        </p>
+                        <button class="botao-arca">Adotar agora!</button>
+                    </div>
+                </div>
             </div>
         </section>
         <section id="campaigns" class="campaigns mt-5 mt-none d-flex flex-column justify-content-center align-items-center">
             <h3 class="campaign-title">Campanhas Ativas</h3>
-            <div class="p-md-0 p-3">
+            <div id="filtro-campanhas" class="p-md-0 p-3">
                 <span class="badge-arca mb-2 me-1">Todos</span>
                 <span class="badge-arca badge-arca-sucesso mb-2 me-1">Castração</span>
                 <span class="badge-arca badge-arca-aviso mb-2 me-1">Feira de Adoção</span>
                 <span class="badge-arca badge-arca-info mb-2 me-1">Vacinação</span>
             </div>
-            <div class="d-flex flex-wrap justify-content-center gap-4 p-4">
+            <div id="campanhas" class="d-flex flex-wrap justify-content-center gap-4 p-4">
                 <!-- Card -->
                 <div id="card" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-3">
                     <div class="card-body d-flex flex-column gap-4">
-                        <img class="col-12" style="border-radius: 15px; height: 280px;" src="./assets/imgs/teste.png">
+                        <img class="col-12" style="border-radius: 15px; height: 280px;" src="./assets/imgs/campanha-1.jpg">
                         <div class="card-campanha-text mx-4">
-                            <h4>Instituto Vida Animal</h4>
-                            <span class="badge-arca badge-arca-info mb-2 me-1">Vacilação</span>
-                            <p class="corpo corpo-sm text-muted mt-2">O Instituto Vida Animal ES promoverá uma ação de vacinação gratuita para cães e gatos. A iniciativa visa reforçar a prevenção de doenças e incentivar os cuidados essenciais com a saúde dos pets da comunidade.</p>
+                            <h4>Patinhas da Serra</h4>
+                            <span class="badge-arca badge-arca-sucesso mb-2 me-1">Castração</span>
+                            <p class="corpo corpo-sm text-muted mt-2">A Patinhas da Serra realizará uma campanha de castração com vagas limitadas para cães e gatos. A ação busca promover a saúde e o bem-estar dos animais, contribuindo também para o controle populacional e a redução do abandono. <b>Levar CPF!</b></p>
                         </div>
                         <div class="card-campanha-infos mx-4">
-                            <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">00/00/0000 às 00h até 00h</p>
-                            <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Pracinha de Colina de Laranjais</p>
+                            <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">11/07/2026 às 12h até 16h</p>
+                            <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Shopping Montserrat</p>
                         </div>
                     </div>
                 </div>
@@ -84,15 +93,15 @@
                 <!-- Card -->
                 <div id="card" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-3">
                     <div class="card-body d-flex flex-column gap-4">
-                        <img class="col-12" style="border-radius: 15px; height: 280px;" src="./assets/imgs/teste.png">
+                        <img class="col-12" style="border-radius: 15px; height: 280px;" src="./assets/imgs/campanha-2.jpg">
                         <div class="card-campanha-text mx-4">
-                            <h4>Instituto Vida Animal</h4>
-                            <span class="badge-arca badge-arca-info mb-2 me-1">Vacilação</span>
-                            <p class="corpo corpo-sm text-muted mt-2">O Instituto Vida Animal ES promoverá uma ação de vacinação gratuita para cães e gatos. A iniciativa visa reforçar a prevenção de doenças e incentivar os cuidados essenciais com a saúde dos pets da comunidade.</p>
+                            <h4>ONG Amor de Pet</h4>
+                            <span class="badge-arca badge-arca-aviso mb-2 me-1">Feira de Adoção</span>
+                            <p class="corpo corpo-sm text-muted mt-2">A ONG Amor de Pet convida você para uma feira de adoção repleta de animais à procura de um lar cheio de carinho. Venha conhecer cães e gatos resgatados e encontre um novo melhor amigo para a vida toda.</p>
                         </div>
                         <div class="card-campanha-infos mx-4">
-                            <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">00/00/0000 às 00h até 00h</p>
-                            <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Pracinha de Colina de Laranjais</p>
+                            <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">08/07/2026 às 07h até 13h</p>
+                            <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Shopping Mestre Álvaro</p>
                         </div>
                     </div>
                 </div>
@@ -100,15 +109,15 @@
                 <!-- Card -->
                 <div id="card" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-3">
                     <div class="card-body d-flex flex-column gap-4">
-                        <img class="col-12" style="border-radius: 15px; height: 280px;" src="./assets/imgs/teste.png">
+                        <img class="col-12" style="border-radius: 15px; height: 280px;" src="./assets/imgs/campanha-3.jpg">
                         <div class="card-campanha-text mx-4">
                             <h4>Instituto Vida Animal</h4>
-                            <span class="badge-arca badge-arca-info mb-2 me-1">Vacilação</span>
+                            <span class="badge-arca badge-arca-info mb-2 me-1">Vacinação</span>
                             <p class="corpo corpo-sm text-muted mt-2">O Instituto Vida Animal ES promoverá uma ação de vacinação gratuita para cães e gatos. A iniciativa visa reforçar a prevenção de doenças e incentivar os cuidados essenciais com a saúde dos pets da comunidade.</p>
                         </div>
                         <div class="card-campanha-infos mx-4">
-                            <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">00/00/0000 às 00h até 00h</p>
-                            <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Pracinha de Colina de Laranjais</p>
+                            <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">28/07/2026 às 08h até 12h</p>
+                            <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Pracinha de Cidade Continental</p>
                         </div>
                     </div>
                 </div>
@@ -166,26 +175,7 @@
             </div>
         </section>
     </main>
+    <script src="./assets/js/landing.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>
-
-<!-- <button class="botao-arca botao-roxo">Cadastre-se!</button> -->
-
-<!-- <div class="col-12 d-flex gap-4 p-4">
-    <div id="card" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-3">
-        <div class="card-body d-flex flex-column gap-4">
-            <img class="col-12" style="border-radius: 15px; height: 280px;" src="./assets/imgs/teste.png">
-            <div class="card-campanha-text mx-4">
-                <h4>Instituto Vida Animal</h4>
-                <span class="badge-arca badge-arca-info mb-2 me-1">Vacilação</span>
-                <p class="corpo corpo-sm text-muted mt-2">O Instituto Vida Animal ES promoverá uma ação de vacinação gratuita para cães e gatos. A iniciativa visa reforçar a prevenção de doenças e incentivar os cuidados essenciais com a saúde dos pets da comunidade.</p>
-            </div>
-            <div class="card-campanha-infos mx-4">
-                <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">00/00/0000 às 00h até 00h</p>
-                <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Pracinha de Colina de Laranjais</p>
-            </div>
-        </div>
-    </div>
-
-</div> -->

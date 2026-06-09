@@ -120,6 +120,7 @@ h5 {
     white-space: nowrap;
     vertical-align: baseline;
     border-radius: 32px;
+    user-select: none;
 }
 
 .badge-arca-info {
