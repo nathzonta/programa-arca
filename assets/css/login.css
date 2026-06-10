@@ -15,7 +15,7 @@ body {
 }
 
 .login-container {
-    max-height: 100vh;
+    height: 100vh;
 
     .login-image {
         align-items: center;
