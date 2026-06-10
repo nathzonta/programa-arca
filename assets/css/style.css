@@ -2,6 +2,7 @@
     --cor-primaria: #FAF9F6;
     --cor-secundaria: #6B4EFF;
     --cor-terciaria: #17A34A;
+    --cor-preto-0: #000000;
     --cor-preto: #2A2A2A;
     --bg-cor-info: #C9F0FF;
     --bg-cor-aviso: #FFEFD7;
@@ -14,7 +15,7 @@
 /* Geral */
 
 body {
-    width: 100vw;
+    width: 100%;
     background-color: var(--cor-primaria);
     scroll-behavior: smooth;
     overflow-x: hidden;
@@ -76,10 +77,10 @@ h5 {
 
 .botao-arca {
     display: inline-block;
-    padding: 12px 41px;
-    font-size: 18px;
+    padding: 1.5vh 2vw;
+    font-size: clamp(1rem, 2.4vh, 1.3rem);
     font-family: "Montserrat", sans-serif;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1;
     color: var(--cor-primaria);
     background-color: transparent;
