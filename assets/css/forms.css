@@ -48,3 +48,9 @@ button {
         background-color: #169042;
     }
 }
+
+@media (max-width: 992px) {
+    .form-group-arca {
+        margin-bottom: 16px !important;
+    }
+}
