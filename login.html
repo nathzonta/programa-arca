@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Programa Arca</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css"/>
+    <link rel="stylesheet" href="./assets/css/login.css"/>
+    <link rel="stylesheet" href="./assets/css/forms.css"/>
+    <link rel="shortcut icon" href="../../assets/imgs/prefeitura.png" type="image/x-icon">
+</head>
+<body>
+    <main class="login-container d-flex pt-3">
+        <div class="login-image col-lg-6 d-lg-flex d-none align-items-center">
+            <img src="./assets/imgs/gato-lg.png" alt="Gatos">
+        </div>
+        <div class="login-content col-lg-6 col-12">
+            <div class="login-header text-center mb-3">
+                <a href="./index.html"><img src="./assets/imgs/Logo.svg" alt="Logo Programa Arca" class="login-logo"></a>
+                <h3 class="login-title">Login</h3>
+            </div>
+            <div class="login-card">
+                <div class="login-card-header">
+                    <div class="login-card-text">
+                        <p class="corpo">Entre na sua conta</p>
+                        <p class="corpo corpo-sm">
+                            Não tem uma conta? Faça o cadastro no botão <span class="d-lg-inline-block d-none">ao lado.</span><span class="d-lg-none d-inline-block">abaixo.</span><br>
+                            Você tem uma organização? Cadastre-a no botão <span class="d-lg-inline-block d-none">ao lado.</span><span class="d-lg-none d-inline-block">abaixo.</span>
+                        </p>
+                    </div>
+                    <div class="login-card-links">
+                        <a class="corpo corpo-sm" href="./cadastro.html">Cadastre-se</a>
+                        <a class="corpo corpo-sm" href="./cadastro_representante.html">Cadastrar organização</a>
+                    </div>
+                </div>
+                <form class="login-form d-flex flex-column align-items-center">
+                    <div class="form-group-arca col-md-7 col-12 mb-3">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Digite seu email">
+                    </div>
+                    <div class="form-group-arca col-md-7 col-12 mb-5">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" name="senha" placeholder="Digite sua senha">
+                    </div>
+                    <div class="col-md-7 col-12">
+                        <button type="submit">Faça login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
