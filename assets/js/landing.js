@@ -1,3 +1,12 @@
+/* Dropdown menu do mobile */
+document
+    .getElementById('hamburguer-menu')
+    .addEventListener('click', function () {
+        document
+            .getElementById('menu-mobile')
+            .classList.toggle('aberto');
+    });
+
 /* Carrosel */
 
 const cards = document.querySelectorAll('.adoption-card');

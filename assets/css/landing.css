@@ -16,6 +16,42 @@ header {
         font-weight: 620;
         font-size: clamp(1rem, 2.5vh, 1.3rem);
     }
+
+    .menu-container {
+        position: relative;
+    }
+
+    #menu-mobile {
+        position: absolute;
+        top: 100%;
+        right: 0;
+
+        margin-top: 10px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+
+        transform: translateX(20px);
+
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease,
+            visibility 0.3s ease;
+    }
+
+    #menu-mobile.aberto {
+        display: flex;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+
+        transform: translateX(0);
+    }
 }
 
 main {
@@ -319,9 +355,9 @@ main {
 }
 
 
-@media (min-width: 1400px) { 
-    /* .main-title {
-        left: calc(10vw + ((100vw - 1400px) * 0.25)) !important;
-    }  */
+@media (min-width: 768) { 
+    .menu-mobile {
+        display: block;
+    }
 }
 
