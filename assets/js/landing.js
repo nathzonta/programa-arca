@@ -1,3 +1,9 @@
+/* Dropdown menu do mobile */
+document.getElementById('hamburguer-menu')
+    .addEventListener('click', function () {
+        document.getElementById('menu-mobile').classList.toggle('aberto');
+    });
+
 /* Carrosel */
 
 const cards = document.querySelectorAll('.adoption-card');
@@ -28,6 +34,10 @@ botoes[0].addEventListener('click', voltar);
 botoes[1].addEventListener('click', avancar);
 
 mostrarCard(cardAtual);
+
+if (window.innerWidth < 768) {
+    setInterval(avancar, 5000);
+}
 
 /* Filtro de campanhas */
 
