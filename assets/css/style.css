@@ -97,7 +97,6 @@ h5 {
 }
 
 .botao-roxo {
-    background-color: var(--cor-primaria);
     color: var(--cor-secundaria) !important;
     border: 1px solid var(--cor-secundaria) !important;
 

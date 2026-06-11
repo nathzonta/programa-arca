@@ -199,6 +199,7 @@ main {
         background-repeat: no-repeat;
         background-position: center;
         color: #FFFFFF;
+        animation: fadeCard 0.5s ease-out;
 
         .adoption-card-infos {
             position: absolute;
@@ -215,6 +216,19 @@ main {
 
     #carousel-2 {
         background-image: url('../imgs/tobias.png');
+    }
+}
+
+/* KEYFRAMES */
+@keyframes fadeCard {
+    from {
+        opacity: 0.8;
+        transform: scale(0.99);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 
@@ -302,6 +316,21 @@ main {
             overflow: hidden;
         }
     }
+
+    .adoption {
+        .adoption-card {
+            .adoption-card-infos {
+                left: 0%;
+                margin: 0 2rem;
+            }
+        }
+    }
+
+    .botao-arca {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
 }
 
 @media (min-width: 992px) { 
