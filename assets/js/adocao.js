@@ -10,7 +10,8 @@ const animais = [
         raca: "Indefinida",
         idade: "1 ano",
         sexo: "Fêmea",
-        descricao: "Luna é uma gatinha tranquila e observadora que adora encontrar um cantinho confortável para descansar perto das pessoas."
+        descricao: "Luna é uma gatinha tranquila e observadora que adora encontrar um cantinho confortável para descansar perto das pessoas.",
+        localizacao: "Colina de Laranjeiras"
     },
     {
         id: 2,
@@ -23,7 +24,8 @@ const animais = [
         raca: "Labrador",
         idade: "4 anos",
         sexo: "Macho",
-        descricao: "Tobias é um cãozinho alegre e companheiro, sempre pronto para um passeio ou alguns minutos de brincadeira."
+        descricao: "Tobias é um cãozinho alegre e companheiro, sempre pronto para um passeio ou alguns minutos de brincadeira.",
+        localizacao: "Centro"
     }
 ];
 
@@ -37,6 +39,7 @@ let transicionando = false;
 document.addEventListener('DOMContentLoaded', () => {
     inicializarFiltros();
     inicializarAcoes();
+    inicializarModalAjuda();
     renderCard(0);
 });
 
@@ -75,22 +78,27 @@ function renderCard(index) {
     const temFavorito = favoritos.has(animal.id);
 
     container.innerHTML = `
-        <div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" id="swipe-card">
-            <div class="card-body d-flex flex-column gap-3">
-                <div style="position: relative;">
-                    <img class="card-animal-img col-12" src="${animal.imagem}" alt="${animal.nome}">
-                </div>
+        <div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card-animal p-3" id="swipe-card">
+            <div class="card-body">
+                <img class="card-animal-img" src="${animal.imagem}" alt="${animal.nome}">
                 <div class="card-animal-text">
-                    <h4 class="d-flex justify-content-between">${animal.nome}</h4>
+                    <h4>${animal.nome}</h4>
                     <div class="card-animal-badges">
                         <span class="badge-arca badge-arca-sucesso">Porte ${animal.porte.toLowerCase()}</span>
                         <span class="badge-arca badge-arca-info">${animal.vacina}</span>
-                        <span class="badge-arca badge-arca-rosa">Custo mensal médio de R$ ${animal.custo}</span>
+                        <span class="card-animal-custo">Custo mensal médio de R$ ${animal.custo}</span>
                     </div>
-                    <p class="corpo corpo-sm text-muted mt-2">
-                    ${animal.especie}: ${animal.raca} | ${animal.idade} | ${animal.sexo}<br><br>
-                    ${animal.descricao}
-                    </p>
+                </div>
+                <div class="card-animal-info">
+                    <p>${animal.especie}: ${animal.raca} | ${animal.idade} | ${animal.sexo}</p>
+                    <p>${animal.descricao}</p>
+                </div>
+                <div class="card-animal-localizacao">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    ${animal.localizacao}
                 </div>
                 <div class="card-animal-footer">
                     <button class="action-btn btn-interesse ${temInteresse ? 'active' : ''}" data-acao="interesse">
@@ -106,8 +114,9 @@ function renderCard(index) {
                         <span class="tooltip-text">Favoritar</span>
                     </button>
                     <button class="action-btn btn-proximo" data-acao="proximo">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 18l6-6-6-6"/>
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
                         </svg>
                         <span class="tooltip-text">Próximo</span>
                     </button>
@@ -166,12 +175,12 @@ function proximoCard() {
 }
 
 function inicializarFiltros() {
-    const filtroNome = document.getElementById('filtro-nome');
+    const filtroCusto = document.getElementById('filtro-custo');
     const filtroPorte = document.getElementById('filtro-porte');
     const filtroSexo = document.getElementById('filtro-sexo');
+    const filtroLocalizacao = document.getElementById('filtro-localizacao');
 
-    filtroNome?.addEventListener('input', aplicarFiltros);
-    filtroSexo?.addEventListener('input', aplicarFiltros);
+    filtroCusto?.addEventListener('input', aplicarFiltros);
 
     const observer = new MutationObserver(aplicarFiltros);
     document.querySelectorAll('.sidebar-filtros .select-arca').forEach(select => {
@@ -180,17 +189,45 @@ function inicializarFiltros() {
 }
 
 function aplicarFiltros() {
-    const nome = document.getElementById('filtro-nome')?.value.toLowerCase() || '';
+    const custoMax = parseFloat(document.getElementById('filtro-custo')?.value.replace(/[^0-9.,]/g, '').replace(',', '.')) || Infinity;
     const porte = document.getElementById('filtro-porte')?.value || '';
     const sexo = document.getElementById('filtro-sexo')?.value || '';
+    const localizacao = document.getElementById('filtro-localizacao')?.value || '';
 
     animaisFiltrados = animais.filter(animal => {
-        const matchNome = animal.nome.toLowerCase().includes(nome);
+        const matchCusto = animal.custo <= custoMax;
         const matchPorte = !porte || animal.porte.toLowerCase() === porte;
         const matchSexo = !sexo || animal.sexo.toLowerCase() === sexo;
-        return matchNome && matchPorte && matchSexo;
+        const matchLocalizacao = !localizacao || animal.localizacao.toLowerCase().replace(/\s+/g, '-') === localizacao;
+        return matchCusto && matchPorte && matchSexo && matchLocalizacao;
     });
 
     indiceAtual = 0;
     renderCard(0);
+}
+
+function inicializarModalAjuda() {
+    const btnAjuda = document.getElementById('btn-ajuda');
+    const modal = document.getElementById('modal-ajuda');
+    const btnClose = document.getElementById('modal-ajuda-close');
+
+    btnAjuda?.addEventListener('click', () => {
+        modal.classList.add('open');
+    });
+
+    btnClose?.addEventListener('click', () => {
+        modal.classList.remove('open');
+    });
+
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('open');
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal?.classList.contains('open')) {
+            modal.classList.remove('open');
+        }
+    });
 }

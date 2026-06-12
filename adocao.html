@@ -52,12 +52,12 @@
                 </div>
             </nav>
 
-            <p class="sidebar-label">Filtros</p>
+            <p class="sidebar-label">Filtro</p>
 
             <div class="sidebar-filtros">
                 <div class="form-group-arca">
-                    <label for="filtro-nome">Nome</label>
-                    <input type="text" id="filtro-nome" placeholder="Digite o nome">
+                    <label for="filtro-custo">Custo médio máximo</label>
+                    <input type="text" id="filtro-custo" placeholder="~R$ 300">
                 </div>
                 <div class="form-group-arca">
                     <label for="filtro-porte">Porte</label>
@@ -77,6 +77,16 @@
                         <option value="femea">Fêmea</option>
                     </select>
                     <div class="select-arca" data-select="filtro-sexo"></div>
+                </div>
+                <div class="form-group-arca">
+                    <label for="filtro-localizacao">Localização</label>
+                    <select id="filtro-localizacao">
+                        <option value="">Selecione uma localização</option>
+                        <option value="colina-de-laranjeiras">Colina de Laranjeiras</option>
+                        <option value="centro">Centro</option>
+                        <option value="jardim-floresta">Jardim Floresta</option>
+                    </select>
+                    <div class="select-arca" data-select="filtro-localizacao"></div>
                 </div>
             </div>
 
@@ -113,6 +123,23 @@
             <footer class="main-footer">
                 <p>© 2026 Programa Arca</p>
             </footer>
+        </div>
+    </div>
+
+    <!-- Botão de ajuda -->
+    <button class="btn-ajuda" id="btn-ajuda">?</button>
+
+    <!-- Modal de ajuda -->
+    <div class="modal-overlay" id="modal-ajuda">
+        <div class="modal-ajuda">
+            <div class="modal-ajuda-header">
+                <h2>Como funciona para adotar?</h2>
+                <button class="modal-ajuda-close" id="modal-ajuda-close">&times;</button>
+            </div>
+            <div class="modal-ajuda-body">
+                <p>Ao clicar no <strong>ícone de coração</strong>, você demonstra interesse em adotar e seus dados são enviados para a organização responsável pelo animal.</p>
+                <p><strong>Mantenha suas informações atualizadas!</strong> É por meio delas que a ONG poderá entrar em contato com você para dar os próximos passos e ajudar esse encontro especial a acontecer. 🐾</p>
+            </div>
         </div>
     </div>
 
