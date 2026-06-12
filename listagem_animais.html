@@ -34,7 +34,7 @@
                     <button class="sidebar-menu-toggle" data-menu="adocao">
                         <img src="./assets/imgs/icons/pata.svg" alt="" class="sidebar-menu-icon">
                         <span>Adoção</span>
-                        <svg class="sidebar-menu-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <img src="./assets/imgs/icons/select-icon.svg" alt="" class="sidebar-menu-arrow">
                     </button>
                     <ul class="sidebar-submenu open" id="submenu-adocao">
                         <li><a href="./listagem_animais.html" class="active">Listagem de animais</a></li>
@@ -45,7 +45,7 @@
                     <button class="sidebar-menu-toggle" data-menu="campanhas">
                         <img src="./assets/imgs/icons/megafone.svg" alt="" class="sidebar-menu-icon">
                         <span>Campanhas</span>
-                        <svg class="sidebar-menu-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <img src="./assets/imgs/icons/select-icon.svg" alt="" class="sidebar-menu-arrow">
                     </button>
                     <ul class="sidebar-submenu" id="submenu-campanhas">
                         <li><a href="#">Listagem de campanhas</a></li>
@@ -53,8 +53,9 @@
                 </div>
             </nav>
 
+            <p class="sidebar-label">Filtros</p>
+
             <div class="sidebar-filtros">
-                <p class="sidebar-filtros-title">Filtro</p>
                 <div class="form-group-arca">
                     <label for="filtro-nome">Nome</label>
                     <input type="text" id="filtro-nome" placeholder="Digite o nome do animal">
@@ -84,7 +85,7 @@
                 </div>
             </div>
 
-            <div class="sidebar-user">
+            <div class="sidebar-user mt-auto">
                 <div class="sidebar-user-avatar">
                     <img src="./assets/imgs/icons/user-avatar.svg" alt="Avatar">
                 </div>
@@ -97,12 +98,14 @@
 
         <!-- Conteúdo principal -->
         <div class="main-content">
-            <!-- Topbar -->
+            <!-- Barra de breadcrumb -->
             <header class="topbar">
-                <button class="topbar-menu-btn" id="menu-toggle">
+                <button class="topbar-menu-btn col-1" id="menu-toggle">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 </button>
                 <nav class="topbar-breadcrumb">
+                    <img class="topbar-icon" src="./assets/imgs/icons/janela.svg" alt="">
+                    <span class="topbar-breadcrumb-separator"></span>
                     <span>Adoção</span>
                     <svg width="8" height="12" viewBox="0 0 8 12" fill="none"><path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span>Listagem de animais</span>
