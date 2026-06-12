@@ -145,8 +145,8 @@ function preencherFormulario(animal) {
 
     // Reiniciar selects customizados
     setTimeout(() => {
-        if (typeof iniciarSelects === 'function') {
-            iniciarSelects();
+        if (typeof initSelects === 'function') {
+            initSelects();
         }
         atualizarPreview();
     }, 100);
@@ -164,12 +164,12 @@ function limparFormulario() {
     document.getElementById('preview-custo').textContent = 'Custo mensal médio de R$ --';
     document.getElementById('preview-info').textContent = 'Espécie: Raça | Idade | Sexo';
     document.getElementById('preview-desc').textContent = 'Preencha os campos para ver a pré-visualização do animal.';
-    document.getElementById('preview-img').innerHTML = `<svg width="64" height="64" viewBox="0 0 64 64" fill="none"><rect x="8" y="8" width="48" height="48" rx="8" stroke="#ccc" stroke-width="2"/><circle cx="24" cy="28" r="6" stroke="#ccc" stroke-width="2"/><path d="M8 44L20 32L28 40L40 24L56 44" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    document.getElementById('preview-img').src = '';
 
     // Reiniciar selects
     setTimeout(() => {
-        if (typeof iniciarSelects === 'function') {
-            iniciarSelects();
+        if (typeof initSelects === 'function') {
+            initSelects();
         }
     }, 100);
 }
@@ -210,7 +210,7 @@ function atualizarPreview() {
     if (fileInput?.files?.[0]) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            document.getElementById('preview-img').innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            document.getElementById('preview-img').src = e.target.result;
         };
         reader.readAsDataURL(fileInput.files[0]);
     }
@@ -297,24 +297,26 @@ function renderizarAnimais(lista) {
     }
 
     grid.innerHTML = lista.map(animal => `
-        <div class="animal-card" data-id="${animal.id}">
-            <div class="animal-card-img">
-                <img src="${animal.imagem}" alt="${animal.nome}">
-            </div>
-            <div class="animal-card-body">
-                <div class="animal-card-header">
-                    <h3 class="animal-card-name">${animal.nome}</h3>
-                    <button class="animal-card-edit" onclick="abrirModal(animais.find(a => a.id === ${animal.id}))">
+        <div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" data-id="${animal.id}">
+            <div class="card-body d-flex flex-column gap-3">
+                <div style="position: relative;">
+                    <img class="card-animal-img col-12" src="${animal.imagem}" alt="${animal.nome}">
+                    <button class="card-animal-edit" onclick="abrirModal(animais.find(a => a.id === ${animal.id}))">
                         <svg viewBox="0 0 24 24" fill="none"><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                 </div>
-                <div class="animal-card-badges">
-                    <span class="badge-porte">Porte ${animal.porte.toLowerCase()}</span>
-                    <span class="badge-vacina">${animal.vacina}</span>
+                <div class="card-animal-text">
+                    <h4>${animal.nome}</h4>
+                    <div class="card-animal-badges">
+                        <span class="badge-arca badge-arca-sucesso">Porte ${animal.porte.toLowerCase()}</span>
+                        <span class="badge-arca badge-arca-info">${animal.vacina}</span>
+                        <span class="badge-arca badge-arca-rosa">Custo mensal médio de R$ ${animal.custo}</span>
+                    </div>
+                    <p class="corpo corpo-sm text-muted mt-2">
+                    ${animal.especie}: ${animal.raca} | ${animal.idade} | ${animal.sexo}<br><br>
+                    ${animal.descricao}
+                    </p>
                 </div>
-                <p class="animal-card-custo">Custo mensal médio de R$ ${animal.custo}</p>
-                <p class="animal-card-info">${animal.especie}: ${animal.raca} | ${animal.idade} | ${animal.sexo}</p>
-                <p class="animal-card-desc">${animal.descricao}</p>
             </div>
         </div>
     `).join('');

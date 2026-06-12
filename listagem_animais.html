@@ -240,18 +240,22 @@
             </div>
 
             <div class="modal-preview">
-                <div class="animal-card" id="preview-card">
-                    <div class="animal-card-img" id="preview-img">
-                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><rect x="8" y="8" width="48" height="48" rx="8" stroke="#ccc" stroke-width="2"/><circle cx="24" cy="28" r="6" stroke="#ccc" stroke-width="2"/><path d="M8 44L20 32L28 40L40 24L56 44" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="card card-animal p-3" id="preview-card">
+                    <div class="card-body d-flex flex-column gap-3">
+                        <img class="card-animal-img col-12" id="preview-img" src="" alt="Preview">
+                        <div class="card-animal-text">
+                            <h4 id="preview-name">Nome do pet</h4>
+                            <div class="card-animal-badges">
+                                <span class="badge-arca badge-arca-sucesso" id="preview-porte">Porte</span>
+                                <span class="badge-arca badge-arca-info" id="preview-vacina">Vacinação</span>
+                            </div>
+                            <p class="corpo corpo-sm text-muted mt-2" id="preview-desc">Preencha os campos para ver a pré-visualização do animal.</p>
+                        </div>
+                        <div class="card-animal-info">
+                            <p class="corpo corpo-micro mb-2" id="preview-custo">Custo mensal médio de R$ --</p>
+                            <p class="corpo corpo-micro mb-0" id="preview-info">Espécie: Raça | Idade | Sexo</p>
+                        </div>
                     </div>
-                    <h3 class="animal-card-name" id="preview-name">Nome do pet</h3>
-                    <div class="animal-card-badges">
-                        <span class="badge-porte" id="preview-porte">Porte</span>
-                        <span class="badge-vacina" id="preview-vacina">Vacinação</span>
-                    </div>
-                    <p class="animal-card-custo" id="preview-custo">Custo mensal médio de R$ --</p>
-                    <p class="animal-card-info" id="preview-info">Espécie: Raça | Idade | Sexo</p>
-                    <p class="animal-card-desc" id="preview-desc">Preencha os campos para ver a pré-visualização do animal.</p>
                 </div>
             </div>
         </div>
