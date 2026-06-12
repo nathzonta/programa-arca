@@ -34,44 +34,11 @@ let animaisFiltrados = [...animais];
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
-    inicializarSidebar();
     inicializarModal();
     inicializarFiltros();
     inicializarPreview();
     renderizarAnimais(animais);
 });
-
-// ===== SIDEBAR =====
-function inicializarSidebar() {
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebar = document.getElementById('sidebar');
-
-    menuToggle?.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
-    });
-
-    // Toggle dos submenus
-    document.querySelectorAll('.sidebar-menu-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const menu = btn.dataset.menu;
-            const submenu = document.getElementById(`submenu-${menu}`);
-            const menuItem = btn.closest('.sidebar-menu-item');
-
-            menuItem.classList.toggle('active');
-            submenu.classList.toggle('open');
-        });
-    });
-
-    // Fechar sidebar ao clicar fora (mobile)
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 992 && 
-            sidebar.classList.contains('open') && 
-            !sidebar.contains(e.target) && 
-            e.target !== menuToggle) {
-            sidebar.classList.remove('open');
-        }
-    });
-}
 
 // ===== MODAL =====
 function inicializarModal() {
@@ -301,12 +268,13 @@ function renderizarAnimais(lista) {
             <div class="card-body d-flex flex-column gap-3">
                 <div style="position: relative;">
                     <img class="card-animal-img col-12" src="${animal.imagem}" alt="${animal.nome}">
-                    <button class="card-animal-edit" onclick="abrirModal(animais.find(a => a.id === ${animal.id}))">
-                        <svg viewBox="0 0 24 24" fill="none"><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </button>
                 </div>
                 <div class="card-animal-text">
-                    <h4>${animal.nome}</h4>
+                    <h4 class="d-flex justify-content-between">${animal.nome}
+                        <span class="card-animal-edit" onclick="abrirModal(animais.find(a => a.id === ${animal.id}))">
+                            <img src="./assets/imgs/icons/editar.svg">
+                        </span>
+                    </h4>
                     <div class="card-animal-badges">
                         <span class="badge-arca badge-arca-sucesso">Porte ${animal.porte.toLowerCase()}</span>
                         <span class="badge-arca badge-arca-info">${animal.vacina}</span>

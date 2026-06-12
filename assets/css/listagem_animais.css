@@ -111,28 +111,10 @@ body {
 }
 
 /* Botão de editar no card */
-.card-animal-edit {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: white;
-    border: none;
-    border-radius: 8px;
-    padding: 6px;
+ .card-animal-edit {
     cursor: pointer;
-    color: #737373;
-    transition: color 0.2s;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-
-    &:hover {
-        color: var(--cor-preto);
-    }
-
-    svg {
-        width: 18px;
-        height: 18px;
-    }
-}
+    margin-left: auto;
+ }
 
 /* Footer */
 .main-footer {
