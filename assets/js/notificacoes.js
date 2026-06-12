@@ -73,7 +73,7 @@ function renderizarNotificacoes(lista) {
     if (!container) return;
 
     if (lista.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: #737373;">Nenhuma notificação no momento.</p>';
+        container.innerHTML = '<p class="notif-empty">Nenhuma notificação no momento.</p>';
         return;
     }
 
