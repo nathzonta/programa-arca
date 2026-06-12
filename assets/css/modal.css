@@ -43,6 +43,7 @@
     padding: 32px;
     overflow-y: auto;
     max-height: 90vh;
+    scrollbar-width: none;
 }
 
 .modal-header {
@@ -241,10 +242,6 @@
 .modal-preview .card-animal-text h4 {
     font-size: 20px;
     margin-bottom: 8px;
-}
-
-.modal-preview .card-animal-info p {
-    font-size: 13px;
 }
 
 /* Responsivo */

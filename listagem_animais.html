@@ -115,9 +115,9 @@
             <!-- Área de conteúdo -->
             <main class="content-area">
                 <div class="content-header">
-                    <h1 class="content-title">Animais disponíveis para adoção</h1>
-                    <button class="col-2 btn-novo-animal" id="btn-novo-animal">
-                        <img src="./assets/imgs/icons/plus-icon.svg">
+                    <h1 class="content-title d-lg-none d-md-block">Animais disponíveis para adoção</h1>
+                    <button class="ms-auto btn-novo-animal" id="btn-novo-animal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                         Novo animal
                     </button>
                 </div>
@@ -134,7 +134,7 @@
     </div>
 
     <!-- Modal Novo/Editar Animal -->
-    <div class="modal-overlay" id="modal-animal">
+    <div class="modal-overlay d-flex gap-3" id="modal-animal">
         <div class="modal-container">
             <div class="modal-form">
                 <div class="modal-header">
@@ -239,26 +239,28 @@
                 </form>
             </div>
 
-            <div class="modal-preview">
-                <div class="card card-animal p-3" id="preview-card">
-                    <div class="card-body d-flex flex-column gap-3">
-                        <img class="card-animal-img col-12" id="preview-img" src="" alt="Preview">
-                        <div class="card-animal-text">
-                            <h4 id="preview-name">Nome do pet</h4>
-                            <div class="card-animal-badges">
-                                <span class="badge-arca badge-arca-sucesso" id="preview-porte">Porte</span>
-                                <span class="badge-arca badge-arca-info" id="preview-vacina">Vacinação</span>
-                            </div>
-                            <p class="corpo corpo-sm text-muted mt-2" id="preview-desc">Preencha os campos para ver a pré-visualização do animal.</p>
+        </div>
+            <div class="card card-animal p-3 col-xl-3 col-lg-5 col-md-6 d-md-block d-none" id="preview-card">
+                <div class="card-body d-flex flex-column gap-3">
+                    <div style="position: relative;">
+                        <img class="card-animal-img col-12" id="preview-img" src="./assets/imgs/placeholder.png" alt="Preview">
+                    </div>
+                    <div class="card-animal-text">
+                        <h4 class="d-flex justify-content-between">
+                            <span id="preview-name">Nome do pet</span>
+                            <span class="card-animal-edit">
+                                <img src="./assets/imgs/icons/editar.svg">
+                            </span>
+                        </h4>
+                        <div class="card-animal-badges">
+                            <span class="badge-arca badge-arca-sucesso" id="preview-porte">Porte</span>
+                            <span class="badge-arca badge-arca-info" id="preview-vacina">Vacinação</span>
+                            <span class="badge-arca badge-arca-rosa" id="preview-custo">Custo mensal médio de R$ --</span>
                         </div>
-                        <div class="card-animal-info">
-                            <p class="corpo corpo-micro mb-2" id="preview-custo">Custo mensal médio de R$ --</p>
-                            <p class="corpo corpo-micro mb-0" id="preview-info">Espécie: Raça | Idade | Sexo</p>
-                        </div>
+                        <p class="corpo corpo-sm text-muted mt-2" id="preview-desc">Preencha os campos para ver a pré-visualização do animal.</p>
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 
     <script src="./assets/js/select.js"></script>

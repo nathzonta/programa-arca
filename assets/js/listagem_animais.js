@@ -124,16 +124,13 @@ function limparFormulario() {
     form?.reset();
     document.getElementById('animal-imagem').value = '';
 
-    // Resetar preview
     document.getElementById('preview-name').textContent = 'Nome do pet';
     document.getElementById('preview-porte').textContent = 'Porte';
     document.getElementById('preview-vacina').textContent = 'Vacinação';
     document.getElementById('preview-custo').textContent = 'Custo mensal médio de R$ --';
-    document.getElementById('preview-info').textContent = 'Espécie: Raça | Idade | Sexo';
-    document.getElementById('preview-desc').textContent = 'Preencha os campos para ver a pré-visualização do animal.';
+    document.getElementById('preview-desc').innerHTML = 'Espécie: Raça | Idade | Sexo<br><br>Preencha os campos para ver a pré-visualização do animal.';
     document.getElementById('preview-img').src = '';
 
-    // Reiniciar selects
     setTimeout(() => {
         if (typeof initSelects === 'function') {
             initSelects();
@@ -165,14 +162,16 @@ function atualizarPreview() {
     const sexo = document.getElementById('animal-sexo')?.value || 'Sexo';
     const custo = document.getElementById('animal-custo')?.value || '--';
     const descricao = document.getElementById('animal-descricao')?.value || 'Preencha os campos para ver a pré-visualização do animal.';
+    const saude = document.getElementById('animal-saude')?.value || '';
 
     document.getElementById('preview-name').textContent = nome;
-    document.getElementById('preview-porte').textContent = `Porte ${porte.toLowerCase()}`;
+    document.getElementById('preview-porte').textContent = porte !== 'Porte' ? `Porte ${porte.toLowerCase()}` : 'Porte';
     document.getElementById('preview-custo').textContent = custo !== '--' ? `Custo mensal médio de ${custo}` : 'Custo mensal médio de R$ --';
-    document.getElementById('preview-info').textContent = `${especie}: ${raca} | ${idade} | ${sexo}`;
-    document.getElementById('preview-desc').textContent = descricao;
+    document.getElementById('preview-vacina').textContent = saude || 'Vacinação';
 
-    // Atualizar imagem se houver
+    const infoText = `${especie}: ${raca} | ${idade} | ${sexo}`;
+    document.getElementById('preview-desc').innerHTML = `${infoText}<br><br>${descricao}`;
+
     const fileInput = document.getElementById('animal-imagem');
     if (fileInput?.files?.[0]) {
         const reader = new FileReader();

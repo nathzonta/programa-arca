@@ -15,6 +15,7 @@ body {
     align-items: center;
     gap: 8px;
     padding: 12px 24px;
+    width: fit-content;
     background-color: var(--cor-terciaria);
     color: white;
     border: none;
@@ -140,10 +141,6 @@ body {
     }
 
     .topbar-menu-btn {
-        display: block;
-    }
-
-    .content-title {
         display: block;
     }
 
