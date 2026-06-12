@@ -106,6 +106,10 @@ h5 {
     }
 }
 
+a {
+    text-decoration: none;
+}
+
 /* Badges */
 
 .badge-arca {
@@ -149,4 +153,10 @@ h5 {
 .card-campanha, .card-org {
     border-radius: 24px !important;
     border-color: #E5E5E5;
+}
+
+.card-campanha-text {
+    h4 {
+        font-size: 1.4rem;
+    }
 }
