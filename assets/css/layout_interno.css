@@ -286,3 +286,39 @@
     color: var(--cor-preto);
     display: none;
 }
+
+
+/* Footer */
+.main-footer {
+    padding: 24px 32px;
+    text-align: center;
+    font-size: 14px;
+    color: #737373;
+}
+
+/* Responsivo */
+@media (max-width: 992px) {
+    .sidebar {
+        transform: translateX(-100%);
+
+        &.open {
+            transform: translateX(0);
+        }
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .topbar-menu-btn {
+        display: block;
+    }
+
+    .content-title {
+        display: block;
+    }
+
+    .content-area {
+        padding: 24px 16px;
+    }
+}
