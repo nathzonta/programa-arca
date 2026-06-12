@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favoritados - Programa Arca</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/css/style.css"/>
+    <link rel="stylesheet" href="./assets/css/layout_interno.css"/>
+    <link rel="stylesheet" href="./assets/css/forms.css"/>
+    <link rel="stylesheet" href="./assets/css/favoritados.css"/>
+    <link rel="shortcut icon" href="./assets/imgs/prefeitura.png" type="image/x-icon">
+</head>
+<body>
+    <div class="sistema-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="./assets/imgs/Logo.svg" alt="Logo Programa Arca" class="sidebar-logo">
+                <div class="sidebar-brand">
+                    <span class="sidebar-brand-arca">Programa Arca</span>
+                    <span class="sidebar-brand-sub">Prefeitura da Serra</span>
+                </div>
+            </div>
+
+            <p class="sidebar-label">Sistema interno</p>
+
+            <nav class="sidebar-menu">
+                <div class="sidebar-menu-item active">
+                    <button class="sidebar-menu-toggle" data-menu="adocao">
+                        <img src="./assets/imgs/icons/pata.svg" alt="" class="sidebar-menu-icon">
+                        <span>Adoção</span>
+                        <img src="./assets/imgs/icons/select-icon.svg" alt="" class="sidebar-menu-arrow">
+                    </button>
+                    <ul class="sidebar-submenu open" id="submenu-adocao">
+                        <li><a href="./adocao.html">Encontre seu companheiro</a></li>
+                        <li><a href="./favoritados.html" class="active">Favoritados</a></li>
+                        <li><a href="./historico.html">Histórico de Ações</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-menu-item">
+                    <button class="sidebar-menu-toggle" data-menu="campanhas">
+                        <img src="./assets/imgs/icons/megafone.svg" alt="" class="sidebar-menu-icon">
+                        <span>Campanhas</span>
+                        <img src="./assets/imgs/icons/select-icon.svg" alt="" class="sidebar-menu-arrow">
+                    </button>
+                    <ul class="sidebar-submenu" id="submenu-campanhas">
+                        <li><a href="./campanhas_interno.html">Listagem de campanhas</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <p class="sidebar-label">Filtros</p>
+
+            <div class="sidebar-filtros">
+                <div class="form-group-arca">
+                    <label for="filtro-nome">Nome</label>
+                    <input type="text" id="filtro-nome" placeholder="Digite o nome">
+                </div>
+                <div class="form-group-arca">
+                    <label for="filtro-porte">Porte</label>
+                    <select id="filtro-porte">
+                        <option value="">Selecione um porte</option>
+                        <option value="pequeno">Pequeno</option>
+                        <option value="medio">Médio</option>
+                        <option value="grande">Grande</option>
+                    </select>
+                    <div class="select-arca" data-select="filtro-porte"></div>
+                </div>
+                <div class="form-group-arca">
+                    <label for="filtro-sexo">Sexo</label>
+                    <select id="filtro-sexo">
+                        <option value="">Selecione um sexo</option>
+                        <option value="macho">Macho</option>
+                        <option value="femea">Fêmea</option>
+                    </select>
+                    <div class="select-arca" data-select="filtro-sexo"></div>
+                </div>
+            </div>
+
+            <div class="sidebar-user mt-auto">
+                <div class="sidebar-user-avatar">
+                    <img src="./assets/imgs/icons/user-avatar.svg" alt="Avatar">
+                </div>
+                <div class="sidebar-user-info">
+                    <span class="sidebar-user-name">Representante Inst.</span>
+                    <span class="sidebar-user-email">representante@exemplo.com</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <button class="topbar-menu-btn col-1" id="menu-toggle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <nav class="topbar-breadcrumb">
+                    <img class="topbar-icon" src="./assets/imgs/icons/janela.svg" alt="">
+                    <span class="topbar-breadcrumb-separator"></span>
+                    <span>Adoção</span>
+                    <svg width="8" height="12" viewBox="0 0 8 12" fill="none"><path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Favoritados</span>
+                </nav>
+            </header>
+
+            <main class="content-area">
+                <div class="content-header">
+                    <h1 class="content-title">Animais favoritados</h1>
+                </div>
+
+                <div class="favoritados-grid" id="favoritados-grid">
+                </div>
+            </main>
+
+            <footer class="main-footer">
+                <p>© 2026 Programa Arca</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="./assets/js/select.js"></script>
+    <script src="./assets/js/favoritados.js"></script>
+    <script src="./assets/js/sistema.js"></script>
+</body>
+</html>
