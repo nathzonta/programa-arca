@@ -126,29 +126,6 @@ body {
     border-top: 1px solid #E5E5E5;
 }
 
-/* Responsivo */
-@media (max-width: 992px) {
-    .sidebar {
-        transform: translateX(-100%);
-
-        &.open {
-            transform: translateX(0);
-        }
-    }
-
-    .main-content {
-        margin-left: 0;
-    }
-
-    .topbar-menu-btn {
-        display: block;
-    }
-
-    .content-area {
-        padding: 24px 16px;
-    }
-}
-
 @media (max-width: 576px) {
     .animais-grid {
         grid-template-columns: 1fr;
