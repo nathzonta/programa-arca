@@ -1,11 +1,14 @@
-var animalEditando = null;
-var animaisFiltrados = [];
-var sessao = null;
+let animalEditando = null;
+let animaisFiltrados = [];
+let sessao = null;
 
 $(document).ready(function () {
-    if (!protegerRota(['representante'])) return;
-    carregarDadosSidebar();
+    if (!protegerRota(['representante'])) {
+        return;
+    }
     sessao = getSessao();
+
+    carregarDadosSidebar();
     inicializarModal();
     inicializarFiltros();
     inicializarPreview();
@@ -22,23 +25,22 @@ function carregarAnimais() {
 }
 
 function inicializarModal() {
-    $('#btn-novo-animal').on('click', function () { abrirModal(); });
-    $('#modal-close').on('click', function () { fecharModal(); });
-    $('#btn-cancelar').on('click', function () { fecharModal(); });
-
-    $('#modal-animal').on('click', function (e) {
-        if (e.target === this) fecharModal();
+    $('#btn-novo-animal').on('click', function () { 
+        abrirModal(); 
     });
 
-    $(document).on('keydown', function (e) {
-        if (e.key === 'Escape' && $('#modal-animal').hasClass('open')) {
+    $('#modal-close').on('click', fecharModal);
+    $('#btn-cancelar').on('click', fecharModal);
+
+    $('#modal-animal').on('click', function (e) {
+        if (e.target === this) {
             fecharModal();
         }
     });
 
     $('#form-animal').on('submit', function (e) {
         e.preventDefault();
-        if (validarFormulario()) {
+        if (validarFormulario('#form-animal')) {
             salvarAnimal();
         }
     });
@@ -74,7 +76,9 @@ function preencherFormulario(animal) {
     $('#animal-idade').val(animal.idade_aprox || '');
     $('#animal-custo').val(animal.valor_custo || '');
     $('#animal-sexo').val(animal.sexo || '');
+    $('#animal-saude').val(animal.saude || '');
     $('#animal-descricao').val(animal.descricao || '');
+    $('#preview-img').attr('src', animal.imagem || '');
 
     setTimeout(function () {
         if (typeof iniciarSelects === 'function') {
@@ -87,13 +91,12 @@ function preencherFormulario(animal) {
 function limparFormulario() {
     $('#form-animal')[0].reset();
     $('#animal-imagem').val('');
-
     $('#preview-name').text('Nome do pet');
     $('#preview-porte').text('Porte');
     $('#preview-vacina').text('Saude');
     $('#preview-custo').text('Custo mensal medio de R$ --');
     $('#preview-desc').html('Especie: Raca | Idade | Sexo<br><br>Preencha os campos para ver a pre-visualizacao do animal.');
-    $('#preview-img').attr('src', '');
+    $('#preview-img').attr('src', './assets/imgs/placeholder.png');
 
     setTimeout(function () {
         if (typeof iniciarSelects === 'function') {
@@ -105,33 +108,30 @@ function limparFormulario() {
 function inicializarPreview() {
     $('[data-preview]').on('input change', atualizarPreview);
 
-    var observer = new MutationObserver(atualizarPreview);
+    let observer = new MutationObserver(atualizarPreview);
     $('.select-arca').each(function () {
-        observer.observe(this, { childList: true, subtree: true, attributes: true });
+        observer.observe(this, { 
+            childList: true, 
+            subtree: true, 
+            attributes: true 
+        });
     });
 }
 
 function atualizarPreview() {
-    var nome = $('#animal-nome').val() || 'Nome do pet';
-    var porte = $('#animal-porte').val() || 'Porte';
-    var especie = $('#animal-especie').val() || 'Especie';
-    var raca = $('#animal-raca').val() || 'Raca';
-    var idade = $('#animal-idade').val() || 'Idade';
-    var custo = $('#animal-custo').val() || '--';
-    var descricao = $('#animal-descricao').val() || 'Preencha os campos para ver a pre-visualizacao do animal.';
-    var saude = $('#animal-saude').val() || '';
+    const dados = getValoresInput('#form-animal');
 
-    $('#preview-name').text(nome);
-    $('#preview-porte').text(porte !== 'Porte' ? 'Porte ' + porte.toLowerCase() : 'Porte');
-    $('#preview-custo').text(custo !== '--' ? 'Custo mensal medio de R$ ' + custo : 'Custo mensal medio de R$ --');
-    $('#preview-vacina').text(saude || 'Saude');
+    $('#preview-name').text(dados['animal_nome']);
+    $('#preview-porte').text(dados['animal_porte'] !== 'Porte' ? 'Porte ' + dados['animal_porte'].toLowerCase() : 'Porte --');
+    $('#preview-custo').text(dados['animal_custo'] !== '--' ? 'Custo mensal medio de R$ ' + dados['animal_custo'] : 'Custo mensal medio de R$ --');
+    $('#preview-vacina').text(dados['animal_saude'] || 'Saúde');
 
-    var infoText = especie + ': ' + raca + ' | ' + idade;
-    $('#preview-desc').html(infoText + '<br><br>' + descricao);
+    const textoInfo = (dados['animal_especie'] || 'Espécie') + ': ' + (dados['animal_raca'] || 'Raça') + ' | ' + (dados['animal_idade'] || 'Idade') + ' anos | ' + (dados['animal_sexo'] || 'Sexo');
+    $('#preview-desc').html(textoInfo + '<br><br>' + (dados['animal_descricao'] || 'Preencha os campos ao lado'));
 
-    var fileInput = document.getElementById('animal-imagem');
+    let fileInput = document.getElementById('animal-imagem');
     if (fileInput && fileInput.files && fileInput.files[0]) {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = function (e) {
             $('#preview-img').attr('src', e.target.result);
         };
@@ -139,53 +139,22 @@ function atualizarPreview() {
     }
 }
 
-function validarFormulario() {
-    var campos = [
-        { id: 'animal-nome', label: 'Nome' },
-        { id: 'animal-porte', label: 'Porte' },
-        { id: 'animal-especie', label: 'Especie' }
-    ];
-
-    var valido = true;
-    limparErros();
-
-    campos.forEach(function (campo) {
-        var $input = $('#' + campo.id);
-        var $formGroup = $input.closest('.form-group-arca');
-
-        if (!$input.val() || !$input.val().trim()) {
-            $formGroup.addClass('error');
-            valido = false;
-        }
-    });
-
-    if (!valido) {
-        $('#modal-alert').addClass('visible');
-    }
-
-    return valido;
-}
-
-function limparErros() {
-    $('.form-group-arca.error').removeClass('error');
-    $('#modal-alert').removeClass('visible');
-}
-
 function salvarAnimal() {
-    var dados = getValoresInput('#form-animal');
+    let dados = getValoresInput('#form-animal');
 
-    var objetoAnimal = {
-        nome: dados['animal-nome'] || $('#animal-nome').val(),
-        porte: dados['animal-porte'] || $('#animal-porte').val(),
-        especie: dados['animal-especie'] || $('#animal-especie').val(),
-        raca: dados['animal-raca'] || $('#animal-raca').val(),
-        idade_aprox: dados['animal-idade'] || $('#animal-idade').val(),
-        valor_custo: dados['animal-custo'] || $('#animal-custo').val(),
-        sexo: dados['animal-sexo'] || $('#animal-sexo').val(),
-        descricao: dados['animal-descricao'] || $('#animal-descricao').val(),
+    let objetoAnimal = {
+        nome: dados['animal_nome'],
+        porte: dados['animal_porte'],
+        especie: dados['animal_especie'],
+        raca: dados['animal_raca'],
+        idade_aprox: dados['animal_idade'],
+        valor_custo: dados['animal_custo'],
+        sexo: dados['animal_sexo'],
+        saude: dados['animal_saude'],
+        descricao: dados['animal_descricao'],
         personalidade: '',
         ficha_medica: '',
-        imagem: './assets/imgs/placeholder.png',
+        imagem: dados['animal_imagem'] || './assets/imgs/placeholder.png',
         fk_instituicao: sessao.id_empresa
     };
 
@@ -203,7 +172,7 @@ function salvarAnimal() {
 }
 
 function renderizarAnimais(lista) {
-    var $grid = $('#animais-grid');
+    let $grid = $('#animais-grid');
     if (!$grid.length) return;
 
     if (lista.length === 0) {
@@ -211,7 +180,7 @@ function renderizarAnimais(lista) {
         return;
     }
 
-    var html = '';
+    let html = '';
     $.each(lista, function (i, animal) {
         html +=
         '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" data-id="' + animal.id + '">' +
@@ -227,10 +196,11 @@ function renderizarAnimais(lista) {
                     '</h4>' +
                     '<div class="card-animal-badges">' +
                         '<span class="badge-arca badge-arca-sucesso">Porte ' + (animal.porte || '').toLowerCase() + '</span>' +
+                        '<span class="badge-arca badge-arca-info">' + (animal.saude || '') + '</span>' +
                         '<span class="badge-arca badge-arca-rosa">R$ ' + (animal.valor_custo || '0') + '/mes</span>' +
                     '</div>' +
                     '<p class="corpo corpo-sm text-muted mt-2">' +
-                    (animal.especie || '') + ': ' + (animal.raca || '') + ' | ' + (animal.idade_aprox || '') + ' anos<br><br>' +
+                    (animal.especie || '') + ': ' + (animal.raca || '') + ' | ' + (animal.idade_aprox || '') + ' anos | ' + (animal.sexo) + '<br><br>' +
                     (animal.descricao || '') +
                     '</p>' +
                 '</div>' +
@@ -245,14 +215,14 @@ function renderizarAnimais(lista) {
 }
 
 $(document).on('click', '.btn-editar-animal', function () {
-    var id = $(this).data('id');
+    let id = $(this).data('id');
     buscarAnimalPorId(id).then(function (animal) {
         if (animal) abrirModal(animal);
     });
 });
 
 $(document).on('click', '.btn-excluir-animal', function () {
-    var id = $(this).data('id');
+    let id = $(this).data('id');
     if (confirm('Tem certeza que deseja excluir este animal?')) {
         removerAnimal(id).then(function () {
             carregarAnimais();
@@ -264,26 +234,26 @@ function inicializarFiltros() {
     $('#filtro-nome').on('input', aplicarFiltros);
     $('#filtro-custo').on('input', aplicarFiltros);
 
-    var observer = new MutationObserver(aplicarFiltros);
+    let observer = new MutationObserver(aplicarFiltros);
     $('.sidebar-filtros .select-arca').each(function () {
         observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function aplicarFiltros() {
-    var nome = ($('#filtro-nome').val() || '').toLowerCase();
-    var custoMax = parseFloat(($('#filtro-custo').val() || '').replace(/[^0-9.,]/g, '').replace(',', '.')) || Infinity;
-    var porte = $('#filtro-porte').val() || '';
+    let nome = ($('#filtro-nome').val() || '').toLowerCase();
+    let custoMax = parseFloat(($('#filtro-custo').val() || '').replace(/[^0-9.,]/g, '').replace(',', '.')) || Infinity;
+    let porte = $('#filtro-porte').val() || '';
 
     listarAnimais().then(function (todosAnimais) {
-        var daInstituicao = todosAnimais.filter(function (a) {
+        let daInstituicao = todosAnimais.filter(function (a) {
             return a.fk_instituicao === sessao.id_empresa;
         });
 
         animaisFiltrados = daInstituicao.filter(function (animal) {
-            var matchNome = (animal.nome || '').toLowerCase().indexOf(nome) > -1;
-            var matchCusto = parseFloat(animal.valor_custo || 0) <= custoMax;
-            var matchPorte = !porte || (animal.porte || '').toLowerCase() === porte;
+            let matchNome = (animal.nome || '').toLowerCase().indexOf(nome) > -1;
+            let matchCusto = parseFloat(animal.valor_custo || 0) <= custoMax;
+            let matchPorte = !porte || (animal.porte || '').toLowerCase() === porte;
             return matchNome && matchCusto && matchPorte;
         });
 

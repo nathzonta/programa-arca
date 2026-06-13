@@ -1,11 +1,15 @@
-var campanhaEditando = null;
-var campanhasFiltradas = [];
-var sessao = null;
+let campanhaEditando = null;
+let campanhasFiltradas = [];
+let sessao = null;
 
+// Quando o DOM iniciar, inicializamos tudo e verificamos se a pessoa pode ver a tela sempre
 $(document).ready(function () {
-    if (!protegerRota(['representante'])) return;
-    carregarDadosSidebar();
+    if (!protegerRota(['representante'])) {
+        return;
+    }
     sessao = getSessao();
+
+    carregarDadosSidebar();
     inicializarModal();
     inicializarFiltros();
     inicializarPreview();
@@ -22,23 +26,24 @@ function carregarCampanhas() {
 }
 
 function inicializarModal() {
-    $('#btn-nova-campanha').on('click', function () { abrirModal(); });
-    $('#modal-close').on('click', function () { fecharModal(); });
-    $('#btn-cancelar').on('click', function () { fecharModal(); });
-
-    $('#modal-campanha').on('click', function (e) {
-        if (e.target === this) fecharModal();
+    $('#btn-nova-campanha').on('click', function() { 
+        abrirModal(); // Tem que chamar assim se não a bomba da arrow function manda this
     });
+    
+    $('#modal-close').on('click', fecharModal); // Xzinho em cima
+    $('#btn-cancelar').on('click', fecharModal); // Pelo botão mesmo
 
-    $(document).on('keydown', function (e) {
-        if (e.key === 'Escape' && $('#modal-campanha').hasClass('open')) {
+    // Fecha clicando fora do modal, na parte escura atrás
+    $('#modal-campanha').on('click', function (e) {
+        if (e.target === this) {
             fecharModal();
         }
     });
 
     $('#form-campanha').on('submit', function (e) {
         e.preventDefault();
-        if (validarFormulario()) {
+
+        if (validarFormulario('#form-campanha')) {
             salvarCampanha();
         }
     });
@@ -68,13 +73,16 @@ function fecharModal() {
 
 function preencherFormulario(campanha) {
     $('#campanha-nome').val(campanha.titulo || '');
-    $('#campanha-tipo').val(campanha.titulo || '');
+    $('#campanha-tipo').val(campanha.tipo || '');
     $('#campanha-descricao').val(campanha.descricao || '');
-    $('#campanha-data').val(campanha.data_inicio || '');
-    $('#campanha-local').val(campanha.data_fim || '');
+    $('#campanha-data').val(campanha.data || '');
+    $('#campanha-local').val(campanha.local || '');
+    $('#preview-img').attr('src', campanha.imagem || './assets/imgs/placeholder.png');
 
     setTimeout(function () {
-        if (typeof iniciarSelects === 'function') iniciarSelects();
+        if (typeof iniciarSelects === 'function') {
+            iniciarSelects();
+        }
         atualizarPreview();
     }, 100);
 }
@@ -90,33 +98,43 @@ function limparFormulario() {
     $('#preview-img').attr('src', './assets/imgs/placeholder.png');
 
     setTimeout(function () {
-        if (typeof iniciarSelects === 'function') iniciarSelects();
+        if (typeof iniciarSelects === 'function') {
+            iniciarSelects();
+        }
     }, 100);
 }
 
 function inicializarPreview() {
     $('[data-preview]').on('input change', atualizarPreview);
-    var observer = new MutationObserver(atualizarPreview);
+    
+    let observer = new MutationObserver(atualizarPreview);
     $('.select-arca').each(function () {
-        observer.observe(this, { childList: true, subtree: true, attributes: true });
+        observer.observe(this, { 
+            childList: true, 
+            subtree: true, 
+            attributes: true 
+        });
     });
 }
 
 function atualizarPreview() {
-    var nome = $('#campanha-nome').val() || 'Nome da organizacao';
-    var tipo = $('#campanha-tipo').val() || '';
-    var descricao = $('#campanha-descricao').val() || 'Descricao da campanha...';
-    var data = $('#campanha-data').val() || 'Data do evento';
-    var local = $('#campanha-local').val() || 'Local do evento';
+    const dados = getValoresInput('#form-campanha');
 
-    $('#preview-nome').text(nome);
-    $('#preview-descricao').text(descricao);
-    $('#preview-data').html('<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + data);
-    $('#preview-local').html('<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + local);
+    const tipos = {
+        "Castração": "sucesso",
+        "Feira de Adoção": "aviso",
+        "Vacinação": "info"
+    }
 
-    var fileInput = document.getElementById('campanha-imagem');
+    $('#preview-nome').text(dados['campanha_nome'] || 'Nome da organizacao');
+    $('#preview-descricao').text(dados['campanha_descricao'] || 'Descrição da campanha...');
+    $('#preview-tipo').text(dados['campanha_tipo'] || 'Tipo de campanha').attr('class', `badge-arca badge-arca-${tipos[dados['campanha_tipo']]} mb-2 me-1`)
+    $('#preview-data').html('<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (dados['campanha_data'] || 'Data do evento') );
+    $('#preview-local').html('<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + (dados['campanha_local'] || 'Local do evento'));
+
+    let fileInput = document.getElementById('campanha-imagem');
     if (fileInput && fileInput.files && fileInput.files[0]) {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = function (e) {
             $('#preview-img').attr('src', e.target.result);
         };
@@ -124,44 +142,16 @@ function atualizarPreview() {
     }
 }
 
-function validarFormulario() {
-    var campos = [
-        { id: 'campanha-nome', label: 'Nome' },
-        { id: 'campanha-descricao', label: 'Descricao' }
-    ];
-
-    var valido = true;
-    limparErros();
-
-    campos.forEach(function (campo) {
-        var $input = $('#' + campo.id);
-        var $formGroup = $input.closest('.form-group-arca');
-        if (!$input.val() || !$input.val().trim()) {
-            $formGroup.addClass('error');
-            valido = false;
-        }
-    });
-
-    if (!valido) $('#modal-alert').addClass('visible');
-    return valido;
-}
-
-function limparErros() {
-    $('.form-group-arca.error').removeClass('error');
-    $('#modal-alert').removeClass('visible');
-}
-
 function salvarCampanha() {
-    var dados = getValoresInput('#form-campanha');
+    const dados = getValoresInput('#form-campanha');
 
-    var objetoCampanha = {
-        titulo: dados['campanha-nome'] || $('#campanha-nome').val(),
-        descricao: dados['campanha-descricao'] || $('#campanha-descricao').val(),
-        meta: dados['campanha-meta'] || '0',
-        arrecadado: '0',
+    let objetoCampanha = {
+        titulo: dados['campanha_nome'],
+        descricao: dados['campanha_descricao'],
         imagem: './assets/imgs/placeholder.png',
-        data_inicio: dados['campanha-data'] || $('#campanha-data').val(),
-        data_fim: dados['campanha-local'] || $('#campanha-local').val(),
+        tipo: dados['campanha_tipo'],
+        data: dados['campanha_data'],
+        local: dados['campanha_local'],
         fk_instituicao: sessao.id_empresa
     };
 
@@ -179,7 +169,7 @@ function salvarCampanha() {
 }
 
 function renderizarCampanhas(lista) {
-    var $grid = $('#campanhas-grid');
+    let $grid = $('#campanhas-grid');
     if (!$grid.length) return;
 
     if (lista.length === 0) {
@@ -187,7 +177,13 @@ function renderizarCampanhas(lista) {
         return;
     }
 
-    var html = '';
+    const tipos = {
+        "Castração": "sucesso",
+        "Feira de Adoção": "aviso",
+        "Vacinação": "info"
+    }
+
+    let html = '';
     $.each(lista, function (i, campanha) {
         html +=
         '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1" data-id="' + campanha.id + '">' +
@@ -199,10 +195,12 @@ function renderizarCampanhas(lista) {
                             '<img src="./assets/imgs/icons/editar.svg">' +
                         '</span>' +
                     '</h4>' +
+                    '<span class="badge-arca badge-arca-' + (tipos[campanha.tipo]) + ' mb-2 me-1">' + (campanha.tipo) + '</span>' +
                     '<p class="corpo corpo-sm text-muted mt-2">' + (campanha.descricao || '') + '</p>' +
                 '</div>' +
                 '<div class="card-campanha-infos mx-4">' +
-                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.data_inicio || '') + ' a ' + (campanha.data_fim || '') + '</p>' +
+                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.data || '') + '</p>' +
+                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.local || '') + '</p>' +
                 '</div>' +
                 '<div class="mx-4 mb-2">' +
                     '<button class="btn-excluir-campanha" data-id="' + campanha.id + '" style="border:none; background:none; color:#e74c3c; cursor:pointer; font-size:12px;">Excluir</button>' +
@@ -215,14 +213,14 @@ function renderizarCampanhas(lista) {
 }
 
 $(document).on('click', '.btn-editar-campanha', function () {
-    var id = $(this).data('id');
+    let id = $(this).data('id');
     buscarCampanhaPorId(id).then(function (campanha) {
         if (campanha) abrirModal(campanha);
     });
 });
 
 $(document).on('click', '.btn-excluir-campanha', function () {
-    var id = $(this).data('id');
+    let id = $(this).data('id');
     if (confirm('Tem certeza que deseja excluir esta campanha?')) {
         removerCampanha(id).then(function () {
             carregarCampanhas();
@@ -233,14 +231,14 @@ $(document).on('click', '.btn-excluir-campanha', function () {
 function inicializarFiltros() {
     $('#filtro-nome').on('input', aplicarFiltros);
 
-    var observer = new MutationObserver(aplicarFiltros);
+    let observer = new MutationObserver(aplicarFiltros);
     $('.sidebar-filtros .select-arca').each(function () {
         observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function aplicarFiltros() {
-    var nome = ($('#filtro-nome').val() || '').toLowerCase();
+    let nome = ($('#filtro-nome').val() || '').toLowerCase();
 
     listarCampanhas().then(function (todasCampanhas) {
         campanhasFiltradas = todasCampanhas.filter(function (c) {
