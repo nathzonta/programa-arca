@@ -1,4 +1,4 @@
-const acoesHistorico = [
+var acoesHistorico = [
     {
         id: 1,
         animal: "Tobias",
@@ -22,42 +22,44 @@ const acoesHistorico = [
     }
 ];
 
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function () {
     inicializarFiltro();
     renderizar();
 });
 
 function inicializarFiltro() {
-    const select = document.getElementById('filtro-acao');
-    select?.addEventListener('change', renderizar);
+    $('#filtro-acao').on('change', renderizar);
 
-    const observer = new MutationObserver(renderizar);
-    document.querySelectorAll('.sidebar-filtros .select-arca').forEach(el => {
-        observer.observe(el, { childList: true, subtree: true, attributes: true });
+    var observer = new MutationObserver(renderizar);
+    $('.sidebar-filtros .select-arca').each(function () {
+        observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function renderizar() {
-    const grid = document.getElementById('historico-grid');
-    if (!grid) return;
+    var $grid = $('#historico-grid');
+    if (!$grid.length) return;
 
-    const filtro = document.getElementById('filtro-acao')?.value || '';
-    const lista = acoesHistorico.filter(a => !filtro || a.tipo === filtro);
+    var filtro = $('#filtro-acao').val() || '';
+    var lista = acoesHistorico.filter(function (a) { return !filtro || a.tipo === filtro; });
 
     if (lista.length === 0) {
-        grid.innerHTML = '<p class="historico-empty">Nenhuma ação encontrada.</p>';
+        $grid.html('<p class="historico-empty">Nenhuma ação encontrada.</p>');
         return;
     }
 
-    grid.innerHTML = lista.map(acao => `
-        <article class="historico-card" data-id="${acao.id}">
-            <div class="historico-card-img">
-                <img src="${acao.imagem}" alt="${acao.animal}">
-            </div>
-            <div class="historico-card-body">
-                <h2 class="historico-card-nome">${acao.animal}</h2>
-                <span class="badge-arca badge-historico-${acao.tipo}">${acao.label}</span>
-            </div>
-        </article>
-    `).join('');
+    var html = lista.map(function (acao) {
+        return '' +
+        '<article class="historico-card" data-id="' + acao.id + '">' +
+            '<div class="historico-card-img">' +
+                '<img src="' + acao.imagem + '" alt="' + acao.animal + '">' +
+            '</div>' +
+            '<div class="historico-card-body">' +
+                '<h2 class="historico-card-nome">' + acao.animal + '</h2>' +
+                '<span class="badge-arca badge-historico-' + acao.tipo + '">' + acao.label + '</span>' +
+            '</div>' +
+        '</article>';
+    }).join('');
+
+    $grid.html(html);
 }

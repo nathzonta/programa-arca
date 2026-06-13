@@ -1,4 +1,4 @@
-const campanhas = [
+var campanhas = [
     {
         id: 1,
         nome: "Patinhas da Serra",
@@ -28,72 +28,69 @@ const campanhas = [
     }
 ];
 
-const tipoBadgeClass = {
+var tipoBadgeClass = {
     "Castração": "badge-arca-sucesso",
     "Feira de Adoção": "badge-arca-aviso",
     "Vacinação": "badge-arca-info"
 };
 
-let campanhaEditando = null;
-let campanhasFiltradas = [...campanhas];
+var campanhasFiltradas = campanhas.slice();
 
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function () {
     inicializarFiltros();
     renderizarCampanhas(campanhas);
 });
 
 function renderizarCampanhas(lista) {
-    const grid = document.getElementById('campanhas-grid');
-    if (!grid) return;
+    var $grid = $('#campanhas-grid');
+    if (!$grid.length) return;
 
     if (lista.length === 0) {
-        grid.innerHTML = '<p style="text-align: center; color: #737373; width: 100%;">Nenhuma campanha encontrada.</p>';
+        $grid.html('<p style="text-align: center; color: #737373; width: 100%;">Nenhuma campanha encontrada.</p>');
         return;
     }
 
-    grid.innerHTML = lista.map(campanha => {
-        const badgeClasse = tipoBadgeClass[campanha.tipo] || '';
-        return `
-        <div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1" data-id="${campanha.id}">
-            <div class="card-body d-flex flex-column justify-content-between gap-4">
-                <img class="col-12" style="border-radius: 15px; height: 220px; object-fit: cover;" src="${campanha.imagem}" alt="${campanha.nome}">
-                <div class="card-campanha-text mx-4">
-                    <h4  class="d-flex justify-content-between">${campanha.nome}</h4>
-                    <span class="badge-arca ${badgeClasse} mb-2 me-1">${campanha.tipo}</span>
-                    <p class="corpo corpo-sm text-muted mt-2">${campanha.descricao}</p>
-                </div>
-                <div class="card-campanha-infos mx-4">
-                    <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">${campanha.data}</p>
-                    <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">${campanha.local}</p>
-                </div>
-            </div>
-        </div>`;
+    var html = lista.map(function (campanha) {
+        var badgeClasse = tipoBadgeClass[campanha.tipo] || '';
+        return '' +
+        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1" data-id="' + campanha.id + '">' +
+            '<div class="card-body d-flex flex-column justify-content-between gap-4">' +
+                '<img class="col-12" style="border-radius: 15px; height: 220px; object-fit: cover;" src="' + campanha.imagem + '" alt="' + campanha.nome + '">' +
+                '<div class="card-campanha-text mx-4">' +
+                    '<h4 class="d-flex justify-content-between">' + campanha.nome + '</h4>' +
+                    '<span class="badge-arca ' + badgeClasse + ' mb-2 me-1">' + campanha.tipo + '</span>' +
+                    '<p class="corpo corpo-sm text-muted mt-2">' + campanha.descricao + '</p>' +
+                '</div>' +
+                '<div class="card-campanha-infos mx-4">' +
+                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + campanha.data + '</p>' +
+                    '<p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + campanha.local + '</p>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
     }).join('');
+
+    $grid.html(html);
 }
 
 function inicializarFiltros() {
-    const filtroNome = document.getElementById('filtro-nome');
-    const filtroTipo = document.getElementById('filtro-tipo');
-    const filtroLocal = document.getElementById('filtro-local');
+    $('#filtro-nome').on('input', aplicarFiltros);
+    $('#filtro-local').on('input', aplicarFiltros);
 
-    filtroNome?.addEventListener('input', aplicarFiltros);
-    filtroLocal?.addEventListener('input', aplicarFiltros);
-
-    const observer = new MutationObserver(aplicarFiltros);
-    document.querySelectorAll('.sidebar-filtros .select-arca').forEach(select => {
-        observer.observe(select, { childList: true, subtree: true, attributes: true });
+    var observer = new MutationObserver(aplicarFiltros);
+    $('.sidebar-filtros .select-arca').each(function () {
+        observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function aplicarFiltros() {
-    const nome = document.getElementById('filtro-nome')?.value.toLowerCase() || '';
-    const tipo = document.getElementById('filtro-tipo')?.value || '';
-    const local = document.getElementById('filtro-local')?.value.toLowerCase() || '';
+    var nome = ($('#filtro-nome').val() || '').toLowerCase();
+    var tipo = $('#filtro-tipo').val() || '';
+    var local = ($('#filtro-local').val() || '').toLowerCase();
 
-    campanhasFiltradas = campanhas.filter(campanha => {
-        const matchNome = campanha.nome.toLowerCase().includes(nome);
-        const matchTipo = !tipo || campanha.tipo === tipo;
-        const matchLocal = campanha.local.toLowerCase().includes(local);
+    campanhasFiltradas = campanhas.filter(function (campanha) {
+        var matchNome = campanha.nome.toLowerCase().includes(nome);
+        var matchTipo = !tipo || campanha.tipo === tipo;
+        var matchLocal = campanha.local.toLowerCase().includes(local);
         return matchNome && matchTipo && matchLocal;
     });
 

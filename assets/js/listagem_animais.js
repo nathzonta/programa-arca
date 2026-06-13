@@ -1,5 +1,4 @@
-// Dados mockados dos animais
-const animais = [
+var animais = [
     {
         id: 1,
         nome: "Luna",
@@ -28,44 +27,32 @@ const animais = [
     }
 ];
 
-// Estado da aplicação
-let animalEditando = null;
-let animaisFiltrados = [...animais];
+var animalEditando = null;
+var animaisFiltrados = animais.slice();
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function () {
     inicializarModal();
     inicializarFiltros();
     inicializarPreview();
     renderizarAnimais(animais);
 });
 
-// ===== MODAL =====
 function inicializarModal() {
-    const modal = document.getElementById('modal-animal');
-    const btnNovo = document.getElementById('btn-novo-animal');
-    const btnClose = document.getElementById('modal-close');
-    const btnCancelar = document.getElementById('btn-cancelar');
-    const form = document.getElementById('form-animal');
+    $('#btn-novo-animal').on('click', function () { abrirModal(); });
+    $('#modal-close').on('click', function () { fecharModal(); });
+    $('#btn-cancelar').on('click', function () { fecharModal(); });
 
-    btnNovo?.addEventListener('click', () => abrirModal());
-    btnClose?.addEventListener('click', () => fecharModal());
-    btnCancelar?.addEventListener('click', () => fecharModal());
-
-    // Fechar ao clicar no overlay
-    modal?.addEventListener('click', (e) => {
-        if (e.target === modal) fecharModal();
+    $('#modal-animal').on('click', function (e) {
+        if (e.target === this) fecharModal();
     });
 
-    // Fechar com ESC
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal?.classList.contains('open')) {
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' && $('#modal-animal').hasClass('open')) {
             fecharModal();
         }
     });
 
-    // Submit do formulário
-    form?.addEventListener('submit', (e) => {
+    $('#form-animal').on('submit', function (e) {
         e.preventDefault();
         if (validarFormulario()) {
             salvarAnimal();
@@ -73,14 +60,10 @@ function inicializarModal() {
     });
 }
 
-function abrirModal(animal = null) {
-    const modal = document.getElementById('modal-animal');
-    const title = document.getElementById('modal-title');
-    const alert = document.getElementById('modal-alert');
-
-    animalEditando = animal;
-    title.textContent = animal ? 'Editar animal' : 'Adicionar animal';
-    alert.classList.remove('visible');
+function abrirModal(animal) {
+    animalEditando = animal || null;
+    $('#modal-title').text(animal ? 'Editar animal' : 'Adicionar animal');
+    $('#modal-alert').removeClass('visible');
 
     if (animal) {
         preencherFormulario(animal);
@@ -88,103 +71,93 @@ function abrirModal(animal = null) {
         limparFormulario();
     }
 
-    modal.classList.add('open');
+    $('#modal-animal').addClass('open');
     atualizarPreview();
 }
 
 function fecharModal() {
-    const modal = document.getElementById('modal-animal');
-    modal.classList.remove('open');
+    $('#modal-animal').removeClass('open');
     animalEditando = null;
     limparFormulario();
     limparErros();
 }
 
 function preencherFormulario(animal) {
-    document.getElementById('animal-nome').value = animal.nome || '';
-    document.getElementById('animal-porte').value = animal.porte || '';
-    document.getElementById('animal-especie').value = animal.especie || '';
-    document.getElementById('animal-raca').value = animal.raca || '';
-    document.getElementById('animal-idade').value = animal.idade || '';
-    document.getElementById('animal-custo').value = animal.custo ? `R$ ${animal.custo.toFixed(2)}` : '';
-    document.getElementById('animal-sexo').value = animal.sexo || '';
-    document.getElementById('animal-descricao').value = animal.descricao || '';
+    $('#animal-nome').val(animal.nome || '');
+    $('#animal-porte').val(animal.porte || '');
+    $('#animal-especie').val(animal.especie || '');
+    $('#animal-raca').val(animal.raca || '');
+    $('#animal-idade').val(animal.idade || '');
+    $('#animal-custo').val(animal.custo ? 'R$ ' + animal.custo.toFixed(2) : '');
+    $('#animal-sexo').val(animal.sexo || '');
+    $('#animal-descricao').val(animal.descricao || '');
 
-    // Reiniciar selects customizados
-    setTimeout(() => {
-        if (typeof initSelects === 'function') {
-            initSelects();
+    setTimeout(function () {
+        if (typeof iniciarSelects === 'function') {
+            iniciarSelects();
         }
         atualizarPreview();
     }, 100);
 }
 
 function limparFormulario() {
-    const form = document.getElementById('form-animal');
-    form?.reset();
-    document.getElementById('animal-imagem').value = '';
+    $('#form-animal')[0].reset();
+    $('#animal-imagem').val('');
 
-    document.getElementById('preview-name').textContent = 'Nome do pet';
-    document.getElementById('preview-porte').textContent = 'Porte';
-    document.getElementById('preview-vacina').textContent = 'Vacinação';
-    document.getElementById('preview-custo').textContent = 'Custo mensal médio de R$ --';
-    document.getElementById('preview-desc').innerHTML = 'Espécie: Raça | Idade | Sexo<br><br>Preencha os campos para ver a pré-visualização do animal.';
-    document.getElementById('preview-img').src = '';
+    $('#preview-name').text('Nome do pet');
+    $('#preview-porte').text('Porte');
+    $('#preview-vacina').text('Vacinação');
+    $('#preview-custo').text('Custo mensal médio de R$ --');
+    $('#preview-desc').html('Espécie: Raça | Idade | Sexo<br><br>Preencha os campos para ver a pré-visualização do animal.');
+    $('#preview-img').attr('src', '');
 
-    setTimeout(() => {
-        if (typeof initSelects === 'function') {
-            initSelects();
+    setTimeout(function () {
+        if (typeof iniciarSelects === 'function') {
+            iniciarSelects();
         }
     }, 100);
 }
 
-// ===== PREVIEW EM TEMPO REAL =====
 function inicializarPreview() {
-    const inputs = document.querySelectorAll('[data-preview]');
-    inputs.forEach(input => {
-        input.addEventListener('input', atualizarPreview);
-        input.addEventListener('change', atualizarPreview);
-    });
+    $('[data-preview]').on('input change', atualizarPreview);
 
-    // Observar mudanças nos selects customizados
-    const observer = new MutationObserver(atualizarPreview);
-    document.querySelectorAll('.select-arca').forEach(select => {
-        observer.observe(select, { childList: true, subtree: true, attributes: true });
+    var observer = new MutationObserver(atualizarPreview);
+    $('.select-arca').each(function () {
+        observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function atualizarPreview() {
-    const nome = document.getElementById('animal-nome')?.value || 'Nome do pet';
-    const porte = document.getElementById('animal-porte')?.value || 'Porte';
-    const especie = document.getElementById('animal-especie')?.value || 'Espécie';
-    const raca = document.getElementById('animal-raca')?.value || 'Raça';
-    const idade = document.getElementById('animal-idade')?.value || 'Idade';
-    const sexo = document.getElementById('animal-sexo')?.value || 'Sexo';
-    const custo = document.getElementById('animal-custo')?.value || '--';
-    const descricao = document.getElementById('animal-descricao')?.value || 'Preencha os campos para ver a pré-visualização do animal.';
-    const saude = document.getElementById('animal-saude')?.value || '';
+    var nome = $('#animal-nome').val() || 'Nome do pet';
+    var porte = $('#animal-porte').val() || 'Porte';
+    var especie = $('#animal-especie').val() || 'Espécie';
+    var raca = $('#animal-raca').val() || 'Raça';
+    var idade = $('#animal-idade').val() || 'Idade';
+    var sexo = $('#animal-sexo').val() || 'Sexo';
+    var custo = $('#animal-custo').val() || '--';
+    var descricao = $('#animal-descricao').val() || 'Preencha os campos para ver a pré-visualização do animal.';
+    var saude = $('#animal-saude').val() || '';
 
-    document.getElementById('preview-name').textContent = nome;
-    document.getElementById('preview-porte').textContent = porte !== 'Porte' ? `Porte ${porte.toLowerCase()}` : 'Porte';
-    document.getElementById('preview-custo').textContent = custo !== '--' ? `Custo mensal médio de ${custo}` : 'Custo mensal médio de R$ --';
-    document.getElementById('preview-vacina').textContent = saude || 'Vacinação';
+    $('#preview-name').text(nome);
+    $('#preview-porte').text(porte !== 'Porte' ? 'Porte ' + porte.toLowerCase() : 'Porte');
+    $('#preview-custo').text(custo !== '--' ? 'Custo mensal médio de ' + custo : 'Custo mensal médio de R$ --');
+    $('#preview-vacina').text(saude || 'Vacinação');
 
-    const infoText = `${especie}: ${raca} | ${idade} | ${sexo}`;
-    document.getElementById('preview-desc').innerHTML = `${infoText}<br><br>${descricao}`;
+    var infoText = especie + ': ' + raca + ' | ' + idade + ' | ' + sexo;
+    $('#preview-desc').html(infoText + '<br><br>' + descricao);
 
-    const fileInput = document.getElementById('animal-imagem');
-    if (fileInput?.files?.[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            document.getElementById('preview-img').src = e.target.result;
+    var fileInput = document.getElementById('animal-imagem');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#preview-img').attr('src', e.target.result);
         };
         reader.readAsDataURL(fileInput.files[0]);
     }
 }
 
-// ===== VALIDAÇÃO =====
 function validarFormulario() {
-    const campos = [
+    var campos = [
         { id: 'animal-nome', label: 'Nome' },
         { id: 'animal-porte', label: 'Porte' },
         { id: 'animal-especie', label: 'Espécie' },
@@ -195,129 +168,120 @@ function validarFormulario() {
         { id: 'animal-descricao', label: 'Descrição' }
     ];
 
-    let valido = true;
+    var valido = true;
     limparErros();
 
-    campos.forEach(campo => {
-        const input = document.getElementById(campo.id);
-        const formGroup = input?.closest('.form-group-arca');
+    campos.forEach(function (campo) {
+        var $input = $('#' + campo.id);
+        var $formGroup = $input.closest('.form-group-arca');
 
-        if (!input?.value?.trim()) {
-            formGroup?.classList.add('error');
+        if (!$input.val() || !$input.val().trim()) {
+            $formGroup.addClass('error');
             valido = false;
         }
     });
 
     if (!valido) {
-        document.getElementById('modal-alert').classList.add('visible');
+        $('#modal-alert').addClass('visible');
     }
 
     return valido;
 }
 
 function limparErros() {
-    document.querySelectorAll('.form-group-arca.error').forEach(el => {
-        el.classList.remove('error');
-    });
-    document.getElementById('modal-alert')?.classList.remove('visible');
+    $('.form-group-arca.error').removeClass('error');
+    $('#modal-alert').removeClass('visible');
 }
 
-// ===== SALVAR ANIMAL =====
 function salvarAnimal() {
-    const novoAnimal = {
+    var novoAnimal = {
         id: animalEditando ? animalEditando.id : Date.now(),
-        nome: document.getElementById('animal-nome').value,
-        porte: document.getElementById('animal-porte').value,
-        especie: document.getElementById('animal-especie').value,
-        raca: document.getElementById('animal-raca').value,
-        idade: document.getElementById('animal-idade').value,
-        custo: parseFloat(document.getElementById('animal-custo').value.replace(/[^0-9.,]/g, '').replace(',', '.')) || 0,
-        sexo: document.getElementById('animal-sexo').value,
-        descricao: document.getElementById('animal-descricao').value,
+        nome: $('#animal-nome').val(),
+        porte: $('#animal-porte').val(),
+        especie: $('#animal-especie').val(),
+        raca: $('#animal-raca').val(),
+        idade: $('#animal-idade').val(),
+        custo: parseFloat($('#animal-custo').val().replace(/[^0-9.,]/g, '').replace(',', '.')) || 0,
+        sexo: $('#animal-sexo').val(),
+        descricao: $('#animal-descricao').val(),
         vacina: 'Vacinação completa',
         imagem: './assets/imgs/gato-lg.png'
     };
 
     if (animalEditando) {
-        const index = animais.findIndex(a => a.id === animalEditando.id);
+        var index = animais.findIndex(function (a) { return a.id === animalEditando.id; });
         if (index !== -1) {
-            animais[index] = { ...animais[index], ...novoAnimal };
+            animais[index] = $.extend({}, animais[index], novoAnimal);
         }
     } else {
         animais.push(novoAnimal);
     }
 
-    animaisFiltrados = [...animais];
+    animaisFiltrados = animais.slice();
     renderizarAnimais(animaisFiltrados);
     fecharModal();
 }
 
-// ===== RENDERIZAR ANIMAIS =====
 function renderizarAnimais(lista) {
-    const grid = document.getElementById('animais-grid');
-    if (!grid) return;
+    var $grid = $('#animais-grid');
+    if (!$grid.length) return;
 
     if (lista.length === 0) {
-        grid.innerHTML = '<p style="text-align: center; color: #737373; grid-column: 1 / -1;">Nenhum animal encontrado.</p>';
+        $grid.html('<p style="text-align: center; color: #737373; grid-column: 1 / -1;">Nenhum animal encontrado.</p>');
         return;
     }
 
-    grid.innerHTML = lista.map(animal => `
-        <div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" data-id="${animal.id}">
-            <div class="card-body d-flex flex-column gap-3">
-                <div style="position: relative;">
-                    <img class="card-animal-img col-12" src="${animal.imagem}" alt="${animal.nome}">
-                </div>
-                <div class="card-animal-text">
-                    <h4 class="d-flex justify-content-between">${animal.nome}
-                        <span class="card-animal-edit" onclick="abrirModal(animais.find(a => a.id === ${animal.id}))">
-                            <img src="./assets/imgs/icons/editar.svg">
-                        </span>
-                    </h4>
-                    <div class="card-animal-badges">
-                        <span class="badge-arca badge-arca-sucesso">Porte ${animal.porte.toLowerCase()}</span>
-                        <span class="badge-arca badge-arca-info">${animal.vacina}</span>
-                        <span class="badge-arca badge-arca-rosa">Custo mensal médio de R$ ${animal.custo}</span>
-                    </div>
-                    <p class="corpo corpo-sm text-muted mt-2">
-                    ${animal.especie}: ${animal.raca} | ${animal.idade} | ${animal.sexo}<br><br>
-                    ${animal.descricao}
-                    </p>
-                </div>
-            </div>
-        </div>
-    `).join('');
+    var html = lista.map(function (animal) {
+        return '' +
+        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" data-id="' + animal.id + '">' +
+            '<div class="card-body d-flex flex-column gap-3">' +
+                '<div style="position: relative;">' +
+                    '<img class="card-animal-img col-12" src="' + animal.imagem + '" alt="' + animal.nome + '">' +
+                '</div>' +
+                '<div class="card-animal-text">' +
+                    '<h4 class="d-flex justify-content-between">' + animal.nome +
+                        '<span class="card-animal-edit" onclick="abrirModal(animais.find(function(a){return a.id===' + animal.id + '}))">' +
+                            '<img src="./assets/imgs/icons/editar.svg">' +
+                        '</span>' +
+                    '</h4>' +
+                    '<div class="card-animal-badges">' +
+                        '<span class="badge-arca badge-arca-sucesso">Porte ' + animal.porte.toLowerCase() + '</span>' +
+                        '<span class="badge-arca badge-arca-info">' + animal.vacina + '</span>' +
+                        '<span class="badge-arca badge-arca-rosa">Custo mensal médio de R$ ' + animal.custo + '</span>' +
+                    '</div>' +
+                    '<p class="corpo corpo-sm text-muted mt-2">' +
+                    animal.especie + ': ' + animal.raca + ' | ' + animal.idade + ' | ' + animal.sexo + '<br><br>' +
+                    animal.descricao +
+                    '</p>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    }).join('');
+
+    $grid.html(html);
 }
 
-// ===== FILTROS =====
 function inicializarFiltros() {
-    const filtroNome = document.getElementById('filtro-nome');
-    const filtroCusto = document.getElementById('filtro-custo');
-    const filtroPorte = document.getElementById('filtro-porte');
-    const filtroSexo = document.getElementById('filtro-sexo');
+    $('#filtro-nome').on('input', aplicarFiltros);
+    $('#filtro-custo').on('input', aplicarFiltros);
 
-    filtroNome?.addEventListener('input', aplicarFiltros);
-    filtroCusto?.addEventListener('input', aplicarFiltros);
-
-    // Observar mudanças nos selects de filtro
-    const observer = new MutationObserver(aplicarFiltros);
-    document.querySelectorAll('.sidebar-filtros .select-arca').forEach(select => {
-        observer.observe(select, { childList: true, subtree: true, attributes: true });
+    var observer = new MutationObserver(aplicarFiltros);
+    $('.sidebar-filtros .select-arca').each(function () {
+        observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function aplicarFiltros() {
-    const nome = document.getElementById('filtro-nome')?.value.toLowerCase() || '';
-    const custoMax = parseFloat(document.getElementById('filtro-custo')?.value.replace(/[^0-9.,]/g, '').replace(',', '.')) || Infinity;
-    const porte = document.getElementById('filtro-porte')?.value || '';
-    const sexo = document.getElementById('filtro-sexo')?.value || '';
+    var nome = ($('#filtro-nome').val() || '').toLowerCase();
+    var custoMax = parseFloat(($('#filtro-custo').val() || '').replace(/[^0-9.,]/g, '').replace(',', '.')) || Infinity;
+    var porte = $('#filtro-porte').val() || '';
+    var sexo = $('#filtro-sexo').val() || '';
 
-    animaisFiltrados = animais.filter(animal => {
-        const matchNome = animal.nome.toLowerCase().includes(nome);
-        const matchCusto = animal.custo <= custoMax;
-        const matchPorte = !porte || animal.porte.toLowerCase() === porte;
-        const matchSexo = !sexo || animal.sexo.toLowerCase() === sexo;
-
+    animaisFiltrados = animais.filter(function (animal) {
+        var matchNome = animal.nome.toLowerCase().includes(nome);
+        var matchCusto = animal.custo <= custoMax;
+        var matchPorte = !porte || animal.porte.toLowerCase() === porte;
+        var matchSexo = !sexo || animal.sexo.toLowerCase() === sexo;
         return matchNome && matchCusto && matchPorte && matchSexo;
     });
 

@@ -1,35 +1,31 @@
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function () {
     inicializarSidebar();
 });
 
 function inicializarSidebar() {
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebar = document.getElementById('sidebar');
+    var $sidebar = $('#sidebar');
+    var $menuToggle = $('#menu-toggle');
 
-    menuToggle?.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
+    $menuToggle.on('click', function () {
+        $sidebar.toggleClass('open');
     });
 
-    // Toggle dos submenus
-    document.querySelectorAll('.sidebar-menu-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const menu = btn.dataset.menu;
-            const submenu = document.getElementById(`submenu-${menu}`);
-            const menuItem = btn.closest('.sidebar-menu-item');
+    $('.sidebar-menu-toggle').on('click', function () {
+        var menu = $(this).data('menu');
+        var $submenu = $('#submenu-' + menu);
+        var $menuItem = $(this).closest('.sidebar-menu-item');
 
-            menuItem.classList.toggle('active');
-            submenu.classList.toggle('open');
-        });
+        $menuItem.toggleClass('active');
+        $submenu.toggleClass('open');
     });
 
-    // Fechar sidebar ao clicar fora (mobile)
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 992 && 
-            sidebar.classList.contains('open') && 
-            !sidebar.contains(e.target) && 
-            e.target !== menuToggle) {
-            sidebar.classList.remove('open');
+    $(document).on('click', function (e) {
+        if (window.innerWidth <= 992 &&
+            $sidebar.hasClass('open') &&
+            !$sidebar.is(e.target) &&
+            !$.contains($sidebar[0], e.target) &&
+            e.target !== $menuToggle[0]) {
+            $sidebar.removeClass('open');
         }
     });
 }

@@ -1,4 +1,4 @@
-const animais = [
+var animais = [
     {
         id: 1,
         nome: "Luna",
@@ -27,157 +27,143 @@ const animais = [
     }
 ];
 
-const STORAGE_KEY_FAV = 'arca_favoritos';
-const STORAGE_KEY_INT = 'arca_interesses';
+var favoritos = new Set();
+var interesses = new Set();
+var usuarioAtual = null;
 
-function carregarIds(chave) {
-    try {
-        const data = localStorage.getItem(chave);
-        return data ? new Set(JSON.parse(data)) : new Set();
-    } catch {
-        return new Set();
+$(document).ready(function () {
+    var sessao = getSessao();
+    if (sessao) {
+        usuarioAtual = sessao.id;
+        Promise.all([
+            buscarFavoritos(usuarioAtual),
+            buscarInteresses(usuarioAtual)
+        ]).then(function (resultado) {
+            favoritos = new Set(resultado[0]);
+            interesses = new Set(resultado[1]);
+            if (favoritos.size === 0) {
+                favoritos = new Set([1, 2]);
+                salvarFavoritos(usuarioAtual, Array.from(favoritos));
+            }
+            renderizar();
+        });
+    } else {
+        favoritos = new Set([1, 2]);
+        renderizar();
     }
-}
 
-function salvarIds(chave, set) {
-    localStorage.setItem(chave, JSON.stringify([...set]));
-}
-
-let favoritos = carregarIds(STORAGE_KEY_FAV);
-let interesses = carregarIds(STORAGE_KEY_INT);
-
-if (favoritos.size === 0) {
-    favoritos = new Set([1, 2]);
-    salvarIds(STORAGE_KEY_FAV, favoritos);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const grid = document.getElementById('favoritados-grid');
-    grid?.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-acao]');
-        if (!btn) return;
-
-        const card = btn.closest('[data-animal-id]');
-        const id = parseInt(card?.dataset.animalId);
+    $('#favoritados-grid').on('click', '[data-acao]', function () {
+        var $btn = $(this);
+        var $card = $btn.closest('[data-animal-id]');
+        var id = parseInt($card.data('animal-id'));
         if (!id) return;
 
-        if (btn.dataset.acao === 'interesse') toggleInteresse(id);
-        else if (btn.dataset.acao === 'favorito') toggleFavorito(id, card);
+        if ($btn.data('acao') === 'interesse') toggleInteresse(id);
+        else if ($btn.data('acao') === 'favorito') toggleFavorito(id, $card);
     });
 
     inicializarFiltros();
-    renderizar();
 });
 
 function toggleInteresse(id) {
     if (interesses.has(id)) interesses.delete(id);
     else interesses.add(id);
-    salvarIds(STORAGE_KEY_INT, interesses);
+    if (usuarioAtual) salvarInteresses(usuarioAtual, Array.from(interesses));
     atualizarBotoes(id);
 }
 
-function toggleFavorito(id, card) {
+function toggleFavorito(id, $card) {
     favoritos.delete(id);
-    salvarIds(STORAGE_KEY_FAV, favoritos);
+    if (usuarioAtual) salvarFavoritos(usuarioAtual, Array.from(favoritos));
 
-    card.classList.add('removendo');
-    setTimeout(() => {
+    $card.addClass('removendo');
+    setTimeout(function () {
         renderizar();
     }, 300);
 }
 
 function atualizarBotoes(id) {
-    const card = document.querySelector(`[data-animal-id="${id}"]`);
-    if (!card) return;
+    var $card = $('[data-animal-id="' + id + '"]');
+    if (!$card.length) return;
 
-    const btnInteresse = card.querySelector('[data-acao="interesse"]');
-    const btnFavorito = card.querySelector('[data-acao="favorito"]');
-
-    if (btnInteresse) btnInteresse.classList.toggle('active', interesses.has(id));
-    if (btnFavorito) btnFavorito.classList.toggle('active', favoritos.has(id));
+    $card.find('[data-acao="interesse"]').toggleClass('active', interesses.has(id));
+    $card.find('[data-acao="favorito"]').toggleClass('active', favoritos.has(id));
 }
 
 function renderizar() {
-    const grid = document.getElementById('favoritados-grid');
-    if (!grid) return;
+    var $grid = $('#favoritados-grid');
+    if (!$grid.length) return;
 
-    const nome = document.getElementById('filtro-nome')?.value.toLowerCase() || '';
-    const porte = document.getElementById('filtro-porte')?.value || '';
-    const sexo = document.getElementById('filtro-sexo')?.value || '';
+    var nome = ($('#filtro-nome').val() || '').toLowerCase();
+    var porte = $('#filtro-porte').val() || '';
+    var sexo = $('#filtro-sexo').val() || '';
 
-    const animaisFav = animais.filter(a => {
+    var animaisFav = animais.filter(function (a) {
         if (!favoritos.has(a.id)) return false;
-        const matchNome = a.nome.toLowerCase().includes(nome);
-        const matchPorte = !porte || a.porte.toLowerCase() === porte;
-        const matchSexo = !sexo || a.sexo.toLowerCase() === sexo;
+        var matchNome = a.nome.toLowerCase().includes(nome);
+        var matchPorte = !porte || a.porte.toLowerCase() === porte;
+        var matchSexo = !sexo || a.sexo.toLowerCase() === sexo;
         return matchNome && matchPorte && matchSexo;
     });
 
     if (animaisFav.length === 0) {
-        grid.innerHTML = `
-            <div class="favoritados-empty">
-                <h3>Nenhum animal encontrado</h3>
-                <p class="corpo corpo-sm">Nenhum dos seus favoritos corresponde aos filtros selecionados.</p>
-                <a href="./adocao.html" class="corpo corpo-sm">Ir para Encontre seu companheiro</a>
-            </div>`;
+        $grid.html(
+            '<div class="favoritados-empty">' +
+                '<h3>Nenhum animal encontrado</h3>' +
+                '<p class="corpo corpo-sm">Nenhum dos seus favoritos corresponde aos filtros selecionados.</p>' +
+                '<a href="./adocao.html" class="corpo corpo-sm">Ir para Encontre seu companheiro</a>' +
+            '</div>'
+        );
         return;
     }
 
-    grid.innerHTML = animaisFav.map(animal => {
-        const temInteresse = interesses.has(animal.id);
-        const temFavorito = true;
-
-        return `
-        <div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" data-animal-id="${animal.id}">
-            <div class="card-body d-flex flex-column gap-3">
-                <div style="position: relative;">
-                    <img class="card-animal-img col-12" src="${animal.imagem}" alt="${animal.nome}">
-                </div>
-                <div class="card-animal-text">
-                    <h4 class="d-flex justify-content-between">${animal.nome}</h4>
-                    <div class="card-animal-badges">
-                        <span class="badge-arca badge-arca-sucesso">Porte ${animal.porte.toLowerCase()}</span>
-                        <span class="badge-arca badge-arca-info">${animal.vacina}</span>
-                        <span class="badge-arca badge-arca-rosa">Custo mensal médio de R$ ${animal.custo}</span>
-                    </div>
-                    <p class="corpo corpo-sm text-muted mt-2">
-                    ${animal.especie}: ${animal.raca} | ${animal.idade} | ${animal.sexo}<br><br>
-                    ${animal.descricao}
-                    </p>
-                </div>
-                <div class="card-animal-footer">
-                    <button class="action-btn btn-interesse ${temInteresse ? 'active' : ''}" data-acao="interesse">
-                        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                        </svg>
-                        <span class="tooltip-text">Tenho interesse</span>
-                    </button>
-                    <button class="action-btn btn-favorito active" data-acao="favorito">
-                        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                        </svg>
-                        <span class="tooltip-text">Remover dos favoritos</span>
-                    </button>
-                </div>
-            </div>
-        </div>`;
+    var html = animaisFav.map(function (animal) {
+        var temInteresse = interesses.has(animal.id);
+        return '' +
+        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" data-animal-id="' + animal.id + '">' +
+            '<div class="card-body d-flex flex-column gap-3">' +
+                '<div style="position: relative;">' +
+                    '<img class="card-animal-img col-12" src="' + animal.imagem + '" alt="' + animal.nome + '">' +
+                '</div>' +
+                '<div class="card-animal-text">' +
+                    '<h4 class="d-flex justify-content-between">' + animal.nome + '</h4>' +
+                    '<div class="card-animal-badges">' +
+                        '<span class="badge-arca badge-arca-sucesso">Porte ' + animal.porte.toLowerCase() + '</span>' +
+                        '<span class="badge-arca badge-arca-info">' + animal.vacina + '</span>' +
+                        '<span class="badge-arca badge-arca-rosa">Custo mensal médio de R$ ' + animal.custo + '</span>' +
+                    '</div>' +
+                    '<p class="corpo corpo-sm text-muted mt-2">' +
+                    animal.especie + ': ' + animal.raca + ' | ' + animal.idade + ' | ' + animal.sexo + '<br><br>' +
+                    animal.descricao +
+                    '</p>' +
+                '</div>' +
+                '<div class="card-animal-footer">' +
+                    '<button class="action-btn btn-interesse ' + (temInteresse ? 'active' : '') + '" data-acao="interesse">' +
+                        '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>' +
+                        '</svg>' +
+                        '<span class="tooltip-text">Tenho interesse</span>' +
+                    '</button>' +
+                    '<button class="action-btn btn-favorito active" data-acao="favorito">' +
+                        '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' +
+                        '</svg>' +
+                        '<span class="tooltip-text">Remover dos favoritos</span>' +
+                    '</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
     }).join('');
+
+    $grid.html(html);
 }
 
 function inicializarFiltros() {
-    const filtroNome = document.getElementById('filtro-nome');
-    const filtroPorte = document.getElementById('filtro-porte');
-    const filtroSexo = document.getElementById('filtro-sexo');
+    $('#filtro-nome').on('input', renderizar);
+    $('#filtro-sexo').on('input', renderizar);
 
-    filtroNome?.addEventListener('input', aplicarFiltros);
-    filtroSexo?.addEventListener('input', aplicarFiltros);
-
-    const observer = new MutationObserver(aplicarFiltros);
-    document.querySelectorAll('.sidebar-filtros .select-arca').forEach(select => {
-        observer.observe(select, { childList: true, subtree: true, attributes: true });
+    var observer = new MutationObserver(renderizar);
+    $('.sidebar-filtros .select-arca').each(function () {
+        observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
-}
-
-function aplicarFiltros() {
-    renderizar();
 }

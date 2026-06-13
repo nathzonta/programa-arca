@@ -108,30 +108,6 @@
     .notif-list {
         grid-template-columns: 1fr;
     }
-
-    .sidebar {
-        transform: translateX(-100%);
-
-        &.open {
-            transform: translateX(0);
-        }
-    }
-
-    .main-content {
-        margin-left: 0;
-    }
-
-    .topbar-menu-btn {
-        display: block;
-    }
-
-    .content-title {
-        display: block;
-    }
-
-    .content-area {
-        padding: 24px 16px;
-    }
 }
 
 @media (max-width: 768px) {

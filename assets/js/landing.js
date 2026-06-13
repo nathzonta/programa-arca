@@ -1,59 +1,47 @@
-/* Dropdown menu do mobile */
-document.getElementById('hamburguer-menu')
-    .addEventListener('click', function () {
-        document.getElementById('menu-mobile').classList.toggle('aberto');
+$(document).ready(function () {
+    $('#hamburguer-menu').on('click', function () {
+        $('#menu-mobile').toggleClass('aberto');
     });
 
-/* Carrosel */
+    var $cards = $('.adoption-card');
+    var $botoes = $('.adoption-botoes button');
+    var cardAtual = 0;
 
-const cards = document.querySelectorAll('.adoption-card');
-const botoes = document.querySelectorAll('.adoption-botoes button');
+    function mostrarCard(index) {
+        $cards.hide().eq(index).show().css('opacity', 1);
+    }
 
-let cardAtual = 0;
+    function voltar() {
+        cardAtual = (cardAtual - 1 + $cards.length) % $cards.length;
+        mostrarCard(cardAtual);
+    }
 
-function mostrarCard(index) {
-    cards.forEach(card => {
-        card.style.display = 'none'
-    });
+    function avancar() {
+        cardAtual = (cardAtual + 1) % $cards.length;
+        mostrarCard(cardAtual);
+    }
 
-    cards[index].style.display = 'block';
-    cards[index].style.opacity = 1;
-}
+    $botoes.eq(0).on('click', voltar);
+    $botoes.eq(1).on('click', avancar);
 
-function voltar() {
-    cardAtual = (cardAtual - 1 + cards.length) % cards.length;
     mostrarCard(cardAtual);
-}
 
-function avancar() {
-    cardAtual = (cardAtual + 1) % cards.length;
-    mostrarCard(cardAtual);
-}
+    if (window.innerWidth < 768) {
+        setInterval(avancar, 5000);
+    }
 
-botoes[0].addEventListener('click', voltar);
-botoes[1].addEventListener('click', avancar);
+    var $badgesFiltro = $('#filtro-campanhas .badge-arca');
+    var $badgesCampanhas = $('#campanhas .badge-arca');
 
-mostrarCard(cardAtual);
+    $badgesFiltro.on('click', function () {
+        var filtro = $(this).text();
 
-if (window.innerWidth < 768) {
-    setInterval(avancar, 5000);
-}
-
-/* Filtro de campanhas */
-
-const badgesFiltro = document.getElementById('filtro-campanhas').querySelectorAll('.badge-arca');
-const badgesCampanhas = document.getElementById('campanhas').querySelectorAll('.badge-arca');
-
-badgesFiltro.forEach(badge => {
-    badge.addEventListener('click', function () {
-        const filtro = this.innerText;
-
-        badgesCampanhas.forEach(badgeCampanha => {
-            if ((badgeCampanha.innerText == filtro) || filtro == 'Todos') {
-                badgeCampanha.closest('.card').hidden = false;
+        $badgesCampanhas.each(function () {
+            if ($(this).text() === filtro || filtro === 'Todos') {
+                $(this).closest('.card').removeAttr('hidden');
             } else {
-                badgeCampanha.closest('.card').hidden = true;
+                $(this).closest('.card').attr('hidden', true);
             }
-        })
+        });
     });
 });

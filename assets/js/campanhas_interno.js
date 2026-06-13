@@ -1,4 +1,4 @@
-const campanhas = [
+var campanhas = [
     {
         id: 1,
         nome: "Patinhas da Serra",
@@ -28,16 +28,16 @@ const campanhas = [
     }
 ];
 
-const tipoBadgeClass = {
+var tipoBadgeClass = {
     "Castração": "badge-arca-sucesso",
     "Feira de Adoção": "badge-arca-aviso",
     "Vacinação": "badge-arca-info"
 };
 
-let campanhaEditando = null;
-let campanhasFiltradas = [...campanhas];
+var campanhaEditando = null;
+var campanhasFiltradas = campanhas.slice();
 
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function () {
     inicializarModal();
     inicializarFiltros();
     inicializarPreview();
@@ -45,27 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function inicializarModal() {
-    const modal = document.getElementById('modal-campanha');
-    const btnNovo = document.getElementById('btn-nova-campanha');
-    const btnClose = document.getElementById('modal-close');
-    const btnCancelar = document.getElementById('btn-cancelar');
-    const form = document.getElementById('form-campanha');
+    $('#btn-nova-campanha').on('click', function () { abrirModal(); });
+    $('#modal-close').on('click', function () { fecharModal(); });
+    $('#btn-cancelar').on('click', function () { fecharModal(); });
 
-    btnNovo?.addEventListener('click', () => abrirModal());
-    btnClose?.addEventListener('click', () => fecharModal());
-    btnCancelar?.addEventListener('click', () => fecharModal());
-
-    modal?.addEventListener('click', (e) => {
-        if (e.target === modal) fecharModal();
+    $('#modal-campanha').on('click', function (e) {
+        if (e.target === this) fecharModal();
     });
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal?.classList.contains('open')) {
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' && $('#modal-campanha').hasClass('open')) {
             fecharModal();
         }
     });
 
-    form?.addEventListener('submit', (e) => {
+    $('#form-campanha').on('submit', function (e) {
         e.preventDefault();
         if (validarFormulario()) {
             salvarCampanha();
@@ -73,14 +67,10 @@ function inicializarModal() {
     });
 }
 
-function abrirModal(campanha = null) {
-    const modal = document.getElementById('modal-campanha');
-    const title = document.getElementById('modal-title');
-    const alert = document.getElementById('modal-alert');
-
-    campanhaEditando = campanha;
-    title.textContent = campanha ? 'Editar campanha' : 'Nova campanha';
-    alert.classList.remove('visible');
+function abrirModal(campanha) {
+    campanhaEditando = campanha || null;
+    $('#modal-title').text(campanha ? 'Editar campanha' : 'Nova campanha');
+    $('#modal-alert').removeClass('visible');
 
     if (campanha) {
         preencherFormulario(campanha);
@@ -88,26 +78,25 @@ function abrirModal(campanha = null) {
         limparFormulario();
     }
 
-    modal.classList.add('open');
+    $('#modal-campanha').addClass('open');
     atualizarPreview();
 }
 
 function fecharModal() {
-    const modal = document.getElementById('modal-campanha');
-    modal.classList.remove('open');
+    $('#modal-campanha').removeClass('open');
     campanhaEditando = null;
     limparFormulario();
     limparErros();
 }
 
 function preencherFormulario(campanha) {
-    document.getElementById('campanha-nome').value = campanha.nome || '';
-    document.getElementById('campanha-tipo').value = campanha.tipo || '';
-    document.getElementById('campanha-descricao').value = campanha.descricao || '';
-    document.getElementById('campanha-data').value = campanha.data || '';
-    document.getElementById('campanha-local').value = campanha.local || '';
+    $('#campanha-nome').val(campanha.nome || '');
+    $('#campanha-tipo').val(campanha.tipo || '');
+    $('#campanha-descricao').val(campanha.descricao || '');
+    $('#campanha-data').val(campanha.data || '');
+    $('#campanha-local').val(campanha.local || '');
 
-    setTimeout(() => {
+    setTimeout(function () {
         if (typeof iniciarSelects === 'function') {
             iniciarSelects();
         }
@@ -116,19 +105,17 @@ function preencherFormulario(campanha) {
 }
 
 function limparFormulario() {
-    const form = document.getElementById('form-campanha');
-    form?.reset();
-    document.getElementById('campanha-imagem').value = '';
+    $('#form-campanha')[0].reset();
+    $('#campanha-imagem').val('');
 
-    document.getElementById('preview-nome').textContent = 'Nome da organização';
-    document.getElementById('preview-tipo').textContent = 'Tipo de campanha';
-    document.getElementById('preview-tipo').className = 'badge-arca mb-2 me-1';
-    document.getElementById('preview-descricao').textContent = 'Descrição da campanha...';
-    document.getElementById('preview-data').innerHTML = '<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">Data do evento';
-    document.getElementById('preview-local').innerHTML = '<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Local do evento';
-    document.getElementById('preview-img').src = './assets/imgs/placeholder.png';
+    $('#preview-nome').text('Nome da organização');
+    $('#preview-tipo').text('Tipo de campanha').attr('class', 'badge-arca mb-2 me-1');
+    $('#preview-descricao').text('Descrição da campanha...');
+    $('#preview-data').html('<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">Data do evento');
+    $('#preview-local').html('<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Local do evento');
+    $('#preview-img').attr('src', './assets/imgs/placeholder.png');
 
-    setTimeout(() => {
+    setTimeout(function () {
         if (typeof iniciarSelects === 'function') {
             iniciarSelects();
         }
@@ -136,52 +123,46 @@ function limparFormulario() {
 }
 
 function inicializarPreview() {
-    const inputs = document.querySelectorAll('[data-preview]');
-    inputs.forEach(input => {
-        input.addEventListener('input', atualizarPreview);
-        input.addEventListener('change', atualizarPreview);
-    });
+    $('[data-preview]').on('input change', atualizarPreview);
 
-    const observer = new MutationObserver(atualizarPreview);
-    document.querySelectorAll('.select-arca').forEach(select => {
-        observer.observe(select, { childList: true, subtree: true, attributes: true });
+    var observer = new MutationObserver(atualizarPreview);
+    $('.select-arca').each(function () {
+        observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function atualizarPreview() {
-    const nome = document.getElementById('campanha-nome')?.value || 'Nome da organização';
-    const tipo = document.getElementById('campanha-tipo')?.value || '';
-    const descricao = document.getElementById('campanha-descricao')?.value || 'Descrição da campanha...';
-    const data = document.getElementById('campanha-data')?.value || 'Data do evento';
-    const local = document.getElementById('campanha-local')?.value || 'Local do evento';
+    var nome = $('#campanha-nome').val() || 'Nome da organização';
+    var tipo = $('#campanha-tipo').val() || '';
+    var descricao = $('#campanha-descricao').val() || 'Descrição da campanha...';
+    var data = $('#campanha-data').val() || 'Data do evento';
+    var local = $('#campanha-local').val() || 'Local do evento';
 
-    document.getElementById('preview-nome').textContent = nome;
+    $('#preview-nome').text(nome);
 
-    const badge = document.getElementById('preview-tipo');
+    var $badge = $('#preview-tipo');
     if (tipo) {
-        badge.textContent = tipo;
-        badge.className = `badge-arca ${tipoBadgeClass[tipo] || ''} mb-2 me-1`;
+        $badge.text(tipo).attr('class', 'badge-arca ' + (tipoBadgeClass[tipo] || '') + ' mb-2 me-1');
     } else {
-        badge.textContent = 'Tipo de campanha';
-        badge.className = 'badge-arca mb-2 me-1';
+        $badge.text('Tipo de campanha').attr('class', 'badge-arca mb-2 me-1');
     }
 
-    document.getElementById('preview-descricao').textContent = descricao;
-    document.getElementById('preview-data').innerHTML = `<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">${data}`;
-    document.getElementById('preview-local').innerHTML = `<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">${local}`;
+    $('#preview-descricao').text(descricao);
+    $('#preview-data').html('<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + data);
+    $('#preview-local').html('<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + local);
 
-    const fileInput = document.getElementById('campanha-imagem');
-    if (fileInput?.files?.[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            document.getElementById('preview-img').src = e.target.result;
+    var fileInput = document.getElementById('campanha-imagem');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#preview-img').attr('src', e.target.result);
         };
         reader.readAsDataURL(fileInput.files[0]);
     }
 }
 
 function validarFormulario() {
-    const campos = [
+    var campos = [
         { id: 'campanha-nome', label: 'Nome' },
         { id: 'campanha-tipo', label: 'Tipo' },
         { id: 'campanha-descricao', label: 'Descrição' },
@@ -189,119 +170,115 @@ function validarFormulario() {
         { id: 'campanha-local', label: 'Local' }
     ];
 
-    let valido = true;
+    var valido = true;
     limparErros();
 
-    campos.forEach(campo => {
-        const input = document.getElementById(campo.id);
-        const formGroup = input?.closest('.form-group-arca');
+    campos.forEach(function (campo) {
+        var $input = $('#' + campo.id);
+        var $formGroup = $input.closest('.form-group-arca');
 
-        if (!input?.value?.trim()) {
-            formGroup?.classList.add('error');
+        if (!$input.val() || !$input.val().trim()) {
+            $formGroup.addClass('error');
             valido = false;
         }
     });
 
     if (!valido) {
-        document.getElementById('modal-alert').classList.add('visible');
+        $('#modal-alert').addClass('visible');
     }
 
     return valido;
 }
 
 function limparErros() {
-    document.querySelectorAll('.form-group-arca.error').forEach(el => {
-        el.classList.remove('error');
-    });
-    document.getElementById('modal-alert')?.classList.remove('visible');
+    $('.form-group-arca.error').removeClass('error');
+    $('#modal-alert').removeClass('visible');
 }
 
 function salvarCampanha() {
-    const fileInput = document.getElementById('campanha-imagem');
-    const imagemSrc = fileInput?.files?.[0]
+    var fileInput = document.getElementById('campanha-imagem');
+    var imagemSrc = (fileInput && fileInput.files && fileInput.files[0])
         ? URL.createObjectURL(fileInput.files[0])
-        : (campanhaEditando?.imagem || '');
+        : (campanhaEditando ? campanhaEditando.imagem : '');
 
-    const novaCampanha = {
+    var novaCampanha = {
         id: campanhaEditando ? campanhaEditando.id : Date.now(),
-        nome: document.getElementById('campanha-nome').value,
-        tipo: document.getElementById('campanha-tipo').value,
-        descricao: document.getElementById('campanha-descricao').value,
-        data: document.getElementById('campanha-data').value,
-        local: document.getElementById('campanha-local').value,
+        nome: $('#campanha-nome').val(),
+        tipo: $('#campanha-tipo').val(),
+        descricao: $('#campanha-descricao').val(),
+        data: $('#campanha-data').val(),
+        local: $('#campanha-local').val(),
         imagem: imagemSrc
     };
 
     if (campanhaEditando) {
-        const index = campanhas.findIndex(c => c.id === campanhaEditando.id);
+        var index = campanhas.findIndex(function (c) { return c.id === campanhaEditando.id; });
         if (index !== -1) {
-            campanhas[index] = { ...campanhas[index], ...novaCampanha };
+            campanhas[index] = $.extend({}, campanhas[index], novaCampanha);
         }
     } else {
         campanhas.push(novaCampanha);
     }
 
-    campanhasFiltradas = [...campanhas];
+    campanhasFiltradas = campanhas.slice();
     renderizarCampanhas(campanhasFiltradas);
     fecharModal();
 }
 
 function renderizarCampanhas(lista) {
-    const grid = document.getElementById('campanhas-grid');
-    if (!grid) return;
+    var $grid = $('#campanhas-grid');
+    if (!$grid.length) return;
 
     if (lista.length === 0) {
-        grid.innerHTML = '<p style="text-align: center; color: #737373; width: 100%;">Nenhuma campanha encontrada.</p>';
+        $grid.html('<p style="text-align: center; color: #737373; width: 100%;">Nenhuma campanha encontrada.</p>');
         return;
     }
 
-    grid.innerHTML = lista.map(campanha => {
-        const badgeClasse = tipoBadgeClass[campanha.tipo] || '';
-        return `
-        <div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1" data-id="${campanha.id}">
-            <div class="card-body d-flex flex-column justify-content-between gap-4">
-                <img class="col-12" style="border-radius: 15px; height: 220px; object-fit: cover;" src="${campanha.imagem}" alt="${campanha.nome}">
-                <div class="card-campanha-text mx-4">
-                    <h4  class="d-flex justify-content-between">${campanha.nome}
-                        <span class="card-campanha-edit" onclick="abrirModal(campanhas.find(c => c.id === ${campanha.id}))">
-                            <img src="./assets/imgs/icons/editar.svg">
-                        </span>
-                    </h4>
-                    <span class="badge-arca ${badgeClasse} mb-2 me-1">${campanha.tipo}</span>
-                    <p class="corpo corpo-sm text-muted mt-2">${campanha.descricao}</p>
-                </div>
-                <div class="card-campanha-infos mx-4">
-                    <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">${campanha.data}</p>
-                    <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">${campanha.local}</p>
-                </div>
-            </div>
-        </div>`;
+    var html = lista.map(function (campanha) {
+        var badgeClasse = tipoBadgeClass[campanha.tipo] || '';
+        return '' +
+        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1" data-id="' + campanha.id + '">' +
+            '<div class="card-body d-flex flex-column justify-content-between gap-4">' +
+                '<img class="col-12" style="border-radius: 15px; height: 220px; object-fit: cover;" src="' + campanha.imagem + '" alt="' + campanha.nome + '">' +
+                '<div class="card-campanha-text mx-4">' +
+                    '<h4 class="d-flex justify-content-between">' + campanha.nome +
+                        '<span class="card-campanha-edit" onclick="abrirModal(campanhas.find(function(c){return c.id===' + campanha.id + '}))">' +
+                            '<img src="./assets/imgs/icons/editar.svg">' +
+                        '</span>' +
+                    '</h4>' +
+                    '<span class="badge-arca ' + badgeClasse + ' mb-2 me-1">' + campanha.tipo + '</span>' +
+                    '<p class="corpo corpo-sm text-muted mt-2">' + campanha.descricao + '</p>' +
+                '</div>' +
+                '<div class="card-campanha-infos mx-4">' +
+                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + campanha.data + '</p>' +
+                    '<p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + campanha.local + '</p>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
     }).join('');
+
+    $grid.html(html);
 }
 
 function inicializarFiltros() {
-    const filtroNome = document.getElementById('filtro-nome');
-    const filtroTipo = document.getElementById('filtro-tipo');
-    const filtroLocal = document.getElementById('filtro-local');
+    $('#filtro-nome').on('input', aplicarFiltros);
+    $('#filtro-local').on('input', aplicarFiltros);
 
-    filtroNome?.addEventListener('input', aplicarFiltros);
-    filtroLocal?.addEventListener('input', aplicarFiltros);
-
-    const observer = new MutationObserver(aplicarFiltros);
-    document.querySelectorAll('.sidebar-filtros .select-arca').forEach(select => {
-        observer.observe(select, { childList: true, subtree: true, attributes: true });
+    var observer = new MutationObserver(aplicarFiltros);
+    $('.sidebar-filtros .select-arca').each(function () {
+        observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function aplicarFiltros() {
-    const nome = document.getElementById('filtro-nome')?.value.toLowerCase() || '';
-    const tipo = document.getElementById('filtro-tipo')?.value || '';
-    const local = document.getElementById('filtro-local')?.value.toLowerCase() || '';
+    var nome = ($('#filtro-nome').val() || '').toLowerCase();
+    var tipo = $('#filtro-tipo').val() || '';
+    var local = ($('#filtro-local').val() || '').toLowerCase();
 
-    campanhasFiltradas = campanhas.filter(campanha => {
-        const matchNome = campanha.nome.toLowerCase().includes(nome);
-        const matchTipo = !tipo || campanha.tipo === tipo;
-        const matchLocal = campanha.local.toLowerCase().includes(local);
+    campanhasFiltradas = campanhas.filter(function (campanha) {
+        var matchNome = campanha.nome.toLowerCase().includes(nome);
+        var matchTipo = !tipo || campanha.tipo === tipo;
+        var matchLocal = campanha.local.toLowerCase().includes(local);
         return matchNome && matchTipo && matchLocal;
     });
 

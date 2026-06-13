@@ -1,4 +1,4 @@
-const animais = [
+var animais = [
     {
         id: 1,
         nome: "Luna",
@@ -29,14 +29,14 @@ const animais = [
     }
 ];
 
-const interesses = new Set();
-const favoritos = new Set();
+var interesses = new Set();
+var favoritos = new Set();
 
-let animaisFiltrados = [...animais];
-let indiceAtual = 0;
-let transicionando = false;
+var animaisFiltrados = animais.slice();
+var indiceAtual = 0;
+var transicionando = false;
 
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function () {
     inicializarFiltros();
     inicializarAcoes();
     inicializarModalAjuda();
@@ -44,26 +44,25 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function inicializarAcoes() {
-    const container = document.getElementById('swipe-card-container');
-    container?.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-acao]');
-        if (!btn) return;
-        if (btn.dataset.acao === 'interesse') toggleInteresse();
-        else if (btn.dataset.acao === 'favorito') toggleFavorito();
-        else if (btn.dataset.acao === 'proximo') proximoCard();
+    $('#swipe-card-container').on('click', '[data-acao]', function () {
+        var acao = $(this).data('acao');
+        if (acao === 'interesse') toggleInteresse();
+        else if (acao === 'favorito') toggleFavorito();
+        else if (acao === 'proximo') proximoCard();
     });
 }
 
 function renderCard(index) {
-    const container = document.getElementById('swipe-card-container');
-    if (!container) return;
+    var $container = $('#swipe-card-container');
+    if (!$container.length) return;
 
     if (animaisFiltrados.length === 0) {
-        container.innerHTML = `
-            <div class="swipe-empty">
-                <h3>Nenhum animal encontrado</h3>
-                <p class="corpo corpo-sm">Tente ajustar os filtros para encontrar mais animais.</p>
-            </div>`;
+        $container.html(
+            '<div class="swipe-empty">' +
+                '<h3>Nenhum animal encontrado</h3>' +
+                '<p class="corpo corpo-sm">Tente ajustar os filtros para encontrar mais animais.</p>' +
+            '</div>'
+        );
         return;
     }
 
@@ -71,74 +70,72 @@ function renderCard(index) {
         indiceAtual = 0;
     }
 
-    const animal = animaisFiltrados[indiceAtual];
+    var animal = animaisFiltrados[indiceAtual];
     if (!animal) return;
 
-    const temInteresse = interesses.has(animal.id);
-    const temFavorito = favoritos.has(animal.id);
+    var temInteresse = interesses.has(animal.id);
+    var temFavorito = favoritos.has(animal.id);
 
-    container.innerHTML = `
-        <div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card-animal p-3" id="swipe-card">
-            <div class="card-body">
-                <img class="card-animal-img" src="${animal.imagem}" alt="${animal.nome}">
-                <div class="card-animal-text">
-                    <h4>${animal.nome}</h4>
-                    <div class="card-animal-badges">
-                        <span class="badge-arca badge-arca-sucesso">Porte ${animal.porte.toLowerCase()}</span>
-                        <span class="badge-arca badge-arca-info">${animal.vacina}</span>
-                        <span class="card-animal-custo">Custo mensal médio de R$ ${animal.custo}</span>
-                    </div>
-                </div>
-                <div class="card-animal-info">
-                    <p>${animal.especie}: ${animal.raca} | ${animal.idade} | ${animal.sexo}</p>
-                    <p>${animal.descricao}</p>
-                </div>
-                <div class="card-animal-localizacao">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                    </svg>
-                    ${animal.localizacao}
-                </div>
-                <div class="card-animal-footer">
-                    <button class="action-btn btn-interesse ${temInteresse ? 'active' : ''}" data-acao="interesse">
-                        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                        </svg>
-                        <span class="tooltip-text">Tenho interesse</span>
-                    </button>
-                    <button class="action-btn btn-favorito ${temFavorito ? 'active' : ''}" data-acao="favorito">
-                        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                        </svg>
-                        <span class="tooltip-text">Favoritar</span>
-                    </button>
-                    <button class="action-btn btn-proximo" data-acao="proximo">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"/>
-                            <line x1="6" y1="6" x2="18" y2="18"/>
-                        </svg>
-                        <span class="tooltip-text">Próximo</span>
-                    </button>
-                </div>
-            </div>
-        </div>`;
+    $container.html(
+        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card-animal p-3" id="swipe-card">' +
+            '<div class="card-body">' +
+                '<img class="card-animal-img" src="' + animal.imagem + '" alt="' + animal.nome + '">' +
+                '<div class="card-animal-text">' +
+                    '<h4>' + animal.nome + '</h4>' +
+                    '<div class="card-animal-badges">' +
+                        '<span class="badge-arca badge-arca-sucesso">Porte ' + animal.porte.toLowerCase() + '</span>' +
+                        '<span class="badge-arca badge-arca-info">' + animal.vacina + '</span>' +
+                        '<span class="card-animal-custo">Custo mensal médio de R$ ' + animal.custo + '</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="card-animal-info">' +
+                    '<p>' + animal.especie + ': ' + animal.raca + ' | ' + animal.idade + ' | ' + animal.sexo + '</p>' +
+                    '<p>' + animal.descricao + '</p>' +
+                '</div>' +
+                '<div class="card-animal-localizacao">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                        '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>' +
+                        '<circle cx="12" cy="10" r="3"/>' +
+                    '</svg>' +
+                    animal.localizacao +
+                '</div>' +
+                '<div class="card-animal-footer">' +
+                    '<button class="action-btn btn-interesse ' + (temInteresse ? 'active' : '') + '" data-acao="interesse">' +
+                        '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>' +
+                        '</svg>' +
+                        '<span class="tooltip-text">Tenho interesse</span>' +
+                    '</button>' +
+                    '<button class="action-btn btn-favorito ' + (temFavorito ? 'active' : '') + '" data-acao="favorito">' +
+                        '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' +
+                        '</svg>' +
+                        '<span class="tooltip-text">Favoritar</span>' +
+                    '</button>' +
+                    '<button class="action-btn btn-proximo" data-acao="proximo">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<line x1="18" y1="6" x2="6" y2="18"/>' +
+                            '<line x1="6" y1="6" x2="18" y2="18"/>' +
+                        '</svg>' +
+                        '<span class="tooltip-text">Próximo</span>' +
+                    '</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>'
+    );
 }
 
 function atualizarBotoesEstado() {
-    const animal = animaisFiltrados[indiceAtual];
+    var animal = animaisFiltrados[indiceAtual];
     if (!animal) return;
-    const container = document.getElementById('swipe-card-container');
-    if (!container) return;
+    var $container = $('#swipe-card-container');
 
-    const btnInteresse = container.querySelector('[data-acao="interesse"]');
-    const btnFavorito = container.querySelector('[data-acao="favorito"]');
-    if (btnInteresse) btnInteresse.classList.toggle('active', interesses.has(animal.id));
-    if (btnFavorito) btnFavorito.classList.toggle('active', favoritos.has(animal.id));
+    $container.find('[data-acao="interesse"]').toggleClass('active', interesses.has(animal.id));
+    $container.find('[data-acao="favorito"]').toggleClass('active', favoritos.has(animal.id));
 }
 
 function toggleInteresse() {
-    const animal = animaisFiltrados[indiceAtual];
+    var animal = animaisFiltrados[indiceAtual];
     if (!animal) return;
     if (interesses.has(animal.id)) interesses.delete(animal.id);
     else interesses.add(animal.id);
@@ -146,7 +143,7 @@ function toggleInteresse() {
 }
 
 function toggleFavorito() {
-    const animal = animaisFiltrados[indiceAtual];
+    var animal = animaisFiltrados[indiceAtual];
     if (!animal) return;
     if (favoritos.has(animal.id)) favoritos.delete(animal.id);
     else favoritos.add(animal.id);
@@ -159,11 +156,11 @@ function proximoCard() {
 
     transicionando = true;
 
-    const card = document.getElementById('swipe-card');
-    if (card) card.classList.add('saindo');
+    var $card = $('#swipe-card');
+    if ($card.length) $card.addClass('saindo');
 
-    setTimeout(() => {
-        let novoIndice;
+    setTimeout(function () {
+        var novoIndice;
         do {
             novoIndice = Math.floor(Math.random() * animaisFiltrados.length);
         } while (novoIndice === indiceAtual && animaisFiltrados.length > 1);
@@ -175,30 +172,25 @@ function proximoCard() {
 }
 
 function inicializarFiltros() {
-    const filtroCusto = document.getElementById('filtro-custo');
-    const filtroPorte = document.getElementById('filtro-porte');
-    const filtroSexo = document.getElementById('filtro-sexo');
-    const filtroLocalizacao = document.getElementById('filtro-localizacao');
+    $('#filtro-custo').on('input', aplicarFiltros);
 
-    filtroCusto?.addEventListener('input', aplicarFiltros);
-
-    const observer = new MutationObserver(aplicarFiltros);
-    document.querySelectorAll('.sidebar-filtros .select-arca').forEach(select => {
-        observer.observe(select, { childList: true, subtree: true, attributes: true });
+    var observer = new MutationObserver(aplicarFiltros);
+    $('.sidebar-filtros .select-arca').each(function () {
+        observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function aplicarFiltros() {
-    const custoMax = parseFloat(document.getElementById('filtro-custo')?.value.replace(/[^0-9.,]/g, '').replace(',', '.')) || Infinity;
-    const porte = document.getElementById('filtro-porte')?.value || '';
-    const sexo = document.getElementById('filtro-sexo')?.value || '';
-    const localizacao = document.getElementById('filtro-localizacao')?.value || '';
+    var custoMax = parseFloat(($('#filtro-custo').val() || '').replace(/[^0-9.,]/g, '').replace(',', '.')) || Infinity;
+    var porte = $('#filtro-porte').val() || '';
+    var sexo = $('#filtro-sexo').val() || '';
+    var localizacao = $('#filtro-localizacao').val() || '';
 
-    animaisFiltrados = animais.filter(animal => {
-        const matchCusto = animal.custo <= custoMax;
-        const matchPorte = !porte || animal.porte.toLowerCase() === porte;
-        const matchSexo = !sexo || animal.sexo.toLowerCase() === sexo;
-        const matchLocalizacao = !localizacao || animal.localizacao.toLowerCase().replace(/\s+/g, '-') === localizacao;
+    animaisFiltrados = animais.filter(function (animal) {
+        var matchCusto = animal.custo <= custoMax;
+        var matchPorte = !porte || animal.porte.toLowerCase() === porte;
+        var matchSexo = !sexo || animal.sexo.toLowerCase() === sexo;
+        var matchLocalizacao = !localizacao || animal.localizacao.toLowerCase().replace(/\s+/g, '-') === localizacao;
         return matchCusto && matchPorte && matchSexo && matchLocalizacao;
     });
 
@@ -207,27 +199,25 @@ function aplicarFiltros() {
 }
 
 function inicializarModalAjuda() {
-    const btnAjuda = document.getElementById('btn-ajuda');
-    const modal = document.getElementById('modal-ajuda');
-    const btnClose = document.getElementById('modal-ajuda-close');
+    var $modal = $('#modal-ajuda');
 
-    btnAjuda?.addEventListener('click', () => {
-        modal.classList.add('open');
+    $('#btn-ajuda').on('click', function () {
+        $modal.addClass('open');
     });
 
-    btnClose?.addEventListener('click', () => {
-        modal.classList.remove('open');
+    $('#modal-ajuda-close').on('click', function () {
+        $modal.removeClass('open');
     });
 
-    modal?.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.remove('open');
+    $modal.on('click', function (e) {
+        if (e.target === this) {
+            $(this).removeClass('open');
         }
     });
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal?.classList.contains('open')) {
-            modal.classList.remove('open');
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape' && $modal.hasClass('open')) {
+            $modal.removeClass('open');
         }
     });
 }
