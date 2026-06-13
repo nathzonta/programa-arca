@@ -186,9 +186,9 @@ function renderizarCampanhas(lista) {
     let html = '';
     $.each(lista, function (i, campanha) {
         html +=
-        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1" data-id="' + campanha.id + '">' +
+        '<div class="col-12 col-md card card-campanha p-1" data-id="' + campanha.id + '">' +
             '<div class="card-body d-flex flex-column justify-content-between gap-4">' +
-                '<img class="col-12" style="border-radius: 15px; height: 220px; object-fit: cover;" src="' + (campanha.imagem || './assets/imgs/placeholder.png') + '" alt="' + (campanha.titulo || '') + '">' +
+                '<img class="col-12" style="border-radius: 15px;" src="' + (campanha.imagem || './assets/imgs/placeholder.png') + '" alt="' + (campanha.titulo || '') + '">' +
                 '<div class="card-campanha-text mx-4">' +
                     '<h4 class="d-flex justify-content-between">' + (campanha.titulo || '') +
                         '<span class="card-campanha-edit btn-editar-campanha" data-id="' + campanha.id + '">' +
