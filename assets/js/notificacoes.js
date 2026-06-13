@@ -54,14 +54,14 @@ function renderizarNotificacoes(lista) {
     $.each(lista, function (i, notif) {
         let classeLida = notif.lida ? ' notif-lida' : '';
         html +=
-        '<div class="notif-card' + classeLida + '" data-id="' + notif.id + '">' +
+        '<div class="notif-card align-items-center' + classeLida + '" data-id="' + notif.id + '">' +
             '<div class="notif-card-img">' +
                 '<img src="' + (notif.imagem || './assets/imgs/placeholder.png') + '" alt="' + notif.nome_animal + '">' +
             '</div>' +
             '<div class="notif-card-body">' +
-                '<h2 class="notif-card-title">' + notif.nome_pessoa + ' quer adotar ' + notif.nome_animal + '!</h2>' +
-                '<p class="notif-card-desc">Data: ' + notif.data + '</p>' +
-                '<div class="notif-card-contato">' +
+                '<h2 class="notif-card-title m-0">' + notif.nome_pessoa + ' quer adotar ' + notif.nome_animal + '!</h2>' +
+                '<p class="notif-card-desc m-0">Data: ' + notif.data + '</p>' +
+                '<div class="notif-card-contato mt-3">' +
                     '<a href="mailto:' + notif.email_pessoa + '" class="notif-contato-pill">' +
                         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                             '<rect x="2" y="4" width="20" height="16" rx="2"/>' +
@@ -69,8 +69,6 @@ function renderizarNotificacoes(lista) {
                         '</svg>' +
                         notif.email_pessoa +
                     '</a>' +
-                    (notif.lida ? '' :
-                    '<button class="notif-btn-marcar-lida" data-id="' + notif.id + '" style="border:1px solid #6C3FC5; background:transparent; color:#6C3FC5; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:12px;">Marcar como lida</button>') +
                 '</div>' +
             '</div>' +
         '</div>';

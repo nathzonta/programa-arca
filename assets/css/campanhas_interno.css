@@ -16,6 +16,10 @@
 .card-campanha-edit {
     cursor: pointer;
     margin-left: auto;
+
+    img {
+        height: 1.3rem;
+    }
 }
 
 .card-campanha-infos p {
@@ -61,9 +65,7 @@
     color: white;
     border: none;
     border-radius: 10px;
-    font-family: "Inter", sans-serif;
-    font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
     transition: background-color 0.2s;
 

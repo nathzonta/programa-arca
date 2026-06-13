@@ -183,12 +183,10 @@ function renderizarAnimais(lista) {
     let html = '';
     $.each(lista, function (i, animal) {
         html +=
-        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" data-id="' + animal.id + '">' +
-            '<div class="card-body d-flex flex-column gap-3">' +
-                '<div style="position: relative;">' +
-                    '<img class="card-animal-img col-12" src="' + (animal.imagem || './assets/imgs/placeholder.png') + '" alt="' + animal.nome + '">' +
-                '</div>' +
-                '<div class="card-animal-text">' +
+        '<div class="col-12 col-md-4 card card-animal p-1" data-id="' + animal.id + '">' +
+            '<div class="card-body">' +
+                '<img class="card-animal-img" src="' + (animal.imagem || './assets/imgs/placeholder.png') + '" alt="' + animal.nome + '">' +
+                '<div class="card-animal-text mt-4">' +
                     '<h4 class="d-flex justify-content-between">' + animal.nome +
                         '<span class="card-animal-edit btn-editar-animal" data-id="' + animal.id + '">' +
                             '<img src="./assets/imgs/icons/editar.svg">' +
@@ -197,14 +195,18 @@ function renderizarAnimais(lista) {
                     '<div class="card-animal-badges">' +
                         '<span class="badge-arca badge-arca-sucesso">Porte ' + (animal.porte || '').toLowerCase() + '</span>' +
                         '<span class="badge-arca badge-arca-info">' + (animal.saude || '') + '</span>' +
-                        '<span class="badge-arca badge-arca-rosa">R$ ' + (animal.valor_custo || '0') + '/mes</span>' +
+                        '<span class="badge-arca badge-arca-rosa">R$ ' + (animal.valor_custo || '0') + '/mês</span>' +
                     '</div>' +
-                    '<p class="corpo corpo-sm text-muted mt-2">' +
-                    (animal.especie || '') + ': ' + (animal.raca || '') + ' | ' + (animal.idade_aprox || '') + ' anos | ' + (animal.sexo) + '<br><br>' +
-                    (animal.descricao || '') +
-                    '</p>' +
+                    '<div class="card-animal-info d-grid g-2 mt-2">' +
+                        '<p class="corpo corpo-sm text-muted mt-2" style="font-size: clamp(0.9rem, 0.9vw, 0.9rem)">' +
+                        (animal.especie || '') + ': ' + (animal.raca || '') + ' | ' + (animal.idade_aprox || '') + ' anos | ' + (animal.sexo) +
+                        '</p>' +
+                        '<p class="corpo corpo-sm text-muted mt-2" style="font-size: clamp(0.9rem, 0.9vw, 0.9rem)">' +
+                        (animal.descricao || '') +
+                        '</p>' +
+                    '</div>' +
                 '</div>' +
-                '<div class="card-animal-footer">' +
+                '<div class="card-animal-footer mt-auto">' +
                     '<button class="btn-excluir-animal" data-id="' + animal.id + '" style="border:none; background:none; color:#e74c3c; cursor:pointer; font-size:13px;">Excluir</button>' +
                 '</div>' +
             '</div>' +

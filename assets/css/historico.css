@@ -51,12 +51,12 @@
     margin: 0;
 }
 
-.badge-historico-favoritado {
+.badge-historico-favorito, .badge-historico-desfavoritado {
     color: var(--text-cor-aviso) !important;
     background-color: var(--bg-cor-aviso) !important;
 }
 
-.badge-historico-interesse {
+.badge-historico-interessado {
     color: #C62828 !important;
     background-color: #FFEBEE !important;
 }

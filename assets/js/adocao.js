@@ -4,9 +4,12 @@ var transicionando = false;
 var sessao = null;
 
 $(document).ready(function () {
-    if (!protegerRota(['cidadao', 'representante'])) return;
-    carregarDadosSidebar();
+    if (!protegerRota(['cidadao', 'representante'])) {
+        return;
+    }
     sessao = getSessao();
+
+    carregarDadosSidebar();
     inicializarFiltros();
     inicializarAcoes();
     inicializarModalAjuda();

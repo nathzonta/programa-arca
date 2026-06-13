@@ -20,7 +20,7 @@ function carregarHistorico() {
 }
 
 function renderizar(lista) {
-    let $grid = $('#historico-grid');
+    const $grid = $('#historico-grid');
     const $contentarea = $('.content-area');
     if (!$grid.length) return;
 
@@ -35,7 +35,7 @@ function renderizar(lista) {
     });
 
     if (filtrados.length === 0) {
-        $contentarea.html('<p class="empty">Nenhuma ação encontrada para o filtro.</p>');
+        $grid.html('<p class="empty">Nenhuma ação encontrada para o filtro.</p>');
         return;
     }
 
