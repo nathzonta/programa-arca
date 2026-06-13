@@ -15,7 +15,7 @@ body {
 }
 
 .cadastro-container {
-    max-height: 100vh;
+    height: 100vh;
 
     .cadastro-image {
         align-items: center;
