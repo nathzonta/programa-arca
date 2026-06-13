@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    alert('Há duas contas de teste para login: \nEmail: cidadao@arca.br | Senha: 123 \nEmail: admin@arca.br | Senha: 123');
+
     $('#hamburguer-menu').on('click', function () {
         $('#menu-mobile').toggleClass('aberto');
     });
