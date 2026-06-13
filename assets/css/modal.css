@@ -140,14 +140,14 @@
 }
 
 .btn-cancelar {
-    padding: 10px 24px;
+    padding: 5px 24px;
     background-color: #D32F2F;
     color: white;
     border: none;
     border-radius: 10px;
     font-family: "Inter", sans-serif;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 300;
     cursor: pointer;
     transition: background-color 0.2s;
     width: auto;
@@ -159,14 +159,13 @@
 }
 
 .btn-salvar {
-    padding: 10px 24px;
+    padding: 5px 24px;
     background-color: var(--cor-terciaria);
     color: white;
     border: none;
     border-radius: 10px;
     font-family: "Inter", sans-serif;
     font-size: 14px;
-    font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s;
     width: auto;
