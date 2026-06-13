@@ -21,10 +21,11 @@ function carregarHistorico() {
 
 function renderizar(lista) {
     let $grid = $('#historico-grid');
+    const $contentarea = $('.content-area');
     if (!$grid.length) return;
 
     if (!lista || lista.length === 0) {
-        $grid.html('<p class="empty">Nenhuma ação registrada.</p>');
+        $contentarea.html('<p class="empty">Nenhuma ação registrada.</p>');
         return;
     }
 
@@ -34,7 +35,7 @@ function renderizar(lista) {
     });
 
     if (filtrados.length === 0) {
-        $grid.html('<p class="empty">Nenhuma ação encontrada para o filtro.</p>');
+        $contentarea.html('<p class="empty">Nenhuma ação encontrada para o filtro.</p>');
         return;
     }
 
@@ -50,10 +51,10 @@ function renderizar(lista) {
             '<div class="historico-card-img">' +
                 '<img src="' + (item.imagem || './assets/imgs/placeholder.png') + '" alt="' + item.nome_animal + '">' +
             '</div>' +
-            '<div class="historico-card-body">' +
+            '<div class="historico-card-body gap-2">' +
                 '<h2 class="historico-card-nome">' + item.nome_animal + '</h2>' +
                 '<span class="badge-arca badge-historico-' + item.acao + '">' + labelAcao + '</span>' +
-                '<p class="corpo corpo-sm text-muted mt-1">' + item.data + '</p>' +
+                '<p class="corpo corpo-sm text-muted m-0">' + item.data + '</p>' +
             '</div>' +
         '</article>';
     });

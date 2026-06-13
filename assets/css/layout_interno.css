@@ -6,8 +6,9 @@
 
 /* Estrutura da Barra lateral */
 .sidebar {
-    width: 310px;
-    height: 100vh;
+    box-sizing: border-box;
+    /* width: 17vw; */
+    height: 100%;
     background-color: white;
     border-right: 1px solid #E5E5E5;
     display: flex;
@@ -16,7 +17,7 @@
     top: 0;
     left: 0;
     z-index: 100;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     scrollbar-width: none;
     transition: transform 0.3s ease;
 
@@ -25,11 +26,10 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 20px 16px;
+        padding: 1rem 1.1rem;
 
         .sidebar-logo {
-            width: 56px;
-            height: 56px;
+            height: 3rem;
             cursor: pointer;
         }
 
@@ -41,12 +41,12 @@
         .sidebar-brand-arca {
             font-family: "Montserrat", sans-serif;
             font-weight: 600;
-            font-size: 22px;
+            font-size: clamp(1rem, 1.1vw, 3rem);
             color: var(--cor-terciaria);
         }
 
         .sidebar-brand-sub {
-            font-size: 14px;
+            font-size: clamp(0.7rem, 0.9vw, 1rem);
             font-weight: 600;
             color: var(--cor-preto);
         }
@@ -80,8 +80,8 @@
         border: none;
         border-radius: 8px;
         font-family: "Inter", sans-serif;
-        font-size: 20px;
-        font-weight: 400;
+        font-size: clamp(1rem, 1.05vw, 1.1rem);
+        font-weight: 500;
         color: var(--cor-preto);
         cursor: pointer;
         transition: background-color 0.2s;
@@ -128,7 +128,7 @@
         a {
             display: block;
             padding: 8px 12px;
-            font-size: 18px;
+            font-size: clamp(1rem, 1vw, 1.5rem);
             color: #555;
             text-decoration: none;
             border-radius: 6px;
@@ -160,6 +160,8 @@
     /* Filtros na sidebar */
     .sidebar-filtros {
         padding: 16px;
+        overflow-y: scroll;
+        height: stretch;
     }
     
     .sidebar-filtros .form-group-arca {
@@ -212,7 +214,7 @@
 /* Conteúdo principal fora menu */
 .main-content {
     flex: 1;
-    margin-left: 310px;
+    margin-left: 16.66%;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -239,6 +241,11 @@
     &:hover {
         background-color: #F5F5F5;
     }
+}
+
+.topbar-menu-btn svg,
+.topbar-menu-btn svg * {
+    pointer-events: none;
 }
 
 .topbar-breadcrumb {
@@ -302,8 +309,11 @@
 .empty {
     text-align: center;
     color: #737373;
-    padding: 80px 32px;
     width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Responsivo */
@@ -330,5 +340,22 @@
 
     .content-area {
         padding: 24px 16px;
+    }
+
+    .topbar {
+        padding: 10px 14px;
+    }
+}
+
+
+/* Responsivo */
+@media (min-width: 1200px) {
+    .sidebar {
+        .sidebar-submenu {
+            a {
+                padding: 0;
+                margin: 4px 0;
+            }
+        }
     }
 }

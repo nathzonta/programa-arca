@@ -16,7 +16,7 @@
 </head>
 <body>
     <div class="sistema-container">
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar col-10 col-md-2" id="sidebar">
             <div class="sidebar-header">
                 <img src="./assets/imgs/Logo.svg" alt="Logo Programa Arca" class="sidebar-logo">
                 <div class="sidebar-brand">
@@ -34,8 +34,8 @@
                         <span>Adoção</span>
                         <img src="./assets/imgs/icons/select-icon.svg" alt="" class="sidebar-menu-arrow">
                     </button>
-                    <ul class="sidebar-submenu open" id="submenu-adocao">
-                        <li><a href="./adocao.html" class="active">Encontre seu companheiro</a></li>
+                    <ul class="sidebar-submenu open m-0" id="submenu-adocao">
+                        <li><a href="./adocao.html" class="active corpo-sm">Encontre seu companheiro</a></li>
                         <li><a href="./favoritados.html">Favoritados</a></li>
                         <li><a href="./historico.html">Histórico de Ações</a></li>
                     </ul>
@@ -64,7 +64,7 @@
                     <select id="filtro-porte">
                         <option value="">Selecione um porte</option>
                         <option value="pequeno">Pequeno</option>
-                        <option value="medio">Médio</option>
+                        <option value="médio">Médio</option>
                         <option value="grande">Grande</option>
                     </select>
                     <div class="select-arca" data-select="filtro-porte"></div>
@@ -74,7 +74,7 @@
                     <select id="filtro-sexo">
                         <option value="">Selecione um sexo</option>
                         <option value="macho">Macho</option>
-                        <option value="femea">Fêmea</option>
+                        <option value="fêmea">Fêmea</option>
                     </select>
                     <div class="select-arca" data-select="filtro-sexo"></div>
                 </div>
@@ -92,7 +92,7 @@
 
             <div class="sidebar-user mt-auto">
                 <div class="sidebar-user-avatar">
-                    <img src="./assets/imgs/icons/user-avatar.svg" alt="Avatar">
+                    <img src="./assets/imgs/avatar-exemplo.jpg" alt="Avatar">
                 </div>
                 <div class="sidebar-user-info">
                     <span class="sidebar-user-name" id="side-user-name">Cidadao</span>
@@ -103,12 +103,12 @@
 
         <div class="main-content">
             <header class="topbar">
-                <button class="topbar-menu-btn col-1" id="menu-toggle">
+                <button class="topbar-menu-btn col-2" id="menu-toggle">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 </button>
                 <nav class="topbar-breadcrumb">
-                    <img class="topbar-icon" src="./assets/imgs/icons/janela.svg" alt="">
-                    <span class="topbar-breadcrumb-separator"></span>
+                    <img class="topbar-icon d-none d-md-block" src="./assets/imgs/icons/janela.svg" alt="">
+                    <span class="topbar-breadcrumb-separator d-none d-md-block"></span>
                     <span>Adoção</span>
                     <svg width="8" height="12" viewBox="0 0 8 12" fill="none"><path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     <span>Encontre seu companheiro</span>

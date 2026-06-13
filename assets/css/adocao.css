@@ -72,7 +72,6 @@
 
 .card-animal-img {
     width: 100%;
-    height: 280px;
     border-radius: 15px;
     object-fit: cover;
     background-color: #F5F5F5;
@@ -144,7 +143,6 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
-    padding: 16px 20px;
 }
 
 /* Botões de ação */

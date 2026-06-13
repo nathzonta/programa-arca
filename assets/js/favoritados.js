@@ -35,14 +35,14 @@ function renderizar(animaisFav) {
     });
 
     if (filtrados.length === 0) {
-        $grid.html(('<p class="empty">Nenhum animal favoritado possue o filtro.</p>'));
+        $grid.html(('<p class="empty">Nenhum animal favoritado possui o filtro.</p>'));
         return;
     }
 
     var html = '';
     $.each(filtrados, function (i, animal) {
         html +=
-        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" data-animal-id="' + animal.id + '">' +
+        '<div class="col-12 col-md-4 card card-animal p-1" data-animal-id="' + animal.id + '">' +
             '<div class="card-body d-flex flex-column gap-3">' +
                 '<div style="position: relative;">' +
                     '<img class="card-animal-img col-12" src="' + (animal.imagem || './assets/imgs/placeholder.png') + '" alt="' + animal.nome + '">' +
@@ -51,9 +51,9 @@ function renderizar(animaisFav) {
                     '<h4 class="d-flex justify-content-between">' + animal.nome + '</h4>' +
                     '<div class="card-animal-badges">' +
                         '<span class="badge-arca badge-arca-sucesso">Porte ' + (animal.porte || '').toLowerCase() + '</span>' +
-                        '<span class="badge-arca badge-arca-rosa">R$ ' + (animal.valor_custo || '0') + '/mes</span>' +
+                        '<span class="badge-arca badge-arca-rosa">R$ ' + (animal.valor_custo || '0') + '/mês</span>' +
                     '</div>' +
-                    '<p class="corpo corpo-sm text-muted mt-2">' +
+                    '<p class="corpo corpo-sm text-muted mt-2 p-2">' +
                     (animal.especie || '') + ': ' + (animal.raca || '') + ' | ' + (animal.idade_aprox || '') + ' anos<br><br>' +
                     (animal.descricao || '') +
                     '</p>' +

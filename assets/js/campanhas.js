@@ -1,6 +1,13 @@
 let campanhasFiltradas = [];
+let sessao = null;
 
 $(document).ready(function () {
+    if (!protegerRota(['cidadao', 'representante'])) {
+        return;
+    }
+    sessao = getSessao();
+
+    carregarDadosSidebar();
     inicializarFiltros();
     carregarCampanhas();
 });
@@ -17,18 +24,19 @@ function renderizarCampanhas(lista) {
     if (!$grid.length) return;
 
     if (lista.length === 0) {
-        $grid.html('<p style="text-align: center; color: #737373; width: 100%;">Nenhuma campanha encontrada.</p>');
+        $grid.html('<p style="empty">Nenhuma campanha encontrada.</p>');
         return;
     }
 
     var html = '';
     $.each(lista, function (i, campanha) {
         html +=
-        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1" data-id="' + campanha.id + '">' +
+        '<div class="col-12 col-md card card-campanha p-1" data-id="' + campanha.id + '">' +
             '<div class="card-body d-flex flex-column justify-content-between gap-4">' +
-                '<img class="col-12" style="border-radius: 15px; height: 220px; object-fit: cover;" src="' + (campanha.imagem || './assets/imgs/placeholder.png') + '" alt="' + (campanha.titulo || '') + '">' +
+                '<img class="col-12" style="border-radius: 15px;" src="' + (campanha.imagem || './assets/imgs/placeholder.png') + '" alt="' + (campanha.titulo || '') + '">' +
                 '<div class="card-campanha-text mx-4">' +
                     '<h4>' + (campanha.titulo || '') + '</h4>' +
+                    '<span class="badge-arca badge-arca-aviso mb-2 me-1">Feira de Adoção</span>' +
                     '<p class="corpo corpo-sm text-muted mt-2">' + (campanha.descricao || '') + '</p>' +
                 '</div>' +
                 '<div class="card-campanha-infos mx-4">' +
