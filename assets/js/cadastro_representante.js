@@ -1,4 +1,5 @@
 $(function () {
+
     var K_FORM = '.cadastro-form';
     var K_SUBMIT = '.cadastro-form button[type="submit"]';
 
@@ -25,21 +26,25 @@ $(function () {
             }
         }
 
-        // Validação de email duplicado antes de criar
+        if (!dados.senha || dados.senha.trim().length < 6) {
+            window.alert('A senha deve ter pelo menos 6 caracteres.');
+            return;
+        }
+
         buscarUsuarioPorEmail(dados.email.trim())
             .then(function (existente) {
                 if (existente) {
-                    window.alert('Este e-mail já está cadastrado no sistema.');
+                    window.alert('Este e-mail ja esta cadastrado no sistema.');
                     return;
                 }
 
-                // Criar usuário
                 return criarUsuario({
+                    nome: dados.nome.trim(),
                     email: dados.email.trim(),
                     senha: dados.senha,
-                    tipo: 'cidadao',
-                    nome: dados.nome.trim(),
-                    cpf: dados['cpf'] || '',
+                    tipo: 'representante',
+                    id_empresa: null,
+                    cpf: dados.cpf || '',
                     'data-nascimento': dados['data-nascimento'] || '',
                     cep: dados.cep || '',
                     rua: dados.rua || '',
@@ -49,8 +54,8 @@ $(function () {
             })
             .then(function (novoUsuario) {
                 if (novoUsuario) {
-                    window.alert('Usuário cadastrado com sucesso!');
-                    window.location.href = './login.html';
+                    sessionStorage.setItem('representante_id', novoUsuario.id);
+                    window.location.href = './cadastro_instituicao.html';
                 }
             })
             .catch(function (erro) {

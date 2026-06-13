@@ -1,76 +1,85 @@
-/**
- * login.js — Autenticação de usuários
- *
- * Dependências: jQuery, funcoes.js (MD5, getValoresInput),
- *               conexao_bd.js (buscarUsuarioPorEmail, salvarSessao)
- */
+let usuarioLogado = null;
 
 $(function () {
 
-    // ---- Seletores (compatíveis com login.html) ----
     var K_FORM = '.login-form';
     var K_SUBMIT = '.login-form button[type="submit"]';
 
-    // ---- Evento de clique no botão de login ----
     $(K_SUBMIT).on('click', function (e) {
         e.preventDefault();
-
         var dados = getValoresInput(K_FORM);
-
         if (!dados) {
             window.alert('Preencha os campos de login.');
             return;
         }
-
-        // Validação individual
         if (!dados.email || dados.email.trim() === '') {
             window.alert('Preencha o campo de email.');
             return;
         }
-
         if (!dados.senha || dados.senha.trim() === '') {
             window.alert('Preencha o campo de senha.');
             return;
         }
-
         login(dados.email.trim(), dados.senha);
     });
 
-    // ---- Envio do form com Enter ----
     $(K_FORM).on('submit', function (e) {
         e.preventDefault();
         $(K_SUBMIT).trigger('click');
     });
 
+    $('#modal-perfil-representante').on('click', function () {
+        loginComo('representante');
+    });
+
+    $('#modal-perfil-cidadao').on('click', function () {
+        loginComo('cidadao');
+    });
+
+    $('#modal-perfil-close').on('click', function () {
+        $('#modal-perfil').toggleClass('escondido');
+    });
 });
 
-/**
- * Tenta autenticar o usuário no banco fake.
- * @param {string} email
- * @param {string} password - Senha em texto plano
- */
 function login(email, password) {
     buscarUsuarioPorEmail(email)
         .then(function (usuario) {
-            console.log(usuario);
             if (!usuario) {
-                window.alert('Usuário não encontrado.');
+                window.alert('Usuario nao encontrado.');
                 return;
             }
-
             if (usuario.senha !== MD5(password)) {
                 window.alert('Senha incorreta.');
                 return;
             }
 
-            // Login bem-sucedido
-            salvarSessao(usuario);
-            window.alert('Login realizado com sucesso!');
+            usuarioLogado = usuario;
 
-            // Redireciona para a página inicial
-            window.location.href = './index.html';
+            if (usuario.id_empresa !== null && usuario.id_empresa !== undefined) {
+                $('#modal-perfil').toggleClass('escondido');
+            } else {
+                loginComo('cidadao');
+            }
         })
         .catch(function (erro) {
             window.alert('Erro ao realizar login: ' + erro.message);
         });
+}
+
+function loginComo(tipo) {
+    if (!usuarioLogado) return;
+
+    usuarioLogado.tipo = tipo;
+    if (tipo === 'cidadao') {
+        usuarioLogado.id_empresa = null;
+    }
+
+    salvarSessao(usuarioLogado);
+    $('#modal-perfil').removeClass('escondido');
+
+    if (tipo === 'representante') {
+        window.location.href = './listagem_animais.html';
+    } else {
+        window.location.href = './adocao.html';
+    }
 }

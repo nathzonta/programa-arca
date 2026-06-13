@@ -142,28 +142,6 @@
     visibility: visible;
 }
 
-/* Estado vazio */
-.favoritados-empty {
-    text-align: center;
-    color: #737373;
-    padding: 80px 32px;
-    width: 100%;
-}
-
-.favoritados-empty h3 {
-    font-family: "Montserrat", sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--cor-preto);
-}
-
-.favoritados-empty a {
-    color: var(--cor-terciaria);
-    font-weight: 500;
-    text-decoration: underline;
-}
-
 @media (max-width: 768px) {
     .card-animal-footer {
         gap: 24px;

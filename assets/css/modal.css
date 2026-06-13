@@ -115,47 +115,7 @@
     color: #666;
 }
 
-/* Formulário */
-.modal-form-row {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-
-.modal-field {
-    flex: 1;
-    margin-bottom: 0;
-
-    label {
-        font-size: 14px;
-        margin-bottom: 6px;
-    }
-
-    input, .select-arca-trigger {
-        height: 36px;
-        padding: 8px 12px;
-        font-size: 14px;
-    }
-
-    &.modal-field-desc {
-        flex: 2;
-    }
-
-    &.modal-field-file {
-        margin-bottom: 16px;
-
-        input[type="file"] {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #E5E5E5;
-            border-radius: 10px;
-            font-size: 14px;
-            background-color: white;
-        }
-    }
-}
-
-/* Estado de erro nos campos */
+/* Erro nos campos */
 .form-group-arca.error {
     input, .select-arca-trigger {
         border-color: #D32F2F;
@@ -171,7 +131,7 @@
     color: #D32F2F;
 }
 
-/* Botões de ação */
+/* Botões */
 .modal-form-actions {
     display: flex;
     justify-content: flex-end;
@@ -266,19 +226,11 @@
     .modal-form-row {
         flex-wrap: wrap;
     }
-
-    .modal-field {
-        min-width: calc(50% - 8px);
-    }
 }
 
 @media (max-width: 576px) {
     .modal-container {
         width: 95%;
-    }
-
-    .modal-field {
-        min-width: 100%;
     }
 
     .modal-form-actions {

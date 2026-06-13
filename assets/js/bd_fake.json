@@ -2,37 +2,114 @@
     "contas": [
         {
             "id": 1,
-            "email": "representante@arca.br",
+            "nome": "Administrador",
+            "email": "admin@arca.br",
             "senha": "ea899ba5a202ad8253b6ce5ad06c12d0",
             "tipo": "representante",
-            "id_instituicao": 1
+            "id_empresa": 1,
+            "favoritos": [],
+            "historico": []
         },
         {
             "id": 2,
+            "nome": "Cidadão Teste",
             "email": "cidadao@arca.br",
             "senha": "ea899ba5a202ad8253b6ce5ad06c12d0",
-            "tipo": "cidadao"
+            "tipo": "cidadao",
+            "id_empresa": null,
+            "favoritos": [],
+            "historico": []
         }
     ],
     "animais": [
         {
             "id": 1,
-            "nome": "Big Johnson",
-            "porte": "Grande",
-            "especie": "Caramelo",
-            "raca": "Vira-lata",
-            "idade_aprox": "5",
-            "valor_custo": "321",
-            "personalidade": "Grandão",
-            "ficha_medica": "/documentos/ficha_medica/1.pdf",
-            "descricao": "É grandão",
-            "imagem": "/imagens/animais/1.png",
+            "nome": "Tobias",
+            "porte": "Médio",
+            "especie": "Cachorro",
+            "raca": "Indefinida",
+            "idade_aprox": "4",
+            "valor_custo": "185",
+            "personalidade": "Grandao",
+            "ficha_medica": "",
+            "sexo": "Macho",
+            "saude": "Saudável, vacinas em dia",
+            "descricao": "Tobias é muito sociável e afetuoso, ele adora estar por perto e encher os dias da família de carinho e diversão.",
+            "imagem": "./assets/imgs/tobias.png",
+            "fk_instituicao": 1
+        },
+        {
+            "id": 2,
+            "nome": "Luna",
+            "porte": "Pequeno",
+            "especie": "Gato",
+            "raca": "Indefinida",
+            "idade_aprox": "1",
+            "valor_custo": "115",
+            "personalidade": "Pequenina",
+            "ficha_medica": "",
+            "sexo": "Fêmea",
+            "saude": "Saudável, vacinas em dia",
+            "descricao": "Luna é uma gatinha tranquila e observadora que adora encontrar um cantinho confortável para descansar perto das pessoas.",
+            "imagem": "./assets/imgs/luna.png",
             "fk_instituicao": 1
         }
     ],
     "instituicoes": [
         {
-            "id": 1
+            "id": 1,
+            "nome": "ONG Teste",
+            "cnpj": "00.000.000/0001-00",
+            "email": "contato@teste.org",
+            "telefone": "(27) 99999-0000",
+            "endereco": "Rua das Flores, 100",
+            "cidade": "Vitoria",
+            "estado": "ES",
+            "descricao": "ONG dedicada ao resgate animal"
+        }
+    ],
+    "campanhas": [
+        {
+            "id": 1,
+            "titulo": "Patinhas da Serra",
+            "descricao": "A Patinhas da Serra realizará uma campanha de castração para cães e gatos, com vagas limitadas. A ação promove a saúde e o bem-estar animal, além de contribuir para o controle populacional. <b>Levar CPF!</b>",
+            "imagem": "./assets/imgs/campanha-1.jpg",
+            "tipo": "Castração",
+            "data": "11/07/2026 às 12h até 16h",
+            "local": "Shopping Montserrat",
+            "fk_instituicao": 1
+        },
+        {
+            "id": 2,
+            "titulo": "ONG Amor de Pet",
+            "descricao": "A ONG Amor de Pet convida você para uma feira de adoção repleta de animais à procura de um lar cheio de carinho. Venha conhecer cães e gatos resgatados e encontre um novo melhor amigo para a vida toda.",
+            "imagem": "./assets/imgs/campanha-2.jpg",
+            "tipo": "Feira de Adoção",
+            "data": "08/07/2026 às 07h até 13h",
+            "local": "Shopping Mestre Álvaro",
+            "fk_instituicao": 1
+        },
+        {
+            "id": 3,
+            "titulo": "Instituto Vida Animal",
+            "descricao": "O Instituto Vida Animal ES promoverá uma ação de vacinação gratuita para cães e gatos. A iniciativa visa reforçar a prevenção de doenças e incentivar os cuidados essenciais com a saúde dos pets da comunidade.",
+            "imagem": "./assets/imgs/campanha-3.jpg",
+            "tipo": "Vacinação",
+            "data": "28/07/2026 às 08h até 12h",
+            "local": "Pracinha de Cidade Continental",
+            "fk_instituicao": 1
+        }
+    ],
+    "notificacoes": [
+        {
+            "id": 1,
+            "nome_pessoa": "Cidadao Teste",
+            "email_pessoa": "cidadao@arca.br",
+            "id_conta": 2,
+            "id_animal": 1,
+            "id_instituicao": 1,
+            "data": "2025-06-01",
+            "lida": false
         }
     ]
 }

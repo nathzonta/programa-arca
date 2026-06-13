@@ -1,67 +1,49 @@
-var campanhas = [
-    {
-        id: 1,
-        nome: "Patinhas da Serra",
-        tipo: "Castração",
-        descricao: "A Patinhas da Serra realizará uma campanha de castração para cães e gatos, com vagas limitadas. A ação promove a saúde e o bem-estar animal, além de contribuir para o controle populacional e a redução do abandono. Levar CPF!",
-        data: "11/07/2026 às 12h até 16h",
-        local: "Shopping Montserrat",
-        imagem: "./assets/imgs/campanha-1.jpg"
-    },
-    {
-        id: 2,
-        nome: "ONG Amor de Pet",
-        tipo: "Feira de Adoção",
-        descricao: "A ONG Amor de Pet convida você para uma feira de adoção repleta de animais à procura de um lar cheio de carinho. Venha conhecer cães e gatos resgatados e encontre um novo melhor amigo para a vida toda.",
-        data: "08/07/2026 às 07h até 13h",
-        local: "Shopping Mestre Álvaro",
-        imagem: "./assets/imgs/campanha-2.jpg"
-    },
-    {
-        id: 3,
-        nome: "Instituto Vida Animal",
-        tipo: "Vacinação",
-        descricao: "O Instituto Vida Animal ES promoverá uma ação de vacinação gratuita para cães e gatos. A iniciativa visa reforçar a prevenção de doenças e incentivar os cuidados essenciais com a saúde dos pets da comunidade.",
-        data: "28/07/2026 às 08h até 12h",
-        local: "Pracinha de Cidade Continental",
-        imagem: "./assets/imgs/campanha-3.jpg"
-    }
-];
+let campanhaEditando = null;
+let campanhasFiltradas = [];
+let sessao = null;
 
-var tipoBadgeClass = {
-    "Castração": "badge-arca-sucesso",
-    "Feira de Adoção": "badge-arca-aviso",
-    "Vacinação": "badge-arca-info"
-};
-
-var campanhaEditando = null;
-var campanhasFiltradas = campanhas.slice();
-
+// Quando o DOM iniciar, inicializamos tudo e verificamos se a pessoa pode ver a tela sempre
 $(document).ready(function () {
+    if (!protegerRota(['representante'])) {
+        return;
+    }
+    sessao = getSessao();
+
+    carregarDadosSidebar();
     inicializarModal();
     inicializarFiltros();
     inicializarPreview();
-    renderizarCampanhas(campanhas);
+    carregarCampanhas();
 });
 
-function inicializarModal() {
-    $('#btn-nova-campanha').on('click', function () { abrirModal(); });
-    $('#modal-close').on('click', function () { fecharModal(); });
-    $('#btn-cancelar').on('click', function () { fecharModal(); });
-
-    $('#modal-campanha').on('click', function (e) {
-        if (e.target === this) fecharModal();
+function carregarCampanhas() {
+    listarCampanhas().then(function (todasCampanhas) {
+        campanhasFiltradas = todasCampanhas.filter(function (c) {
+            return c.fk_instituicao === sessao.id_empresa;
+        });
+        renderizarCampanhas(campanhasFiltradas);
     });
+}
 
-    $(document).on('keydown', function (e) {
-        if (e.key === 'Escape' && $('#modal-campanha').hasClass('open')) {
+function inicializarModal() {
+    $('#btn-nova-campanha').on('click', function() { 
+        abrirModal(); // Tem que chamar assim se não a bomba da arrow function manda this
+    });
+    
+    $('#modal-close').on('click', fecharModal); // Xzinho em cima
+    $('#btn-cancelar').on('click', fecharModal); // Pelo botão mesmo
+
+    // Fecha clicando fora do modal, na parte escura atrás
+    $('#modal-campanha').on('click', function (e) {
+        if (e.target === this) {
             fecharModal();
         }
     });
 
     $('#form-campanha').on('submit', function (e) {
         e.preventDefault();
-        if (validarFormulario()) {
+
+        if (validarFormulario('#form-campanha')) {
             salvarCampanha();
         }
     });
@@ -90,11 +72,12 @@ function fecharModal() {
 }
 
 function preencherFormulario(campanha) {
-    $('#campanha-nome').val(campanha.nome || '');
+    $('#campanha-nome').val(campanha.titulo || '');
     $('#campanha-tipo').val(campanha.tipo || '');
     $('#campanha-descricao').val(campanha.descricao || '');
     $('#campanha-data').val(campanha.data || '');
     $('#campanha-local').val(campanha.local || '');
+    $('#preview-img').attr('src', campanha.imagem || './assets/imgs/placeholder.png');
 
     setTimeout(function () {
         if (typeof iniciarSelects === 'function') {
@@ -107,10 +90,9 @@ function preencherFormulario(campanha) {
 function limparFormulario() {
     $('#form-campanha')[0].reset();
     $('#campanha-imagem').val('');
-
-    $('#preview-nome').text('Nome da organização');
+    $('#preview-nome').text('Nome da organizacao');
     $('#preview-tipo').text('Tipo de campanha').attr('class', 'badge-arca mb-2 me-1');
-    $('#preview-descricao').text('Descrição da campanha...');
+    $('#preview-descricao').text('Descricao da campanha...');
     $('#preview-data').html('<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">Data do evento');
     $('#preview-local').html('<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Local do evento');
     $('#preview-img').attr('src', './assets/imgs/placeholder.png');
@@ -124,36 +106,35 @@ function limparFormulario() {
 
 function inicializarPreview() {
     $('[data-preview]').on('input change', atualizarPreview);
-
-    var observer = new MutationObserver(atualizarPreview);
+    
+    let observer = new MutationObserver(atualizarPreview);
     $('.select-arca').each(function () {
-        observer.observe(this, { childList: true, subtree: true, attributes: true });
+        observer.observe(this, { 
+            childList: true, 
+            subtree: true, 
+            attributes: true 
+        });
     });
 }
 
 function atualizarPreview() {
-    var nome = $('#campanha-nome').val() || 'Nome da organização';
-    var tipo = $('#campanha-tipo').val() || '';
-    var descricao = $('#campanha-descricao').val() || 'Descrição da campanha...';
-    var data = $('#campanha-data').val() || 'Data do evento';
-    var local = $('#campanha-local').val() || 'Local do evento';
+    const dados = getValoresInput('#form-campanha');
 
-    $('#preview-nome').text(nome);
-
-    var $badge = $('#preview-tipo');
-    if (tipo) {
-        $badge.text(tipo).attr('class', 'badge-arca ' + (tipoBadgeClass[tipo] || '') + ' mb-2 me-1');
-    } else {
-        $badge.text('Tipo de campanha').attr('class', 'badge-arca mb-2 me-1');
+    const tipos = {
+        "Castração": "sucesso",
+        "Feira de Adoção": "aviso",
+        "Vacinação": "info"
     }
 
-    $('#preview-descricao').text(descricao);
-    $('#preview-data').html('<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + data);
-    $('#preview-local').html('<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + local);
+    $('#preview-nome').text(dados['campanha_nome'] || 'Nome da organizacao');
+    $('#preview-descricao').text(dados['campanha_descricao'] || 'Descrição da campanha...');
+    $('#preview-tipo').text(dados['campanha_tipo'] || 'Tipo de campanha').attr('class', `badge-arca badge-arca-${tipos[dados['campanha_tipo']]} mb-2 me-1`)
+    $('#preview-data').html('<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (dados['campanha_data'] || 'Data do evento') );
+    $('#preview-local').html('<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + (dados['campanha_local'] || 'Local do evento'));
 
-    var fileInput = document.getElementById('campanha-imagem');
+    let fileInput = document.getElementById('campanha-imagem');
     if (fileInput && fileInput.files && fileInput.files[0]) {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = function (e) {
             $('#preview-img').attr('src', e.target.result);
         };
@@ -161,72 +142,34 @@ function atualizarPreview() {
     }
 }
 
-function validarFormulario() {
-    var campos = [
-        { id: 'campanha-nome', label: 'Nome' },
-        { id: 'campanha-tipo', label: 'Tipo' },
-        { id: 'campanha-descricao', label: 'Descrição' },
-        { id: 'campanha-data', label: 'Data' },
-        { id: 'campanha-local', label: 'Local' }
-    ];
-
-    var valido = true;
-    limparErros();
-
-    campos.forEach(function (campo) {
-        var $input = $('#' + campo.id);
-        var $formGroup = $input.closest('.form-group-arca');
-
-        if (!$input.val() || !$input.val().trim()) {
-            $formGroup.addClass('error');
-            valido = false;
-        }
-    });
-
-    if (!valido) {
-        $('#modal-alert').addClass('visible');
-    }
-
-    return valido;
-}
-
-function limparErros() {
-    $('.form-group-arca.error').removeClass('error');
-    $('#modal-alert').removeClass('visible');
-}
-
 function salvarCampanha() {
-    var fileInput = document.getElementById('campanha-imagem');
-    var imagemSrc = (fileInput && fileInput.files && fileInput.files[0])
-        ? URL.createObjectURL(fileInput.files[0])
-        : (campanhaEditando ? campanhaEditando.imagem : '');
+    const dados = getValoresInput('#form-campanha');
 
-    var novaCampanha = {
-        id: campanhaEditando ? campanhaEditando.id : Date.now(),
-        nome: $('#campanha-nome').val(),
-        tipo: $('#campanha-tipo').val(),
-        descricao: $('#campanha-descricao').val(),
-        data: $('#campanha-data').val(),
-        local: $('#campanha-local').val(),
-        imagem: imagemSrc
+    let objetoCampanha = {
+        titulo: dados['campanha_nome'],
+        descricao: dados['campanha_descricao'],
+        imagem: './assets/imgs/placeholder.png',
+        tipo: dados['campanha_tipo'],
+        data: dados['campanha_data'],
+        local: dados['campanha_local'],
+        fk_instituicao: sessao.id_empresa
     };
 
     if (campanhaEditando) {
-        var index = campanhas.findIndex(function (c) { return c.id === campanhaEditando.id; });
-        if (index !== -1) {
-            campanhas[index] = $.extend({}, campanhas[index], novaCampanha);
-        }
+        atualizarCampanha(campanhaEditando.id, objetoCampanha).then(function () {
+            carregarCampanhas();
+            fecharModal();
+        });
     } else {
-        campanhas.push(novaCampanha);
+        criarCampanha(objetoCampanha).then(function () {
+            carregarCampanhas();
+            fecharModal();
+        });
     }
-
-    campanhasFiltradas = campanhas.slice();
-    renderizarCampanhas(campanhasFiltradas);
-    fecharModal();
 }
 
 function renderizarCampanhas(lista) {
-    var $grid = $('#campanhas-grid');
+    let $grid = $('#campanhas-grid');
     if (!$grid.length) return;
 
     if (lista.length === 0) {
@@ -234,53 +177,74 @@ function renderizarCampanhas(lista) {
         return;
     }
 
-    var html = lista.map(function (campanha) {
-        var badgeClasse = tipoBadgeClass[campanha.tipo] || '';
-        return '' +
+    const tipos = {
+        "Castração": "sucesso",
+        "Feira de Adoção": "aviso",
+        "Vacinação": "info"
+    }
+
+    let html = '';
+    $.each(lista, function (i, campanha) {
+        html +=
         '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1" data-id="' + campanha.id + '">' +
             '<div class="card-body d-flex flex-column justify-content-between gap-4">' +
-                '<img class="col-12" style="border-radius: 15px; height: 220px; object-fit: cover;" src="' + campanha.imagem + '" alt="' + campanha.nome + '">' +
+                '<img class="col-12" style="border-radius: 15px; height: 220px; object-fit: cover;" src="' + (campanha.imagem || './assets/imgs/placeholder.png') + '" alt="' + (campanha.titulo || '') + '">' +
                 '<div class="card-campanha-text mx-4">' +
-                    '<h4 class="d-flex justify-content-between">' + campanha.nome +
-                        '<span class="card-campanha-edit" onclick="abrirModal(campanhas.find(function(c){return c.id===' + campanha.id + '}))">' +
+                    '<h4 class="d-flex justify-content-between">' + (campanha.titulo || '') +
+                        '<span class="card-campanha-edit btn-editar-campanha" data-id="' + campanha.id + '">' +
                             '<img src="./assets/imgs/icons/editar.svg">' +
                         '</span>' +
                     '</h4>' +
-                    '<span class="badge-arca ' + badgeClasse + ' mb-2 me-1">' + campanha.tipo + '</span>' +
-                    '<p class="corpo corpo-sm text-muted mt-2">' + campanha.descricao + '</p>' +
+                    '<span class="badge-arca badge-arca-' + (tipos[campanha.tipo]) + ' mb-2 me-1">' + (campanha.tipo) + '</span>' +
+                    '<p class="corpo corpo-sm text-muted mt-2">' + (campanha.descricao || '') + '</p>' +
                 '</div>' +
                 '<div class="card-campanha-infos mx-4">' +
-                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + campanha.data + '</p>' +
-                    '<p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + campanha.local + '</p>' +
+                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.data || '') + '</p>' +
+                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.local || '') + '</p>' +
+                '</div>' +
+                '<div class="mx-4 mb-2">' +
+                    '<button class="btn-excluir-campanha" data-id="' + campanha.id + '" style="border:none; background:none; color:#e74c3c; cursor:pointer; font-size:12px;">Excluir</button>' +
                 '</div>' +
             '</div>' +
         '</div>';
-    }).join('');
+    });
 
     $grid.html(html);
 }
 
+$(document).on('click', '.btn-editar-campanha', function () {
+    let id = $(this).data('id');
+    buscarCampanhaPorId(id).then(function (campanha) {
+        if (campanha) abrirModal(campanha);
+    });
+});
+
+$(document).on('click', '.btn-excluir-campanha', function () {
+    let id = $(this).data('id');
+    if (confirm('Tem certeza que deseja excluir esta campanha?')) {
+        removerCampanha(id).then(function () {
+            carregarCampanhas();
+        });
+    }
+});
+
 function inicializarFiltros() {
     $('#filtro-nome').on('input', aplicarFiltros);
-    $('#filtro-local').on('input', aplicarFiltros);
 
-    var observer = new MutationObserver(aplicarFiltros);
+    let observer = new MutationObserver(aplicarFiltros);
     $('.sidebar-filtros .select-arca').each(function () {
         observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function aplicarFiltros() {
-    var nome = ($('#filtro-nome').val() || '').toLowerCase();
-    var tipo = $('#filtro-tipo').val() || '';
-    var local = ($('#filtro-local').val() || '').toLowerCase();
+    let nome = ($('#filtro-nome').val() || '').toLowerCase();
 
-    campanhasFiltradas = campanhas.filter(function (campanha) {
-        var matchNome = campanha.nome.toLowerCase().includes(nome);
-        var matchTipo = !tipo || campanha.tipo === tipo;
-        var matchLocal = campanha.local.toLowerCase().includes(local);
-        return matchNome && matchTipo && matchLocal;
+    listarCampanhas().then(function (todasCampanhas) {
+        campanhasFiltradas = todasCampanhas.filter(function (c) {
+            return c.fk_instituicao === sessao.id_empresa &&
+                (!nome || (c.titulo || '').toLowerCase().indexOf(nome) > -1);
+        });
+        renderizarCampanhas(campanhasFiltradas);
     });
-
-    renderizarCampanhas(campanhasFiltradas);
 }
