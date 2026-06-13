@@ -60,7 +60,7 @@ function renderizar(animaisFav) {
                     '</p>' +
                 '</div>' +
                 '<div class="card-animal-footer">' +
-                    '<button class="action-btn btn-remover-favorito" data-id="' + animal.id + '">' +
+                    '<button class="action-btn btn-favorito active" data-id="' + animal.id + '">' +
                         '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                             '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' +
                         '</svg>' +
@@ -74,7 +74,7 @@ function renderizar(animaisFav) {
     $grid.html(html);
 }
 
-$(document).on('click', '.btn-remover-favorito', function () {
+$(document).on('click', '.btn-favorito', function () {
     var id = $(this).data('id');
     if (!sessao) return;
 

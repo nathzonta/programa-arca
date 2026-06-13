@@ -88,24 +88,28 @@
     transition: all 0.2s ease;
 }
 
-.action-btn.btn-interesse.active svg {
-    stroke: #E53935;
-    fill: #E53935;
+.action-btn.btn-favorito {
+    border-color: #E5E5E5;
+    background: white;
+
+    svg {
+        stroke: #FFB300;
+        fill: none;
+    }
 }
 
-.action-btn.btn-interesse.active {
-    border-color: #FFCDD2;
-    background: #FFF5F5;
-}
-
-.action-btn.btn-favorito.active svg {
-    stroke: #FFB300;
-    fill: #FFB300;
+.action-btn.btn-favorito:hover {
+    border-color: #FFB300;
+    background: #FFFDE7;
 }
 
 .action-btn.btn-favorito.active {
-    border-color: #FFECB3;
+    border-color: #FFB300;
     background: #FFFDE7;
+
+    svg {
+        fill: #FFB300;
+    }
 }
 
 /* Tooltip */

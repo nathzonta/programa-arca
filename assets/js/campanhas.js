@@ -1,5 +1,5 @@
-let campanhasFiltradas = [];
 let sessao = null;
+let campanhasFiltradas = [];
 
 $(document).ready(function () {
     if (!protegerRota(['cidadao', 'representante'])) {
@@ -23,12 +23,20 @@ function renderizarCampanhas(lista) {
     let $grid = $('#campanhas-grid');
     if (!$grid.length) return;
 
+    console.log(lista);
+
     if (lista.length === 0) {
         $grid.html('<p style="empty">Nenhuma campanha encontrada.</p>');
         return;
     }
 
-    var html = '';
+    const tipos = {
+        "Castração": "sucesso",
+        "Feira de Adoção": "aviso",
+        "Vacinação": "info"
+    }
+
+    let html = '';
     $.each(lista, function (i, campanha) {
         html +=
         '<div class="col-12 col-md card card-campanha p-1" data-id="' + campanha.id + '">' +
@@ -36,11 +44,11 @@ function renderizarCampanhas(lista) {
                 '<img class="col-12" style="border-radius: 15px;" src="' + (campanha.imagem || './assets/imgs/placeholder.png') + '" alt="' + (campanha.titulo || '') + '">' +
                 '<div class="card-campanha-text mx-4">' +
                     '<h4>' + (campanha.titulo || '') + '</h4>' +
-                    '<span class="badge-arca badge-arca-aviso mb-2 me-1">Feira de Adoção</span>' +
+                    '<span class="badge-arca badge-arca-' + (tipos[campanha.tipo]) + ' mb-2 me-1">' + (campanha.tipo) + '</span>' +
                     '<p class="corpo corpo-sm text-muted mt-2">' + (campanha.descricao || '') + '</p>' +
                 '</div>' +
                 '<div class="card-campanha-infos mx-4">' +
-                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.data_inicio || '') + '</p>' +
+                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.data || '') + '</p>' +
                     '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.local || '') + '</p>' +
                 '</div>' +
             '</div>' +
@@ -64,7 +72,7 @@ function aplicarFiltros() {
 
     listarCampanhas().then(function (todasCampanhas) {
         campanhasFiltradas = todasCampanhas.filter(function (c) {
-            return !tipo || c.titulo === tipo;
+            return !tipo || c.tipo === tipo;
         });
         renderizarCampanhas(campanhasFiltradas);
     });
