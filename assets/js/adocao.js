@@ -69,7 +69,7 @@ function renderCard(index) {
                             '<div class="card-animal-badges m-0">' +
                                 '<span class="badge-arca badge-arca-sucesso">Porte ' + (a.porte || '').toLowerCase() + '</span>' +
                                 '<span class="badge-arca badge-arca-info">' + (a.saude || '') + '</span>' +
-                                '<span class="badge-arca badge-arca-rosa">R$ ' + (a.valor_custo || '0') + '/mes</span>' +
+                                '<span class="badge-arca badge-arca-rosa">R$ ' + (a.valor_custo || '0') + '/mês</span>' +
                             '</div>' +
                         '</div>' +
                         '<div class="card-animal-info d-grid g-2 mt-2">' +

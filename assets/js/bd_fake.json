@@ -35,7 +35,7 @@
             "sexo": "Macho",
             "saude": "Saudável, vacinas em dia",
             "descricao": "Tobias é muito sociável e afetuoso, ele adora estar por perto e encher os dias da família de carinho e diversão.",
-            "imagem": "./assets/imgs/tobias.png",
+            "imagem": "./assets/imgs/tobias-card.jpg",
             "fk_instituicao": 1
         },
         {
@@ -51,7 +51,7 @@
             "sexo": "Fêmea",
             "saude": "Saudável, vacinas em dia",
             "descricao": "Luna é uma gatinha tranquila e observadora que adora encontrar um cantinho confortável para descansar perto das pessoas.",
-            "imagem": "./assets/imgs/luna.png",
+            "imagem": "./assets/imgs/luna-card.jpg",
             "fk_instituicao": 1
         }
     ],

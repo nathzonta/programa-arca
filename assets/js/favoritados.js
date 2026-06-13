@@ -35,7 +35,7 @@ function renderizar(animaisFav) {
     });
 
     if (filtrados.length === 0) {
-        $grid.html(('<p class="empty">Nenhum animal favoritado possue o filtro.</p>'));
+        $grid.html(('<p class="empty">Nenhum animal favoritado possui o filtro.</p>'));
         return;
     }
 
@@ -51,7 +51,7 @@ function renderizar(animaisFav) {
                     '<h4 class="d-flex justify-content-between">' + animal.nome + '</h4>' +
                     '<div class="card-animal-badges">' +
                         '<span class="badge-arca badge-arca-sucesso">Porte ' + (animal.porte || '').toLowerCase() + '</span>' +
-                        '<span class="badge-arca badge-arca-rosa">R$ ' + (animal.valor_custo || '0') + '/mes</span>' +
+                        '<span class="badge-arca badge-arca-rosa">R$ ' + (animal.valor_custo || '0') + '/mês</span>' +
                     '</div>' +
                     '<p class="corpo corpo-sm text-muted mt-2 p-2">' +
                     (animal.especie || '') + ': ' + (animal.raca || '') + ' | ' + (animal.idade_aprox || '') + ' anos<br><br>' +
