@@ -22,7 +22,6 @@
 
 .favoritados-grid .card-animal-img {
     width: 100%;
-    height: 280px;
     border-radius: 15px;
     object-fit: cover;
     background-color: #F5F5F5;
@@ -57,8 +56,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 40px;
-    padding: 16px 0 8px;
+    gap: 16px;
 }
 
 .action-btn {

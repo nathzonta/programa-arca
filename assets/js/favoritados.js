@@ -2,7 +2,7 @@ var animais = [
     {
         id: 1,
         nome: "Luna",
-        imagem: "./assets/imgs/luna.png",
+        imagem: "./assets/imgs/luna-card.jpg",
         porte: "Pequeno",
         vacina: "Vacinação completa",
         custo: 115,
@@ -15,7 +15,7 @@ var animais = [
     {
         id: 2,
         nome: "Tobias",
-        imagem: "./assets/imgs/tobias.png",
+        imagem: "./assets/imgs/tobias-card.jpg",
         porte: "Médio",
         vacina: "Vacinação incompleta",
         custo: 180,
@@ -120,7 +120,7 @@ function renderizar() {
     var html = animaisFav.map(function (animal) {
         var temInteresse = interesses.has(animal.id);
         return '' +
-        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" data-animal-id="' + animal.id + '">' +
+        '<div class="col-12 col-md-4 card card-animal p-1" data-animal-id="' + animal.id + '">' +
             '<div class="card-body d-flex flex-column gap-3">' +
                 '<div style="position: relative;">' +
                     '<img class="card-animal-img col-12" src="' + animal.imagem + '" alt="' + animal.nome + '">' +
@@ -132,7 +132,7 @@ function renderizar() {
                         '<span class="badge-arca badge-arca-info">' + animal.vacina + '</span>' +
                         '<span class="badge-arca badge-arca-rosa">Custo mensal médio de R$ ' + animal.custo + '</span>' +
                     '</div>' +
-                    '<p class="corpo corpo-sm text-muted mt-2">' +
+                    '<p class="corpo corpo-sm text-muted mt-2 p-2">' +
                     animal.especie + ': ' + animal.raca + ' | ' + animal.idade + ' | ' + animal.sexo + '<br><br>' +
                     animal.descricao +
                     '</p>' +

@@ -2,7 +2,7 @@ var animais = [
     {
         id: 1,
         nome: "Luna",
-        imagem: "./assets/imgs/luna.png",
+        imagem: "./assets/imgs/luna-card.jpg",
         porte: "Pequeno",
         vacina: "Vacinação completa",
         custo: 115,
@@ -16,7 +16,7 @@ var animais = [
     {
         id: 2,
         nome: "Tobias",
-        imagem: "./assets/imgs/tobias.png",
+        imagem: "./assets/imgs/tobias-card.jpg",
         porte: "Médio",
         vacina: "Vacinação incompleta",
         custo: 180,
@@ -77,7 +77,7 @@ function renderCard(index) {
     var temFavorito = favoritos.has(animal.id);
 
     $container.html(
-        '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1" id="swipe-card">' +
+        '<div class="col-12 col-md-4 card card-animal p-1" id="swipe-card">' +
             '<div class="card-body">' +
                 '<img class="card-animal-img" src="' + animal.imagem + '" alt="' + animal.nome + '">' +
                 '<div class="card-animal-text mt-4">' +
@@ -89,15 +89,12 @@ function renderCard(index) {
                     '</div>' +
                 '</div>' +
                 '<div class="card-animal-info d-grid g-2 mt-2">' +
-                    '<p class="corpo corpo-sm text-muted mt-2" style="font-size: clamp(1rem, 1vw, 1.2rem)">' + animal.especie + ': ' + animal.raca + ' | ' + animal.idade + ' | ' + animal.sexo + '</p>' +
-                    '<p class="corpo corpo-sm text-muted mt-2" style="font-size: clamp(1rem, 1vw, 1.2rem)">' + animal.descricao + '</p>' +
+                    '<p class="corpo corpo-sm text-muted mt-2" style="font-size: clamp(0.9rem, 0.9vw, 0.9rem)">' + animal.especie + ': ' + animal.raca + ' | ' + animal.idade + ' | ' + animal.sexo + '</p>' +
+                    '<p class="corpo corpo-sm text-muted mt-2" style="font-size: clamp(0.9rem, 0.9vw, 0.9rem)">' + animal.descricao + '</p>' +
                 '</div>' +
                 '<div class="card-animal-localizacao mt-2">' +
-                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-                        '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>' +
-                        '<circle cx="12" cy="10" r="3"/>' +
-                    '</svg>' + 
-                    '<p class="corpo corpo-sm text-muted mt-3" style="font-size: clamp(1rem, 1vw, 1.2rem)">' + animal.localizacao + '</p>' +
+                    '<img src="./assets/imgs/icons/mapa.svg"></img>' + 
+                    '<p class="corpo corpo-sm text-muted mt-3" style="font-size: clamp(0.9rem, 0.9vw, 0.9rem)">' + animal.localizacao + '</p>' +
                 '</div>' +
                 '<div class="card-animal-footer">' +
                     '<button class="action-btn btn-interesse ' + (temInteresse ? 'active' : '') + '" data-acao="interesse">' +
