@@ -1,10 +1,3 @@
-/**
- * cadastro_instituicao.js — Cadastro de instituição e vínculo ao representante
- *
- * Dependências: jQuery, funcoes.js (getValoresInput),
- *               conexao_bd.js (criarInstituicao, atualizarUsuario, salvarSessao, buscarUsuarioPorId)
- */
-
 $(function () {
 
     var K_FORM = '.cadastro-form';

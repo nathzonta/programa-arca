@@ -14,11 +14,11 @@
     <link rel="shortcut icon" href="./assets/imgs/prefeitura.png" type="image/x-icon">
 </head>
 <body>
-    <main class="login-container d-flex pt-3">
-        <div class="login-image col-lg-6 d-lg-flex d-none align-items-center">
+    <main class="login-container d-flex">
+        <div class="login-image p-4 col-lg-6 d-lg-flex d-none align-items-center">
             <img src="./assets/imgs/gato-lg.png" alt="Gatos">
         </div>
-        <div class="login-content col-lg-6 col-12">
+        <div class="login-content col-lg-6 col-12 py-3 pe-4">
             <div class="login-header text-center mb-3">
                 <a href="./index.html"><img src="./assets/imgs/Logo.svg" alt="Logo Programa Arca" class="login-logo"></a>
                 <h3 class="login-title">Login</h3>
@@ -26,7 +26,7 @@
             <div class="login-card">
                 <div class="login-card-header">
                     <div class="login-card-text">
-                        <p class="corpo">Entre na sua conta</p>
+                        <p class="corpo m-0">Entre na sua conta</p>
                         <p class="corpo corpo-sm">
                             Não tem uma conta? Faça o cadastro no botão <span class="d-lg-inline-block d-none">ao lado.</span><span class="d-lg-none d-inline-block">abaixo.</span><br>
                             Você tem uma organização? Cadastre-a no botão <span class="d-lg-inline-block d-none">ao lado.</span><span class="d-lg-none d-inline-block">abaixo.</span>
@@ -46,7 +46,7 @@
                         <label for="senha">Senha</label>
                         <input type="password" id="senha" name="senha" placeholder="Digite sua senha">
                     </div>
-                    <div class="col-md-7 col-12">
+                    <div class="mt-4 mt-md-0 col-md-7 col-12">
                         <button type="submit">Faça login</button>
                     </div>
                 </form>
@@ -54,17 +54,16 @@
         </div>
     </main>
 
-    <!-- Modal de escolha de perfil -->
-    <div id="modal-perfil" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; display:none; align-items:center; justify-content:center;">
-        <div style="background:#fff; border-radius:16px; padding:32px 40px; max-width:420px; width:90%; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,0.2);">
-            <h3 style="font-family:'Montserrat',sans-serif; font-weight:600; margin-bottom:24px; color:#333;">Como voce deseja entrar?</h3>
-            <button id="modal-perfil-representante" style="display:block; width:100%; padding:12px; margin-bottom:12px; border:none; border-radius:8px; background:#6C3FC5; color:#fff; font-family:'Montserrat',sans-serif; font-weight:600; font-size:15px; cursor:pointer;">Como representante</button>
-            <button id="modal-perfil-cidadao" style="display:block; width:100%; padding:12px; margin-bottom:16px; border:2px solid #6C3FC5; border-radius:8px; background:transparent; color:#6C3FC5; font-family:'Montserrat',sans-serif; font-weight:600; font-size:15px; cursor:pointer;">Como cidadao</button>
-            <button id="modal-perfil-close" style="border:none; background:none; color:#999; font-size:13px; cursor:pointer;">Cancelar</button>
+    <!-- Modal de escolher perfil -->
+    <div id="modal-perfil" class="escondido">
+        <div>
+            <h3>Como você deseja entrar?</h3>
+            <button id="modal-perfil-representante">Como representante</button>
+            <button id="modal-perfil-cidadao">Como cidadao</button>
+            <button id="modal-perfil-close">Cancelar</button>
         </div>
     </div>
 
-    <!-- Scripts: ordem obrigatória -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="./assets/js/funcoes.js"></script>
     <script src="./assets/js/conexao_bd.js"></script>

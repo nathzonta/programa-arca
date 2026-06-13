@@ -14,11 +14,11 @@
     <link rel="shortcut icon" href="./assets/imgs/prefeitura.png" type="image/x-icon">
 </head>
 <body>
-    <main class="cadastro-container d-flex pt-3">
-        <div class="cadastro-image col-lg-6 d-lg-flex d-none align-items-center">
+    <main class="cadastro-container d-flex">
+        <div class="cadastro-image p-4 col-lg-6 d-lg-flex d-none align-items-center">
             <img src="./assets/imgs/gato-lg.png" alt="Gatos">
         </div>
-        <div class="cadastro-content col-lg-6 col-12">
+        <div class="cadastro-content col-lg-6 col-12 py-3 pe-4">
             <div class="cadastro-header text-center mb-3">
                 <a href="./index.html"><img src="./assets/imgs/Logo.svg" alt="Logo Programa Arca" class="cadastro-logo"></a>
                 <h3 class="cadastro-title">Cadastro de cidadão</h3>
@@ -26,7 +26,7 @@
             <div class="cadastro-card">
                 <div class="cadastro-card-header">
                     <div class="cadastro-card-text">
-                        <p class="corpo">Cadastre sua conta</p>
+                        <p class="corpo m-0">Cadastre sua conta</p>
                         <p class="corpo corpo-sm">
                             Já tem uma conta? Faça login no botão <span class="d-lg-inline-block d-none">ao lado.</span><span class="d-lg-none d-inline-block">abaixo.</span><br>
                             Você tem uma organização? Cadastre-a no botão <span class="d-lg-inline-block d-none">ao lado.</span><span class="d-lg-none d-inline-block">abaixo.</span>
@@ -37,60 +37,51 @@
                         <a class="corpo corpo-sm" href="./cadastro_representante.html">Cadastrar organização</a>
                     </div>
                 </div>
-                <form class="cadastro-form d-flex flex-column align-items-center">
-                    <div class="row w-100 justify-content-center">
-                        <div class="form-group-arca col-md-5 col-12 mb-3">
-                            <label for="nome">Nome completo</label>
-                            <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo">
-                        </div>
-                        <div class="form-group-arca col-md-4 col-12 mb-3">
-                            <label for="cpf">CPF</label>
-                            <input type="text" id="cpf" name="cpf" placeholder="123.456.789-10">
-                        </div>
-                        <div class="form-group-arca col-md-3 col-12 mb-3">
-                            <label for="data-nascimento">Data de nascimento</label>
-                            <input type="text" id="data-nascimento" name="data-nascimento" placeholder="DD/MM/AAAA">
-                        </div>
+                <form class="cadastro-form row g-md-3 cadastro-form justify-content-end" method="post">
+                    <div class="form-group-arca col-md-5 col-12">
+                        <label for="nome">Nome completo</label>
+                        <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo">
                     </div>
-                    <div class="row w-100 justify-content-center">
-                        <div class="form-group-arca col-md-4 col-12 mb-3">
-                            <label for="email">E-mail</label>
-                            <input type="email" id="email" name="email" placeholder="exemplo@exemplo.com">
-                        </div>
-                        <div class="form-group-arca col-md-3 col-12 mb-3">
-                            <label for="cep">CEP</label>
-                            <input type="text" id="cep" name="cep" placeholder="12345-678">
-                        </div>
-                        <div class="form-group-arca col-md-5 col-12 mb-3">
-                            <label for="rua">Rua</label>
-                            <input type="text" id="rua" name="rua" placeholder="Rua Exemplo">
-                        </div>
+                    <div class="form-group-arca col-md-3 col-12">
+                        <label for="cpf">CPF</label>
+                        <input type="text" id="cpf" name="cpf" placeholder="123.456.789-10">
                     </div>
-                    <div class="row w-100 justify-content-center">
-                        <div class="form-group-arca col-md-2 col-12 mb-3">
-                            <label for="numero">Número</label>
-                            <input type="text" id="numero" name="numero" placeholder="123">
-                        </div>
-                        <div class="form-group-arca col-md-5 col-12 mb-3">
-                            <label for="bairro">Bairro</label>
-                            <input type="text" id="bairro" name="bairro" placeholder="Bairro Exemplo">
-                        </div>
-                        <div class="form-group-arca col-md-5 col-12 mb-3">
-                            <label for="senha">Senha</label>
-                            <input type="password" id="senha" name="senha" placeholder="Insira sua melhor senha">
-                        </div>
+                    <div class="form-group-arca col-md-4 col-12">
+                        <label for="data-nascimento">Data de nascimento</label>
+                        <input type="text" id="data-nascimento" name="data-nascimento" placeholder="DD/MM/AAAA">
                     </div>
-                    <div class="row w-100 justify-content-end mt-3">
-                        <div class="col-md-5 col-12">
-                            <button type="submit">Cadastre-se</button>
-                        </div>
+                    <div class="form-group-arca col-md-4 col-12">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" placeholder="exemplo@exemplo.com">
+                    </div>
+                    <div class="form-group-arca col-md-3 col-12">
+                        <label for="cep">CEP</label>
+                        <input type="text" id="cep" name="cep" placeholder="12345-678">
+                    </div>
+                    <div class="form-group-arca col-md-5 col-12">
+                        <label for="rua">Rua</label>
+                        <input type="text" id="rua" name="rua" placeholder="Rua Exemplo">
+                    </div>
+                    <div class="form-group-arca col-md-2 col-12">
+                        <label for="numero">Número</label>
+                        <input type="text" id="numero" name="numero" placeholder="123">
+                    </div>
+                    <div class="form-group-arca col-md-5 col-12">
+                        <label for="bairro">Bairro</label>
+                        <input type="text" id="bairro" name="bairro" placeholder="Bairro Exemplo">
+                    </div>
+                    <div class="form-group-arca col-md-5 col-12">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" name="senha" placeholder="Insira sua melhor senha">
+                    </div>
+                    <div class="mt-4 mt-md-5 col-md-5 col-12">
+                        <button type="submit">Cadastre-se</button>
                     </div>
                 </form>
             </div>
         </div>
     </main>
 
-    <!-- Scripts: ordem obrigatória -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="./assets/js/funcoes.js"></script>
     <script src="./assets/js/conexao_bd.js"></script>

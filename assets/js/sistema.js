@@ -2,6 +2,7 @@ $(document).ready(function () {
     inicializarSidebar();
 });
 
+// Abrir / Fechar a sidebar pelo botão no mobile
 function inicializarSidebar() {
     var $sidebar = $('#sidebar');
     var $menuToggle = $('#menu-toggle');
@@ -17,6 +18,10 @@ function inicializarSidebar() {
 
         $menuItem.toggleClass('active');
         $submenu.toggleClass('open');
+    });
+
+    $('.sidebar-logo').on('click', function () {
+        window.location.href = './index.html';
     });
 
     $(document).on('click', function (e) {

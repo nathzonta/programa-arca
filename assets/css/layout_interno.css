@@ -30,6 +30,7 @@
         .sidebar-logo {
             width: 56px;
             height: 56px;
+            cursor: pointer;
         }
 
         .sidebar-brand {
@@ -294,6 +295,15 @@
     text-align: center;
     font-size: 14px;
     color: #737373;
+}
+
+/* Não encontrou nada */
+
+.empty {
+    text-align: center;
+    color: #737373;
+    padding: 80px 32px;
+    width: 100%;
 }
 
 /* Responsivo */

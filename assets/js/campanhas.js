@@ -1,4 +1,4 @@
-var campanhasFiltradas = [];
+let campanhasFiltradas = [];
 
 $(document).ready(function () {
     inicializarFiltros();
@@ -13,7 +13,7 @@ function carregarCampanhas() {
 }
 
 function renderizarCampanhas(lista) {
-    var $grid = $('#campanhas-grid');
+    let $grid = $('#campanhas-grid');
     if (!$grid.length) return;
 
     if (lista.length === 0) {
@@ -23,10 +23,6 @@ function renderizarCampanhas(lista) {
 
     var html = '';
     $.each(lista, function (i, campanha) {
-        var meta = parseFloat(campanha.meta || 0);
-        var arrecadado = parseFloat(campanha.arrecadado || 0);
-        var porcentagem = meta > 0 ? Math.min(100, Math.round((arrecadado / meta) * 100)) : 0;
-
         html +=
         '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1" data-id="' + campanha.id + '">' +
             '<div class="card-body d-flex flex-column justify-content-between gap-4">' +
@@ -36,9 +32,8 @@ function renderizarCampanhas(lista) {
                     '<p class="corpo corpo-sm text-muted mt-2">' + (campanha.descricao || '') + '</p>' +
                 '</div>' +
                 '<div class="card-campanha-infos mx-4">' +
-                    '<p class="corpo corpo-micro mb-2"><strong>Meta:</strong> R$ ' + meta.toFixed(2) + '</p>' +
-                    '<p class="corpo corpo-micro mb-2"><strong>Arrecadado:</strong> R$ ' + arrecadado.toFixed(2) + ' (' + porcentagem + '%)</p>' +
-                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.data_inicio || '') + ' a ' + (campanha.data_fim || '') + '</p>' +
+                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.data_inicio || '') + '</p>' +
+                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.local || '') + '</p>' +
                 '</div>' +
             '</div>' +
         '</div>';
@@ -50,14 +45,14 @@ function renderizarCampanhas(lista) {
 function inicializarFiltros() {
     $('#filtro-tipo').on('change', aplicarFiltros);
 
-    var observer = new MutationObserver(aplicarFiltros);
+    let observer = new MutationObserver(aplicarFiltros);
     $('.sidebar-filtros .select-arca').each(function () {
         observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function aplicarFiltros() {
-    var tipo = $('#filtro-tipo').val() || '';
+    let tipo = $('#filtro-tipo').val() || '';
 
     listarCampanhas().then(function (todasCampanhas) {
         campanhasFiltradas = todasCampanhas.filter(function (c) {

@@ -1,11 +1,4 @@
-/**
- * login.js — Autenticação de usuários
- *
- * Dependências: jQuery, funcoes.js (MD5, getValoresInput),
- *               conexao_bd.js (buscarUsuarioPorEmail, salvarSessao)
- */
-
-var usuarioLogado = null;
+let usuarioLogado = null;
 
 $(function () {
 
@@ -44,7 +37,7 @@ $(function () {
     });
 
     $('#modal-perfil-close').on('click', function () {
-        $('#modal-perfil').hide();
+        $('#modal-perfil').toggleClass('escondido');
     });
 });
 
@@ -63,7 +56,7 @@ function login(email, password) {
             usuarioLogado = usuario;
 
             if (usuario.id_empresa !== null && usuario.id_empresa !== undefined) {
-                $('#modal-perfil').show();
+                $('#modal-perfil').toggleClass('escondido');
             } else {
                 loginComo('cidadao');
             }
@@ -82,7 +75,7 @@ function loginComo(tipo) {
     }
 
     salvarSessao(usuarioLogado);
-    $('#modal-perfil').hide();
+    $('#modal-perfil').removeClass('escondido');
 
     if (tipo === 'representante') {
         window.location.href = './listagem_animais.html';

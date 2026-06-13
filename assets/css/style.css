@@ -59,14 +59,14 @@ h5 {
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;   
-    font-size: 18px;
+    font-size: clamp(1rem, 0.6vw, 1.5rem);
 }
 
 .corpo-lg {
     font-size: 20px !important;
 }
 .corpo-sm {
-    font-size: 16px !important;
+    font-size: clamp(0.9rem, 0.85vw, 1rem);
 }
 .corpo-micro {
     font-weight: 500 !important;

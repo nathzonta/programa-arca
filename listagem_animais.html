@@ -151,15 +151,15 @@
                     </div>
                 </div>
 
-                <form id="form-animal">
-                    <div class="modal-form-row">
-                        <div class="form-group-arca modal-field">
+                <form id="form-animal" class="d-flex flex-column gap-3">
+                    <div class="d-flex gap-3">
+                        <div class="form-group-arca col">
                             <label for="animal-nome">Nome</label>
-                            <input type="text" id="animal-nome" placeholder="Digite o nome do animal" data-preview="nome">
+                            <input name="animal_nome" type="text" id="animal-nome" placeholder="Digite o nome do animal" data-preview="nome">
                         </div>
-                        <div class="form-group-arca modal-field">
+                        <div class="form-group-arca col">
                             <label for="animal-porte">Porte do animal</label>
-                            <select id="animal-porte" data-preview="porte">
+                            <select name="animal_porte" id="animal-porte" data-preview="porte">
                                 <option value="">Selecione o porte</option>
                                 <option value="Pequeno">Pequeno</option>
                                 <option value="Médio">Médio</option>
@@ -167,9 +167,9 @@
                             </select>
                             <div class="select-arca" data-select="animal-porte"></div>
                         </div>
-                        <div class="form-group-arca modal-field">
+                        <div class="form-group-arca col">
                             <label for="animal-especie">Espécie</label>
-                            <select id="animal-especie" data-preview="especie">
+                            <select name="animal_especie" id="animal-especie" data-preview="especie">
                                 <option value="">Selecione a espécie</option>
                                 <option value="Gato">Gato</option>
                                 <option value="Cachorro">Cachorro</option>
@@ -178,10 +178,10 @@
                         </div>
                     </div>
 
-                    <div class="modal-form-row">
-                        <div class="form-group-arca modal-field">
+                    <div class="d-flex gap-3">
+                        <div class="form-group-arca col">
                             <label for="animal-raca">Raça</label>
-                            <select id="animal-raca" data-preview="raca">
+                            <select name="animal_raca" id="animal-raca" data-preview="raca">
                                 <option value="">Selecione a raça</option>
                                 <option value="Indefinida">Indefinida</option>
                                 <option value="Persa">Persa</option>
@@ -191,17 +191,17 @@
                             </select>
                             <div class="select-arca" data-select="animal-raca"></div>
                         </div>
-                        <div class="form-group-arca modal-field">
+                        <div class="form-group-arca col">
                             <label for="animal-idade">Idade</label>
-                            <input type="text" id="animal-idade" placeholder="Digite a idade" data-preview="idade">
+                            <input name="animal_idade" type="text" id="animal-idade" placeholder="Digite a idade" data-preview="idade">
                         </div>
-                        <div class="form-group-arca modal-field">
+                        <div class="form-group-arca col">
                             <label for="animal-custo">Custo mensal de cuidados</label>
-                            <input type="text" id="animal-custo" placeholder="Digite o custo médio" data-preview="custo">
+                            <input name="animal_custo" type="text" id="animal-custo" placeholder="Digite o custo médio" data-preview="custo">
                         </div>
-                        <div class="form-group-arca modal-field">
+                        <div class="form-group-arca col">
                             <label for="animal-sexo">Sexo</label>
-                            <select id="animal-sexo" data-preview="sexo">
+                            <select name="animal_sexo" id="animal-sexo" data-preview="sexo">
                                 <option value="">Selecione</option>
                                 <option value="Macho">Macho</option>
                                 <option value="Fêmea">Fêmea</option>
@@ -210,14 +210,14 @@
                         </div>
                     </div>
 
-                    <div class="modal-form-row">
-                        <div class="form-group-arca modal-field modal-field-desc">
+                    <div class="d-flex gap-3">
+                        <div class="form-group-arca col">
                             <label for="animal-descricao">Descrição</label>
-                            <input type="text" id="animal-descricao" placeholder="Digite a descrição do animal" data-preview="descricao">
+                            <input name="animal_descricao" type="text" id="animal-descricao" placeholder="Digite a descrição do animal" data-preview="descricao">
                         </div>
-                        <div class="form-group-arca modal-field">
+                        <div class="form-group-arca col">
                             <label for="animal-saude">Estado de saúde</label>
-                            <select id="animal-saude">
+                            <select name="animal_saude"  id="animal-saude">
                                 <option value="">Selecione correspondente</option>
                                 <option value="Saudável, vacinas em dia">Saudável, vacinas em dia</option>
                                 <option value="Precisa de vacinas">Precisa de vacinas</option>
@@ -227,9 +227,9 @@
                         </div>
                     </div>
 
-                    <div class="form-group-arca modal-field modal-field-file">
+                    <div class="form-group-arca col">
                         <label for="animal-imagem">Imagem do animal</label>
-                        <input type="file" id="animal-imagem" accept="image/*" data-preview="imagem">
+                        <input name="animal_arquivo" type="file" id="animal-imagem" accept="image/*" data-preview="imagem">
                     </div>
 
                     <div class="modal-form-actions">

@@ -1,10 +1,3 @@
-/**
- * cadastro_representante.js — Cadastro de representante institucional
- *
- * Dependências: jQuery, funcoes.js (MD5, getValoresInput),
- *               conexao_bd.js (buscarUsuarioPorEmail, criarUsuario)
- */
-
 $(function () {
 
     var K_FORM = '.cadastro-form';
