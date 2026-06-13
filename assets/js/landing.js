@@ -3,9 +3,9 @@ $(document).ready(function () {
         $('#menu-mobile').toggleClass('aberto');
     });
 
-    var $cards = $('.adoption-card');
-    var $botoes = $('.adoption-botoes button');
-    var cardAtual = 0;
+    let $cards = $('.adoption-card');
+    let $botoes = $('.adoption-botoes button');
+    let cardAtual = 0;
 
     function mostrarCard(index) {
         $cards.hide().eq(index).show().css('opacity', 1);
@@ -30,11 +30,11 @@ $(document).ready(function () {
         setInterval(avancar, 5000);
     }
 
-    var $badgesFiltro = $('#filtro-campanhas .badge-arca');
-    var $badgesCampanhas = $('#campanhas .badge-arca');
+    let $badgesFiltro = $('#filtro-campanhas .badge-arca');
+    let $badgesCampanhas = $('#campanhas .badge-arca');
 
     $badgesFiltro.on('click', function () {
-        var filtro = $(this).text();
+        let filtro = $(this).text();
 
         $badgesCampanhas.each(function () {
             if ($(this).text() === filtro || filtro === 'Todos') {

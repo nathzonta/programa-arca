@@ -1,9 +1,11 @@
-var sessao = null;
+let sessao = null;
 
 $(document).ready(function () {
-    if (!protegerRota(['representante'])) return;
-    carregarDadosSidebar();
+    if (!protegerRota(['representante'])) {
+        return;
+    }
     sessao = getSessao();
+    carregarDadosSidebar();
     carregarNotificacoes();
 });
 
@@ -11,8 +13,8 @@ function carregarNotificacoes() {
     if (!sessao || !sessao.id_empresa) return;
 
     listarNotificacoesPorInstituicao(sessao.id_empresa).then(function (notificacoes) {
-        var listaComAnimal = [];
-        var pendentes = notificacoes.length;
+        let listaComAnimal = [];
+        let pendentes = notificacoes.length;
 
         if (pendentes === 0) {
             renderizarNotificacoes([]);
@@ -40,7 +42,7 @@ function carregarNotificacoes() {
 }
 
 function renderizarNotificacoes(lista) {
-    var $container = $('#notif-list');
+    let $container = $('#notif-list');
     if (!$container.length) return;
 
     if (lista.length === 0) {
@@ -48,9 +50,9 @@ function renderizarNotificacoes(lista) {
         return;
     }
 
-    var html = '';
+    let html = '';
     $.each(lista, function (i, notif) {
-        var classeLida = notif.lida ? ' notif-lida' : '';
+        let classeLida = notif.lida ? ' notif-lida' : '';
         html +=
         '<div class="notif-card' + classeLida + '" data-id="' + notif.id + '">' +
             '<div class="notif-card-img">' +
@@ -78,9 +80,9 @@ function renderizarNotificacoes(lista) {
 }
 
 $(document).on('click', '.notif-btn-marcar-lida', function () {
-    var id = $(this).data('id');
+    let id = $(this).data('id');
     marcarNotificacaoLida(id).then(function () {
-        var $card = $('.notif-card[data-id="' + id + '"]');
+        let $card = $('.notif-card[data-id="' + id + '"]');
         $card.addClass('notif-lida');
         $card.find('.notif-btn-marcar-lida').remove();
     });

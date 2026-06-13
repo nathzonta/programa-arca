@@ -1,4 +1,4 @@
-var campanhasFiltradas = [];
+let campanhasFiltradas = [];
 
 $(document).ready(function () {
     inicializarFiltros();
@@ -13,7 +13,7 @@ function carregarCampanhas() {
 }
 
 function renderizarCampanhas(lista) {
-    var $grid = $('#campanhas-grid');
+    let $grid = $('#campanhas-grid');
     if (!$grid.length) return;
 
     if (lista.length === 0) {
@@ -45,14 +45,14 @@ function renderizarCampanhas(lista) {
 function inicializarFiltros() {
     $('#filtro-tipo').on('change', aplicarFiltros);
 
-    var observer = new MutationObserver(aplicarFiltros);
+    let observer = new MutationObserver(aplicarFiltros);
     $('.sidebar-filtros .select-arca').each(function () {
         observer.observe(this, { childList: true, subtree: true, attributes: true });
     });
 }
 
 function aplicarFiltros() {
-    var tipo = $('#filtro-tipo').val() || '';
+    let tipo = $('#filtro-tipo').val() || '';
 
     listarCampanhas().then(function (todasCampanhas) {
         campanhasFiltradas = todasCampanhas.filter(function (c) {

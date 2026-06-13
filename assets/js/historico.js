@@ -1,9 +1,12 @@
-var sessao = null;
+let sessao = null;
 
 $(document).ready(function () {
-    if (!protegerRota(['cidadao', 'representante'])) return;
-    carregarDadosSidebar();
+    if (!protegerRota(['cidadao', 'representante'])) {
+        return;
+    }
     sessao = getSessao();
+
+    carregarDadosSidebar();
     inicializarFiltro();
     carregarHistorico();
 });
@@ -17,27 +20,27 @@ function carregarHistorico() {
 }
 
 function renderizar(lista) {
-    var $grid = $('#historico-grid');
+    let $grid = $('#historico-grid');
     if (!$grid.length) return;
 
     if (!lista || lista.length === 0) {
-        $grid.html('<p class="historico-empty">Nenhuma acao registrada ainda.</p>');
+        $grid.html('<p class="empty">Nenhuma ação registrada.</p>');
         return;
     }
 
-    var filtro = $('#filtro-acao').val() || '';
-    var filtrados = lista.filter(function (a) {
+    let filtro = $('#filtro-acao').val() || '';
+    let filtrados = lista.filter(function (a) {
         return !filtro || a.acao === filtro;
     });
 
     if (filtrados.length === 0) {
-        $grid.html('<p class="historico-empty">Nenhuma acao encontrada para este filtro.</p>');
+        $grid.html('<p class="empty">Nenhuma ação encontrada para o filtro.</p>');
         return;
     }
 
-    var html = '';
+    let html = '';
     $.each(filtrados, function (i, item) {
-        var labelAcao = item.acao === 'favorito' ? 'Favoritado' :
+        let labelAcao = item.acao === 'favorito' ? 'Favoritado' :
                         item.acao === 'desfavoritado' ? 'Removido dos favoritos' :
                         item.acao === 'interessado' ? 'Demonstrou interesse em adotar' :
                         item.acao;

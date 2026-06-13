@@ -80,6 +80,70 @@ body {
         }
     }
 }
+
+#modal-perfil {
+    display: flex !important; 
+    position:fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.5); 
+    z-index: 9999; 
+    align-items: center; 
+    justify-content: center;
+    font-family:'Montserrat',sans-serif;
+
+    div {
+        background:#fff; 
+        border-radius:16px; 
+        padding:32px 40px; 
+        max-width:420px; 
+        width:90%; 
+        text-align:center; 
+        box-shadow:0 8px 32px rgba(0,0,0,0.2);
+
+        h3 {
+            font-weight:600;
+            margin-bottom:24px;
+            color:#333;
+        }
+
+        button {
+            display:block; 
+            width:100%; 
+            font-weight:600; 
+            font-size:15px; 
+        }
+
+        #modal-perfil-representante {
+            margin-bottom:12px;
+            border:none; 
+            border-radius:8px; 
+            background: var(--cor-secundaria); 
+            color:#fff; 
+        }
+
+        #modal-perfil-cidadao {
+            margin-bottom:16px; 
+            border:2px solid var(--cor-secundaria); 
+            border-radius:8px; 
+            background:transparent; 
+            color: var(--cor-secundaria); 
+        }
+
+        #modal-perfil-close {
+            border:none; 
+            background:none; 
+            color:#999; 
+            font-size:13px; 
+        }
+    }
+}
+
+#modal-perfil.escondido {
+    display: none !important;
+}
     
 @media (max-width: 992px) {
     .login-container {

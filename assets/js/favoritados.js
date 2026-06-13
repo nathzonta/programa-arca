@@ -21,13 +21,7 @@ function renderizar(animaisFav) {
     if (!$grid.length) return;
 
     if (!animaisFav || animaisFav.length === 0) {
-        $grid.html(
-            '<div class="favoritados-empty">' +
-                '<h3>Nenhum animal favoritado</h3>' +
-                '<p class="corpo corpo-sm">Voce ainda nao tem animais favoritados.</p>' +
-                '<a href="./adocao.html" class="corpo corpo-sm">Ir para Encontre seu companheiro</a>' +
-            '</div>'
-        );
+        $grid.html('<p class="empty">Nenhum animal favoritado.</p>');
         return;
     }
 
@@ -41,12 +35,7 @@ function renderizar(animaisFav) {
     });
 
     if (filtrados.length === 0) {
-        $grid.html(
-            '<div class="favoritados-empty">' +
-                '<h3>Nenhum animal encontrado</h3>' +
-                '<p class="corpo corpo-sm">Nenhum dos seus favoritos corresponde aos filtros selecionados.</p>' +
-            '</div>'
-        );
+        $grid.html(('<p class="empty">Nenhum animal favoritado possue o filtro.</p>'));
         return;
     }
 

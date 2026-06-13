@@ -1,17 +1,7 @@
-/**
- * registro.js — Registro de novos usuários
- *
- * Dependências: jQuery, funcoes.js (MD5, getValoresInput),
- *               conexao_bd.js (buscarUsuarioPorEmail, criarUsuario)
- */
-
 $(function () {
-
-    // ---- Seletores (compatíveis com cadastro.html) ----
     var K_FORM = '.cadastro-form';
     var K_SUBMIT = '.cadastro-form button[type="submit"]';
 
-    // ---- Evento de clique no botão de cadastro ----
     $(K_SUBMIT).on('click', function (e) {
         e.preventDefault();
 
@@ -22,7 +12,6 @@ $(function () {
             return;
         }
 
-        // Validação individual de cada campo obrigatório
         var camposObrigatorios = {
             'nome': 'Nome completo',
             'email': 'E-mail',
@@ -69,7 +58,6 @@ $(function () {
             });
     });
 
-    // ---- Envio do form com Enter ----
     $(K_FORM).on('submit', function (e) {
         e.preventDefault();
         $(K_SUBMIT).trigger('click');
