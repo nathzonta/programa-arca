@@ -122,6 +122,8 @@ body {
             border-radius:8px; 
             background: var(--cor-secundaria); 
             color:#fff; 
+            font-weight: 500;
+            font-size: 14px;
         }
 
         #modal-perfil-cidadao {
@@ -130,6 +132,9 @@ body {
             border-radius:8px; 
             background:transparent; 
             color: var(--cor-secundaria); 
+            font-weight: 500;
+            font-size: 14px;
+
         }
 
         #modal-perfil-close {

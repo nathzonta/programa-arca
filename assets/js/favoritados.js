@@ -17,11 +17,12 @@ function carregarFavoritos() {
 }
 
 function renderizar(animaisFav) {
+    var $content = $('.content-area')
     var $grid = $('#favoritados-grid');
     if (!$grid.length) return;
 
     if (!animaisFav || animaisFav.length === 0) {
-        $grid.html('<p class="empty">Nenhum animal favoritado.</p>');
+        $content.html('<p class="empty">Nenhum animal favoritado.</p>');
         return;
     }
 
