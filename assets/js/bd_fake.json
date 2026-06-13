@@ -2,16 +2,23 @@
     "contas": [
         {
             "id": 1,
-            "email": "representante@arca.br",
+            "nome": "Administrador",
+            "email": "admin@arca.br",
             "senha": "ea899ba5a202ad8253b6ce5ad06c12d0",
             "tipo": "representante",
-            "id_instituicao": 1
+            "id_empresa": 1,
+            "favoritos": [],
+            "historico": []
         },
         {
             "id": 2,
+            "nome": "Cidadão Teste",
             "email": "cidadao@arca.br",
             "senha": "ea899ba5a202ad8253b6ce5ad06c12d0",
-            "tipo": "cidadao"
+            "tipo": "cidadao",
+            "id_empresa": null,
+            "favoritos": [],
+            "historico": []
         }
     ],
     "animais": [
@@ -23,16 +30,49 @@
             "raca": "Vira-lata",
             "idade_aprox": "5",
             "valor_custo": "321",
-            "personalidade": "Grandão",
+            "personalidade": "Grandao",
             "ficha_medica": "/documentos/ficha_medica/1.pdf",
-            "descricao": "É grandão",
+            "descricao": "E grandao",
             "imagem": "/imagens/animais/1.png",
             "fk_instituicao": 1
         }
     ],
     "instituicoes": [
         {
-            "id": 1
+            "id": 1,
+            "nome": "ONG Patinhas",
+            "cnpj": "00.000.000/0001-00",
+            "email": "contato@patinhas.org",
+            "telefone": "(27) 99999-0000",
+            "endereco": "Rua das Flores, 100",
+            "cidade": "Vitoria",
+            "estado": "ES",
+            "descricao": "ONG dedicada ao resgate animal"
+        }
+    ],
+    "campanhas": [
+        {
+            "id": 1,
+            "titulo": "Campanha de Castração",
+            "descricao": "Ajude animais de rua",
+            "meta": "1000",
+            "arrecadado": "250",
+            "imagem": "/imagens/campanhas/1.png",
+            "data_inicio": "2025-01-01",
+            "data_fim": "2025-12-31",
+            "fk_instituicao": 1
+        }
+    ],
+    "notificacoes": [
+        {
+            "id": 1,
+            "nome_pessoa": "Cidadao Teste",
+            "email_pessoa": "cidadao@arca.br",
+            "id_conta": 2,
+            "id_animal": 1,
+            "id_instituicao": 1,
+            "data": "2025-06-01",
+            "lida": false
         }
     ]
 }

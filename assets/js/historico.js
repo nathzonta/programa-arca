@@ -1,65 +1,68 @@
-var acoesHistorico = [
-    {
-        id: 1,
-        animal: "Tobias",
-        imagem: "./assets/imgs/tobias.png",
-        tipo: "favoritado",
-        label: "Favoritado"
-    },
-    {
-        id: 2,
-        animal: "Tobias",
-        imagem: "./assets/imgs/tobias.png",
-        tipo: "interesse",
-        label: "Demonstrou interesse em adotar"
-    },
-    {
-        id: 3,
-        animal: "Luna",
-        imagem: "./assets/imgs/luna.png",
-        tipo: "interesse",
-        label: "Demonstrou interesse em adotar"
-    }
-];
+var sessao = null;
 
 $(document).ready(function () {
+    if (!protegerRota(['cidadao', 'representante'])) return;
+    carregarDadosSidebar();
+    sessao = getSessao();
     inicializarFiltro();
-    renderizar();
+    carregarHistorico();
 });
 
-function inicializarFiltro() {
-    $('#filtro-acao').on('change', renderizar);
+function carregarHistorico() {
+    if (!sessao) return;
 
-    var observer = new MutationObserver(renderizar);
-    $('.sidebar-filtros .select-arca').each(function () {
-        observer.observe(this, { childList: true, subtree: true, attributes: true });
+    listarHistoricoDaConta(sessao.id).then(function (historico) {
+        renderizar(historico);
     });
 }
 
-function renderizar() {
+function renderizar(lista) {
     var $grid = $('#historico-grid');
     if (!$grid.length) return;
 
-    var filtro = $('#filtro-acao').val() || '';
-    var lista = acoesHistorico.filter(function (a) { return !filtro || a.tipo === filtro; });
-
-    if (lista.length === 0) {
-        $grid.html('<p class="historico-empty">Nenhuma ação encontrada.</p>');
+    if (!lista || lista.length === 0) {
+        $grid.html('<p class="historico-empty">Nenhuma acao registrada ainda.</p>');
         return;
     }
 
-    var html = lista.map(function (acao) {
-        return '' +
-        '<article class="historico-card" data-id="' + acao.id + '">' +
+    var filtro = $('#filtro-acao').val() || '';
+    var filtrados = lista.filter(function (a) {
+        return !filtro || a.acao === filtro;
+    });
+
+    if (filtrados.length === 0) {
+        $grid.html('<p class="historico-empty">Nenhuma acao encontrada para este filtro.</p>');
+        return;
+    }
+
+    var html = '';
+    $.each(filtrados, function (i, item) {
+        var labelAcao = item.acao === 'favorito' ? 'Favoritado' :
+                        item.acao === 'desfavoritado' ? 'Removido dos favoritos' :
+                        item.acao === 'interessado' ? 'Demonstrou interesse em adotar' :
+                        item.acao;
+
+        html +=
+        '<article class="historico-card" data-id="' + item.id_animal + '">' +
             '<div class="historico-card-img">' +
-                '<img src="' + acao.imagem + '" alt="' + acao.animal + '">' +
+                '<img src="' + (item.imagem || './assets/imgs/placeholder.png') + '" alt="' + item.nome_animal + '">' +
             '</div>' +
             '<div class="historico-card-body">' +
-                '<h2 class="historico-card-nome">' + acao.animal + '</h2>' +
-                '<span class="badge-arca badge-historico-' + acao.tipo + '">' + acao.label + '</span>' +
+                '<h2 class="historico-card-nome">' + item.nome_animal + '</h2>' +
+                '<span class="badge-arca badge-historico-' + item.acao + '">' + labelAcao + '</span>' +
+                '<p class="corpo corpo-sm text-muted mt-1">' + item.data + '</p>' +
             '</div>' +
         '</article>';
-    }).join('');
+    });
 
     $grid.html(html);
+}
+
+function inicializarFiltro() {
+    $('#filtro-acao').on('change', carregarHistorico);
+
+    var observer = new MutationObserver(carregarHistorico);
+    $('.sidebar-filtros .select-arca').each(function () {
+        observer.observe(this, { childList: true, subtree: true, attributes: true });
+    });
 }

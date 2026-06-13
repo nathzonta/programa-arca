@@ -7,15 +7,8 @@ var MD5 = function(d){var r = M(V(Y(X(d),8*d.length)));return r.toLowerCase()};f
 
 // ============================================================
 // getValoresInput() — Captura centralizada de formulários
-// Suporta: text, email, password, number, tel, date,
-//           textarea, checkbox, radio, select, select customizado
 // ============================================================
 
-/**
- * Captura todos os valores de um formulário/seletor.
- * @param {string} elemento - Seletor CSS do container (ex: '#meu-form', '.cadastro-form')
- * @returns {Object|null} - Objeto com chave = name do campo, valor = valor capturado
- */
 function getValoresInput(elemento) {
     var $container = $(elemento);
 
@@ -26,51 +19,39 @@ function getValoresInput(elemento) {
 
     var retorno = {};
 
-    // ---- Inputs de texto / email / password / number / tel / date ----
     $container.find('input[name]').each(function () {
         var $input = $(this);
         var name = $input.attr('name');
         var type = ($input.attr('type') || 'text').toLowerCase();
 
-        // Checkbox: só inclui se estiver marcado
         if (type === 'checkbox') {
             retorno[name] = $input.is(':checked');
             return;
         }
-
-        // Radio: só inclui o valor do radio marcado no grupo
         if (type === 'radio') {
             if ($input.is(':checked')) {
                 retorno[name] = $input.val();
             }
             return;
         }
-
-        // file: retorna o filename (não o conteúdo)
         if (type === 'file') {
             var files = $input[0].files;
             retorno[name] = files && files.length > 0 ? files[0].name : '';
             return;
         }
-
-        // Demais tipos (text, email, password, number, tel, date, hidden, etc.)
         retorno[name] = $input.val();
     });
 
-    // ---- Textareas ----
     $container.find('textarea[name]').each(function () {
         var name = $(this).attr('name');
         retorno[name] = $(this).val();
     });
 
-    // ---- Selects nativos (ocultos via select.js, mas que mantêm value sincronizado) ----
     $container.find('select[name]').each(function () {
         var name = $(this).attr('name');
         retorno[name] = $(this).val();
     });
 
-    // ---- Selects customizados (.select-arca) ----
-    // Sincroniza o valor do select nativo correspondente
     $container.find('.select-arca[data-select]').each(function () {
         var selectId = $(this).data('select');
         var $selectNativo = $('#' + selectId);
@@ -80,4 +61,41 @@ function getValoresInput(elemento) {
     });
 
     return retorno;
+}
+
+// ============================================================
+// carregarDadosSidebar() — Preenche dados do usuário na sidebar
+// ============================================================
+
+function carregarDadosSidebar() {
+    var sessao = getSessao();
+    if (!sessao || !sessao.logado) {
+        window.location.href = './login.html';
+        return;
+    }
+    $('#side-user-name').text(sessao.nome || sessao.email);
+    $('#side-user-email').text(sessao.email);
+}
+
+// ============================================================
+// protegerRota() — Verifica login e tipo de usuário
+// ============================================================
+
+function protegerRota(tiposPermitidos) {
+    var sessao = getSessao();
+    if (!sessao || !sessao.logado) {
+        window.location.href = './login.html';
+        return false;
+    }
+    if (tiposPermitidos && tiposPermitidos.length > 0) {
+        if (tiposPermitidos.indexOf(sessao.tipo) === -1) {
+            if (sessao.tipo === 'representante') {
+                window.location.href = './listagem_animais.html';
+            } else {
+                window.location.href = './adocao.html';
+            }
+            return false;
+        }
+    }
+    return true;
 }

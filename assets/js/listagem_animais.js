@@ -1,41 +1,25 @@
-var animais = [
-    {
-        id: 1,
-        nome: "Luna",
-        imagem: "./assets/imgs/luna.png",
-        porte: "Pequeno",
-        vacina: "Vacinação completa",
-        custo: 115,
-        especie: "Gato",
-        raca: "Indefinida",
-        idade: "1 ano",
-        sexo: "Fêmea",
-        descricao: "Luna é uma gatinha tranquila e observadora que adora encontrar um cantinho confortável para descansar perto das pessoas."
-    },
-    {
-        id: 2,
-        nome: "Tobias",
-        imagem: "./assets/imgs/tobias.png",
-        porte: "Médio",
-        vacina: "Vacinação incompleta",
-        custo: 180,
-        especie: "Cachorro",
-        raca: "Labrador",
-        idade: "4 anos",
-        sexo: "Macho",
-        descricao: "Tobias é um cãozinho alegre e companheiro, sempre pronto para um passeio ou alguns minutos de brincadeira."
-    }
-];
-
 var animalEditando = null;
-var animaisFiltrados = animais.slice();
+var animaisFiltrados = [];
+var sessao = null;
 
 $(document).ready(function () {
+    if (!protegerRota(['representante'])) return;
+    carregarDadosSidebar();
+    sessao = getSessao();
     inicializarModal();
     inicializarFiltros();
     inicializarPreview();
-    renderizarAnimais(animais);
+    carregarAnimais();
 });
+
+function carregarAnimais() {
+    listarAnimais().then(function (todosAnimais) {
+        animaisFiltrados = todosAnimais.filter(function (a) {
+            return a.fk_instituicao === sessao.id_empresa;
+        });
+        renderizarAnimais(animaisFiltrados);
+    });
+}
 
 function inicializarModal() {
     $('#btn-novo-animal').on('click', function () { abrirModal(); });
@@ -87,8 +71,8 @@ function preencherFormulario(animal) {
     $('#animal-porte').val(animal.porte || '');
     $('#animal-especie').val(animal.especie || '');
     $('#animal-raca').val(animal.raca || '');
-    $('#animal-idade').val(animal.idade || '');
-    $('#animal-custo').val(animal.custo ? 'R$ ' + animal.custo.toFixed(2) : '');
+    $('#animal-idade').val(animal.idade_aprox || '');
+    $('#animal-custo').val(animal.valor_custo || '');
     $('#animal-sexo').val(animal.sexo || '');
     $('#animal-descricao').val(animal.descricao || '');
 
@@ -106,9 +90,9 @@ function limparFormulario() {
 
     $('#preview-name').text('Nome do pet');
     $('#preview-porte').text('Porte');
-    $('#preview-vacina').text('Vacinação');
-    $('#preview-custo').text('Custo mensal médio de R$ --');
-    $('#preview-desc').html('Espécie: Raça | Idade | Sexo<br><br>Preencha os campos para ver a pré-visualização do animal.');
+    $('#preview-vacina').text('Saude');
+    $('#preview-custo').text('Custo mensal medio de R$ --');
+    $('#preview-desc').html('Especie: Raca | Idade | Sexo<br><br>Preencha os campos para ver a pre-visualizacao do animal.');
     $('#preview-img').attr('src', '');
 
     setTimeout(function () {
@@ -130,20 +114,19 @@ function inicializarPreview() {
 function atualizarPreview() {
     var nome = $('#animal-nome').val() || 'Nome do pet';
     var porte = $('#animal-porte').val() || 'Porte';
-    var especie = $('#animal-especie').val() || 'Espécie';
-    var raca = $('#animal-raca').val() || 'Raça';
+    var especie = $('#animal-especie').val() || 'Especie';
+    var raca = $('#animal-raca').val() || 'Raca';
     var idade = $('#animal-idade').val() || 'Idade';
-    var sexo = $('#animal-sexo').val() || 'Sexo';
     var custo = $('#animal-custo').val() || '--';
-    var descricao = $('#animal-descricao').val() || 'Preencha os campos para ver a pré-visualização do animal.';
+    var descricao = $('#animal-descricao').val() || 'Preencha os campos para ver a pre-visualizacao do animal.';
     var saude = $('#animal-saude').val() || '';
 
     $('#preview-name').text(nome);
     $('#preview-porte').text(porte !== 'Porte' ? 'Porte ' + porte.toLowerCase() : 'Porte');
-    $('#preview-custo').text(custo !== '--' ? 'Custo mensal médio de ' + custo : 'Custo mensal médio de R$ --');
-    $('#preview-vacina').text(saude || 'Vacinação');
+    $('#preview-custo').text(custo !== '--' ? 'Custo mensal medio de R$ ' + custo : 'Custo mensal medio de R$ --');
+    $('#preview-vacina').text(saude || 'Saude');
 
-    var infoText = especie + ': ' + raca + ' | ' + idade + ' | ' + sexo;
+    var infoText = especie + ': ' + raca + ' | ' + idade;
     $('#preview-desc').html(infoText + '<br><br>' + descricao);
 
     var fileInput = document.getElementById('animal-imagem');
@@ -160,12 +143,7 @@ function validarFormulario() {
     var campos = [
         { id: 'animal-nome', label: 'Nome' },
         { id: 'animal-porte', label: 'Porte' },
-        { id: 'animal-especie', label: 'Espécie' },
-        { id: 'animal-raca', label: 'Raça' },
-        { id: 'animal-idade', label: 'Idade' },
-        { id: 'animal-custo', label: 'Custo' },
-        { id: 'animal-sexo', label: 'Sexo' },
-        { id: 'animal-descricao', label: 'Descrição' }
+        { id: 'animal-especie', label: 'Especie' }
     ];
 
     var valido = true;
@@ -194,32 +172,34 @@ function limparErros() {
 }
 
 function salvarAnimal() {
-    var novoAnimal = {
-        id: animalEditando ? animalEditando.id : Date.now(),
-        nome: $('#animal-nome').val(),
-        porte: $('#animal-porte').val(),
-        especie: $('#animal-especie').val(),
-        raca: $('#animal-raca').val(),
-        idade: $('#animal-idade').val(),
-        custo: parseFloat($('#animal-custo').val().replace(/[^0-9.,]/g, '').replace(',', '.')) || 0,
-        sexo: $('#animal-sexo').val(),
-        descricao: $('#animal-descricao').val(),
-        vacina: 'Vacinação completa',
-        imagem: './assets/imgs/gato-lg.png'
+    var dados = getValoresInput('#form-animal');
+
+    var objetoAnimal = {
+        nome: dados['animal-nome'] || $('#animal-nome').val(),
+        porte: dados['animal-porte'] || $('#animal-porte').val(),
+        especie: dados['animal-especie'] || $('#animal-especie').val(),
+        raca: dados['animal-raca'] || $('#animal-raca').val(),
+        idade_aprox: dados['animal-idade'] || $('#animal-idade').val(),
+        valor_custo: dados['animal-custo'] || $('#animal-custo').val(),
+        sexo: dados['animal-sexo'] || $('#animal-sexo').val(),
+        descricao: dados['animal-descricao'] || $('#animal-descricao').val(),
+        personalidade: '',
+        ficha_medica: '',
+        imagem: './assets/imgs/placeholder.png',
+        fk_instituicao: sessao.id_empresa
     };
 
     if (animalEditando) {
-        var index = animais.findIndex(function (a) { return a.id === animalEditando.id; });
-        if (index !== -1) {
-            animais[index] = $.extend({}, animais[index], novoAnimal);
-        }
+        atualizarAnimal(animalEditando.id, objetoAnimal).then(function () {
+            carregarAnimais();
+            fecharModal();
+        });
     } else {
-        animais.push(novoAnimal);
+        criarAnimal(objetoAnimal).then(function () {
+            carregarAnimais();
+            fecharModal();
+        });
     }
-
-    animaisFiltrados = animais.slice();
-    renderizarAnimais(animaisFiltrados);
-    fecharModal();
 }
 
 function renderizarAnimais(lista) {
@@ -231,35 +211,54 @@ function renderizarAnimais(lista) {
         return;
     }
 
-    var html = lista.map(function (animal) {
-        return '' +
+    var html = '';
+    $.each(lista, function (i, animal) {
+        html +=
         '<div class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-animal p-3" data-id="' + animal.id + '">' +
             '<div class="card-body d-flex flex-column gap-3">' +
                 '<div style="position: relative;">' +
-                    '<img class="card-animal-img col-12" src="' + animal.imagem + '" alt="' + animal.nome + '">' +
+                    '<img class="card-animal-img col-12" src="' + (animal.imagem || './assets/imgs/placeholder.png') + '" alt="' + animal.nome + '">' +
                 '</div>' +
                 '<div class="card-animal-text">' +
                     '<h4 class="d-flex justify-content-between">' + animal.nome +
-                        '<span class="card-animal-edit" onclick="abrirModal(animais.find(function(a){return a.id===' + animal.id + '}))">' +
+                        '<span class="card-animal-edit btn-editar-animal" data-id="' + animal.id + '">' +
                             '<img src="./assets/imgs/icons/editar.svg">' +
                         '</span>' +
                     '</h4>' +
                     '<div class="card-animal-badges">' +
-                        '<span class="badge-arca badge-arca-sucesso">Porte ' + animal.porte.toLowerCase() + '</span>' +
-                        '<span class="badge-arca badge-arca-info">' + animal.vacina + '</span>' +
-                        '<span class="badge-arca badge-arca-rosa">Custo mensal médio de R$ ' + animal.custo + '</span>' +
+                        '<span class="badge-arca badge-arca-sucesso">Porte ' + (animal.porte || '').toLowerCase() + '</span>' +
+                        '<span class="badge-arca badge-arca-rosa">R$ ' + (animal.valor_custo || '0') + '/mes</span>' +
                     '</div>' +
                     '<p class="corpo corpo-sm text-muted mt-2">' +
-                    animal.especie + ': ' + animal.raca + ' | ' + animal.idade + ' | ' + animal.sexo + '<br><br>' +
-                    animal.descricao +
+                    (animal.especie || '') + ': ' + (animal.raca || '') + ' | ' + (animal.idade_aprox || '') + ' anos<br><br>' +
+                    (animal.descricao || '') +
                     '</p>' +
+                '</div>' +
+                '<div class="card-animal-footer">' +
+                    '<button class="btn-excluir-animal" data-id="' + animal.id + '" style="border:none; background:none; color:#e74c3c; cursor:pointer; font-size:13px;">Excluir</button>' +
                 '</div>' +
             '</div>' +
         '</div>';
-    }).join('');
+    });
 
     $grid.html(html);
 }
+
+$(document).on('click', '.btn-editar-animal', function () {
+    var id = $(this).data('id');
+    buscarAnimalPorId(id).then(function (animal) {
+        if (animal) abrirModal(animal);
+    });
+});
+
+$(document).on('click', '.btn-excluir-animal', function () {
+    var id = $(this).data('id');
+    if (confirm('Tem certeza que deseja excluir este animal?')) {
+        removerAnimal(id).then(function () {
+            carregarAnimais();
+        });
+    }
+});
 
 function inicializarFiltros() {
     $('#filtro-nome').on('input', aplicarFiltros);
@@ -275,15 +274,19 @@ function aplicarFiltros() {
     var nome = ($('#filtro-nome').val() || '').toLowerCase();
     var custoMax = parseFloat(($('#filtro-custo').val() || '').replace(/[^0-9.,]/g, '').replace(',', '.')) || Infinity;
     var porte = $('#filtro-porte').val() || '';
-    var sexo = $('#filtro-sexo').val() || '';
 
-    animaisFiltrados = animais.filter(function (animal) {
-        var matchNome = animal.nome.toLowerCase().includes(nome);
-        var matchCusto = animal.custo <= custoMax;
-        var matchPorte = !porte || animal.porte.toLowerCase() === porte;
-        var matchSexo = !sexo || animal.sexo.toLowerCase() === sexo;
-        return matchNome && matchCusto && matchPorte && matchSexo;
+    listarAnimais().then(function (todosAnimais) {
+        var daInstituicao = todosAnimais.filter(function (a) {
+            return a.fk_instituicao === sessao.id_empresa;
+        });
+
+        animaisFiltrados = daInstituicao.filter(function (animal) {
+            var matchNome = (animal.nome || '').toLowerCase().indexOf(nome) > -1;
+            var matchCusto = parseFloat(animal.valor_custo || 0) <= custoMax;
+            var matchPorte = !porte || (animal.porte || '').toLowerCase() === porte;
+            return matchNome && matchCusto && matchPorte;
+        });
+
+        renderizarAnimais(animaisFiltrados);
     });
-
-    renderizarAnimais(animaisFiltrados);
 }

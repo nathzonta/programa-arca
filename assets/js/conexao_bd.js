@@ -5,18 +5,14 @@
  * Nenhum módulo deve acessar localStorage diretamente.
  */
 
-const CHAVE_BD = 'bd_arca';
-const CHAVE_SESSAO = 'sessao_arca';
-const CAMINHO_BD_JSON = './assets/js/bd_fake.json';
+var CHAVE_BD = 'bd_arca';
+var CHAVE_SESSAO = 'sessao_arca';
+var CAMINHO_BD_JSON = './assets/js/bd_fake.json';
 
 // ============================================================
 // FUNÇÕES INTERNAS (helpers)
 // ============================================================
 
-/**
- * Carrega o bd_fake.json via fetch e salva no localStorage.
- * Chamado apenas quando o banco não existe no localStorage.
- */
 function _carregarBancoInicial() {
     return fetch(CAMINHO_BD_JSON)
         .then(function (response) {
@@ -35,44 +31,27 @@ function _carregarBancoInicial() {
         });
 }
 
-/**
- * Gera um ID único baseado no timestamp + aleatório.
- */
-function _gerarId() {
-    return Date.now() + Math.floor(Math.random() * 1000);
+function gerarId(colecao) {
+    if (!colecao || colecao.length === 0) return 1;
+    return Math.max.apply(null, colecao.map(function (i) { return i.id; })) + 1;
 }
 
 // ============================================================
 // FUNÇÕES PÚBLICAS DE PERSISTÊNCIA
 // ============================================================
 
-/**
- * Retorna o banco completo (objeto com todas as coleções).
- * Se não existir no localStorage, carrega do bd_fake.json primeiro.
- * @returns {Promise<Object>}
- */
 function getBanco() {
     var dados = localStorage.getItem(CHAVE_BD);
-
     if (dados !== null) {
         return Promise.resolve(JSON.parse(dados));
     }
-
     return _carregarBancoInicial();
 }
 
-/**
- * Salva o objeto do banco completo no localStorage.
- * @param {Object} bd_obj - Objeto com todas as coleções
- */
 function salvarBanco(bd_obj) {
     localStorage.setItem(CHAVE_BD, JSON.stringify(bd_obj));
 }
 
-/**
- * Atualiza o banco (alias para salvarBanco — compatibilidade).
- * @param {Object} bd_obj
- */
 function atualizarBanco(bd_obj) {
     salvarBanco(bd_obj);
 }
@@ -81,21 +60,12 @@ function atualizarBanco(bd_obj) {
 // FUNÇÕES DE CONTAS (CRUD)
 // ============================================================
 
-/**
- * Busca todos os usuários.
- * @returns {Promise<Array>}
- */
 function buscarTodosUsuarios() {
     return getBanco().then(function (bd) {
         return bd.contas || [];
     });
 }
 
-/**
- * Busca um usuário pelo email.
- * @param {string} email
- * @returns {Promise<Object|undefined>}
- */
 function buscarUsuarioPorEmail(email) {
     return getBanco().then(function (bd) {
         return bd.contas.find(function (conta) {
@@ -104,11 +74,6 @@ function buscarUsuarioPorEmail(email) {
     });
 }
 
-/**
- * Busca um usuário pelo ID.
- * @param {number} id
- * @returns {Promise<Object|undefined>}
- */
 function buscarUsuarioPorId(id) {
     return getBanco().then(function (bd) {
         return bd.contas.find(function (conta) {
@@ -117,44 +82,33 @@ function buscarUsuarioPorId(id) {
     });
 }
 
-/**
- * Cria um novo usuário no banco.
- * @param {Object} dados - { email, senha (plain text), tipo, ... }
- * @returns {Promise<Object>} - O usuário criado (com id)
- */
 function criarUsuario(dados) {
     return getBanco().then(function (bd) {
+        if (!bd.contas) bd.contas = [];
         var novoUsuario = {
-            id: _gerarId(),
+            id: gerarId(bd.contas),
+            nome: dados.nome || '',
             email: dados.email,
             senha: MD5(dados.senha),
-            tipo: dados.tipo || 'cidadao'
+            tipo: dados.tipo || 'cidadao',
+            id_empresa: dados.id_empresa || null,
+            favoritos: [],
+            historico: []
         };
-
         bd.contas.push(novoUsuario);
         salvarBanco(bd);
-
         return novoUsuario;
     });
 }
 
-/**
- * Atualiza um usuário existente.
- * @param {number} id
- * @param {Object} dadosNovos - Campos a atualizar
- * @returns {Promise<Object>} - O usuário atualizado
- */
 function atualizarUsuario(id, dadosNovos) {
     return getBanco().then(function (bd) {
         var index = bd.contas.findIndex(function (conta) {
             return conta.id === id;
         });
-
         if (index === -1) {
-            throw new Error('Usuário não encontrado.');
+            throw new Error('Usuario nao encontrado.');
         }
-
-        // Atualiza apenas os campos informados
         Object.keys(dadosNovos).forEach(function (chave) {
             if (chave === 'senha') {
                 bd.contas[index][chave] = MD5(dadosNovos[chave]);
@@ -162,30 +116,21 @@ function atualizarUsuario(id, dadosNovos) {
                 bd.contas[index][chave] = dadosNovos[chave];
             }
         });
-
         salvarBanco(bd);
         return bd.contas[index];
     });
 }
 
-/**
- * Remove um usuário pelo ID.
- * @param {number} id
- * @returns {Promise<boolean>}
- */
 function removerUsuario(id) {
     return getBanco().then(function (bd) {
         var index = bd.contas.findIndex(function (conta) {
             return conta.id === id;
         });
-
         if (index === -1) {
-            throw new Error('Usuário não encontrado.');
+            throw new Error('Usuario nao encontrado.');
         }
-
         bd.contas.splice(index, 1);
         salvarBanco(bd);
-
         return true;
     });
 }
@@ -194,24 +139,18 @@ function removerUsuario(id) {
 // FUNÇÕES DE SESSÃO
 // ============================================================
 
-/**
- * Salva a sessão do usuário logado.
- * @param {Object} usuario - { id, email, tipo }
- */
 function salvarSessao(usuario) {
     var sessao = {
         id: usuario.id,
+        nome: usuario.nome || usuario.email,
         email: usuario.email,
         tipo: usuario.tipo || 'cidadao',
+        id_empresa: usuario.id_empresa || null,
         logado: true
     };
     localStorage.setItem(CHAVE_SESSAO, JSON.stringify(sessao));
 }
 
-/**
- * Retorna a sessão atual (ou null se não logado).
- * @returns {Object|null}
- */
 function getSessao() {
     var dados = localStorage.getItem(CHAVE_SESSAO);
     if (dados !== null) {
@@ -220,95 +159,240 @@ function getSessao() {
     return null;
 }
 
-/**
- * Encerra a sessão (logout).
- */
 function encerrarSessao() {
     localStorage.removeItem(CHAVE_SESSAO);
 }
 
-/**
- * Verifica se o usuário está logado.
- * @returns {boolean}
- */
 function estaLogado() {
     var sessao = getSessao();
     return sessao !== null && sessao.logado === true;
 }
 
 // ============================================================
-// FUNÇÕES DE FAVORITOS E INTERESSES
+// FUNÇÕES DE ANIMAIS
 // ============================================================
 
-/**
- * Busca os IDs dos animais favoritados por um usuário.
- * @param {number} usuarioId
- * @returns {Promise<Array<number>>}
- */
-function buscarFavoritos(usuarioId) {
+function listarAnimais() {
     return getBanco().then(function (bd) {
-        if (!bd.favoritos) bd.favoritos = [];
-        var registro = bd.favoritos.find(function (f) {
-            return f.usuarioId === usuarioId;
-        });
-        return registro ? registro.animais : [];
+        return bd.animais || [];
     });
 }
 
-/**
- * Salva os IDs dos animais favoritados de um usuário.
- * @param {number} usuarioId
- * @param {Array<number>} animaisIds
- * @returns {Promise<void>}
- */
-function salvarFavoritos(usuarioId, animaisIds) {
+function buscarAnimalPorId(id) {
     return getBanco().then(function (bd) {
-        if (!bd.favoritos) bd.favoritos = [];
-        var index = bd.favoritos.findIndex(function (f) {
-            return f.usuarioId === usuarioId;
+        return (bd.animais || []).find(function (a) {
+            return a.id === id;
         });
-        if (index >= 0) {
-            bd.favoritos[index].animais = animaisIds;
-        } else {
-            bd.favoritos.push({ usuarioId: usuarioId, animais: animaisIds });
+    });
+}
+
+function criarAnimal(obj) {
+    return getBanco().then(function (bd) {
+        if (!bd.animais) bd.animais = [];
+        var novo = $.extend({}, obj, { id: gerarId(bd.animais) });
+        bd.animais.push(novo);
+        salvarBanco(bd);
+        return novo;
+    });
+}
+
+function atualizarAnimal(id, dadosNovos) {
+    return getBanco().then(function (bd) {
+        var index = (bd.animais || []).findIndex(function (a) { return a.id === id; });
+        if (index === -1) throw new Error('Animal nao encontrado.');
+        bd.animais[index] = $.extend({}, bd.animais[index], dadosNovos);
+        salvarBanco(bd);
+        return bd.animais[index];
+    });
+}
+
+function removerAnimal(id) {
+    return getBanco().then(function (bd) {
+        var index = (bd.animais || []).findIndex(function (a) { return a.id === id; });
+        if (index === -1) throw new Error('Animal nao encontrado.');
+        bd.animais.splice(index, 1);
+        salvarBanco(bd);
+        return true;
+    });
+}
+
+// ============================================================
+// FUNÇÕES DE CAMPANHAS
+// ============================================================
+
+function listarCampanhas() {
+    return getBanco().then(function (bd) {
+        return bd.campanhas || [];
+    });
+}
+
+function buscarCampanhaPorId(id) {
+    return getBanco().then(function (bd) {
+        return (bd.campanhas || []).find(function (c) {
+            return c.id === id;
+        });
+    });
+}
+
+function criarCampanha(obj) {
+    return getBanco().then(function (bd) {
+        if (!bd.campanhas) bd.campanhas = [];
+        var novo = $.extend({}, obj, { id: gerarId(bd.campanhas) });
+        bd.campanhas.push(novo);
+        salvarBanco(bd);
+        return novo;
+    });
+}
+
+function atualizarCampanha(id, dadosNovos) {
+    return getBanco().then(function (bd) {
+        var index = (bd.campanhas || []).findIndex(function (c) { return c.id === id; });
+        if (index === -1) throw new Error('Campanha nao encontrada.');
+        bd.campanhas[index] = $.extend({}, bd.campanhas[index], dadosNovos);
+        salvarBanco(bd);
+        return bd.campanhas[index];
+    });
+}
+
+function removerCampanha(id) {
+    return getBanco().then(function (bd) {
+        var index = (bd.campanhas || []).findIndex(function (c) { return c.id === id; });
+        if (index === -1) throw new Error('Campanha nao encontrada.');
+        bd.campanhas.splice(index, 1);
+        salvarBanco(bd);
+        return true;
+    });
+}
+
+// ============================================================
+// FUNÇÕES DE INSTITUIÇÕES
+// ============================================================
+
+function criarInstituicao(obj) {
+    return getBanco().then(function (bd) {
+        if (!bd.instituicoes) bd.instituicoes = [];
+        var novo = $.extend({}, obj, { id: gerarId(bd.instituicoes) });
+        bd.instituicoes.push(novo);
+        salvarBanco(bd);
+        return novo;
+    });
+}
+
+function buscarInstituicaoPorId(id) {
+    return getBanco().then(function (bd) {
+        return (bd.instituicoes || []).find(function (i) {
+            return i.id === id;
+        });
+    });
+}
+
+// ============================================================
+// FUNÇÕES DE NOTIFICAÇÕES
+// ============================================================
+
+function listarNotificacoesPorInstituicao(idInstituicao) {
+    return getBanco().then(function (bd) {
+        return (bd.notificacoes || []).filter(function (n) {
+            return n.id_instituicao === idInstituicao;
+        });
+    });
+}
+
+function criarNotificacao(obj) {
+    return getBanco().then(function (bd) {
+        if (!bd.notificacoes) bd.notificacoes = [];
+        var novo = $.extend({}, obj, { id: gerarId(bd.notificacoes) });
+        bd.notificacoes.push(novo);
+        salvarBanco(bd);
+        return novo;
+    });
+}
+
+function marcarNotificacaoLida(id) {
+    return getBanco().then(function (bd) {
+        var notif = (bd.notificacoes || []).find(function (n) { return n.id === id; });
+        if (!notif) throw new Error('Notificacao nao encontrada.');
+        notif.lida = true;
+        salvarBanco(bd);
+        return notif;
+    });
+}
+
+// ============================================================
+// FUNÇÕES DE FAVORITOS E HISTÓRICO
+// ============================================================
+
+function adicionarFavorito(idConta, idAnimal) {
+    return getBanco().then(function (bd) {
+        var conta = bd.contas.find(function (c) { return c.id === idConta; });
+        if (!conta) throw new Error('Conta nao encontrada.');
+        if (!conta.favoritos) conta.favoritos = [];
+        if (conta.favoritos.indexOf(idAnimal) === -1) {
+            conta.favoritos.push(idAnimal);
         }
         salvarBanco(bd);
+        return conta.favoritos;
     });
 }
 
-/**
- * Busca os IDs dos animais com interesse de um usuário.
- * @param {number} usuarioId
- * @returns {Promise<Array<number>>}
- */
-function buscarInteresses(usuarioId) {
+function removerFavorito(idConta, idAnimal) {
     return getBanco().then(function (bd) {
-        if (!bd.interesses) bd.interesses = [];
-        var registro = bd.interesses.find(function (i) {
-            return i.usuarioId === usuarioId;
-        });
-        return registro ? registro.animais : [];
-    });
-}
-
-/**
- * Salva os IDs dos animais com interesse de um usuário.
- * @param {number} usuarioId
- * @param {Array<number>} animaisIds
- * @returns {Promise<void>}
- */
-function salvarInteresses(usuarioId, animaisIds) {
-    return getBanco().then(function (bd) {
-        if (!bd.interesses) bd.interesses = [];
-        var index = bd.interesses.findIndex(function (i) {
-            return i.usuarioId === usuarioId;
-        });
-        if (index >= 0) {
-            bd.interesses[index].animais = animaisIds;
-        } else {
-            bd.interesses.push({ usuarioId: usuarioId, animais: animaisIds });
-        }
+        var conta = bd.contas.find(function (c) { return c.id === idConta; });
+        if (!conta) throw new Error('Conta nao encontrada.');
+        if (!conta.favoritos) conta.favoritos = [];
+        var idx = conta.favoritos.indexOf(idAnimal);
+        if (idx > -1) conta.favoritos.splice(idx, 1);
         salvarBanco(bd);
+        return conta.favoritos;
+    });
+}
+
+function adicionarHistorico(idConta, idAnimal, acao) {
+    return getBanco().then(function (bd) {
+        var conta = bd.contas.find(function (c) { return c.id === idConta; });
+        if (!conta) throw new Error('Conta nao encontrada.');
+        if (!conta.historico) conta.historico = [];
+        var hoje = new Date();
+        var dataStr = hoje.getFullYear() + '-' +
+            String(hoje.getMonth() + 1).padStart(2, '0') + '-' +
+            String(hoje.getDate()).padStart(2, '0');
+        conta.historico.unshift({
+            id_animal: idAnimal,
+            acao: acao,
+            data: dataStr
+        });
+        salvarBanco(bd);
+        return conta.historico;
+    });
+}
+
+function listarFavoritosDaConta(idConta) {
+    return getBanco().then(function (bd) {
+        var conta = bd.contas.find(function (c) { return c.id === idConta; });
+        if (!conta || !conta.favoritos || conta.favoritos.length === 0) return [];
+        return (bd.animais || []).filter(function (a) {
+            return conta.favoritos.indexOf(a.id) > -1;
+        });
+    });
+}
+
+function listarHistoricoDaConta(idConta) {
+    return getBanco().then(function (bd) {
+        var conta = bd.contas.find(function (c) { return c.id === idConta; });
+        if (!conta || !conta.historico || conta.historico.length === 0) return [];
+        var animais = bd.animais || [];
+        return conta.historico.map(function (h) {
+            var animal = animais.find(function (a) { return a.id === h.id_animal; });
+            return {
+                id_animal: h.id_animal,
+                acao: h.acao,
+                data: h.data,
+                nome_animal: animal ? animal.nome : 'Desconhecido',
+                imagem: animal ? animal.imagem : '',
+                porte: animal ? animal.porte : '',
+                especie: animal ? animal.especie : ''
+            };
+        });
     });
 }
 
@@ -316,7 +400,6 @@ function salvarInteresses(usuarioId, animaisIds) {
 // INICIALIZAÇÃO AUTOMÁTICA
 // ============================================================
 
-// Garante que o banco existe no localStorage ao carregar o script
 $(function () {
     getBanco().catch(function (err) {
         console.error('Falha ao inicializar banco:', err);
