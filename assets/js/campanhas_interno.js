@@ -186,7 +186,7 @@ function renderizarCampanhas(lista) {
     let html = '';
     $.each(lista, function (i, campanha) {
         html +=
-        '<div class="col-12 col-md card card-campanha p-1" data-id="' + campanha.id + '">' +
+        '<div class="col-12 col-md-3 card card-campanha p-1" data-id="' + campanha.id + '">' +
             '<div class="card-body d-flex flex-column justify-content-between gap-4">' +
                 '<img class="col-12" style="border-radius: 15px;" src="' + (campanha.imagem || './assets/imgs/placeholder.png') + '" alt="' + (campanha.titulo || '') + '">' +
                 '<div class="card-campanha-text mx-4">' +
@@ -230,6 +230,7 @@ $(document).on('click', '.btn-excluir-campanha', function () {
 
 function inicializarFiltros() {
     $('#filtro-nome').on('input', aplicarFiltros);
+    $('#filtro-local').on('input', aplicarFiltros);
 
     let observer = new MutationObserver(aplicarFiltros);
     $('.sidebar-filtros .select-arca').each(function () {
@@ -239,11 +240,15 @@ function inicializarFiltros() {
 
 function aplicarFiltros() {
     let nome = ($('#filtro-nome').val() || '').toLowerCase();
+    let local = ($('#filtro-local').val() || '').toLowerCase();
+    let tipo = $('#filtro-tipo').val() || '';
 
     listarCampanhas().then(function (todasCampanhas) {
         campanhasFiltradas = todasCampanhas.filter(function (c) {
             return c.fk_instituicao === sessao.id_empresa &&
-                (!nome || (c.titulo || '').toLowerCase().indexOf(nome) > -1);
+                (!nome || (c.titulo || '').toLowerCase().indexOf(nome) > -1) &&
+                (!local || (c.local || '').toLowerCase().indexOf(local) > -1) &&
+                (!tipo || c.tipo === tipo);
         });
         renderizarCampanhas(campanhasFiltradas);
     });
