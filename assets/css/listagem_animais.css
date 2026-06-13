@@ -1,0 +1,143 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    background-color: var(--cor-primaria);
+    min-height: 100vh;
+}
+
+.btn-novo-animal {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    width: fit-content;
+    background-color: var(--cor-terciaria);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #169042;
+    }
+
+    svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Grid de animais */
+.animais-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+/* Card de animal */
+.card-animal {
+    border-radius: 24px !important;
+    border: 1px solid #E5E5E5;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+
+    &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+}
+
+.card-animal-img {
+    width: 100%;
+    height: 280px;
+    border-radius: 15px;
+    object-fit: cover;
+    background-color: #F5F5F5;
+}
+
+.card-animal-text {
+    padding: 0 16px;
+
+    h4 {
+        font-family: "Montserrat", sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--cor-preto);
+        margin-bottom: 8px;
+    }
+}
+
+.card-animal-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.card-animal-info {
+    padding: 0 16px 16px;
+
+    p {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #737373;
+        margin-bottom: 4px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        img {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+    }
+}
+
+/* Botão de editar no card */
+ .card-animal-edit {
+    cursor: pointer;
+    margin-left: auto;
+ }
+
+/* Footer */
+.main-footer {
+    padding: 24px 32px;
+    text-align: center;
+    font-size: 14px;
+    color: #737373;
+    border-top: 1px solid #E5E5E5;
+}
+
+@media (max-width: 576px) {
+    .animais-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .content-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .btn-novo-animal {
+        justify-content: center;
+    }
+}

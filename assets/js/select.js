@@ -1,68 +1,49 @@
-
-// Função pra iniciar os selects customizados (+/- gambiarra)
 function iniciarSelects() {
-    document.querySelectorAll('.select-arca').forEach(listaSelects => {
-        const selectNativo = document.getElementById(listaSelects.dataset.select);
-        const textoSelectSelecionado = selectNativo.options[selectNativo.selectedIndex].text;
+    $('.select-arca').each(function () {
+        var $container = $(this);
+        var selectId = $container.data('select');
+        var $selectNativo = $('#' + selectId);
+        var textoSelecionado = $selectNativo.find('option:selected').text();
 
-        // Pega o texto do label que faz referência ao select pelo id dele no for e seta como header
-        // na lista de options fakes
-        const headerTexto = document.querySelectorAll('label[for="' + listaSelects.dataset.select + '"]')[0].innerText;
-        let optionsHtml = headerTexto ? `<div class="select-arca-header">${headerTexto}</div>` : '';
+        var labelTexto = $('label[for="' + selectId + '"]').first().text();
+        var optionsHtml = labelTexto ? '<div class="select-arca-header">' + labelTexto + '</div>' : '';
 
-        // Criando o HTML dos options nativos na lista de options customizada e setando o data-value como o value
-        // do option nativo
-        Array.from(selectNativo.options).forEach(opt => {
-            const isSelected = opt.selected ? ' selected' : '';
-            optionsHtml += `
-                <div class="select-arca-option${isSelected}" data-value="${opt.value}">
-                    ${opt.text}
-                    <img class="select-arca-option-check" width="12" height="8" src="./assets/imgs/icons/select-check.svg">
-                </div>`;
+        $selectNativo.find('option').each(function () {
+            var $opt = $(this);
+            var isSelected = $opt.prop('selected') ? ' selected' : '';
+            optionsHtml += '<div class="select-arca-option' + isSelected + '" data-value="' + $opt.val() + '">' +
+                $opt.text() +
+                '<img class="select-arca-option-check" width="12" height="8" src="./assets/imgs/icons/select-check.svg">' +
+                '</div>';
         });
 
-        // Renderizando a lista de options customizada + o input fake
-        listaSelects.innerHTML = `
-            <div class="select-arca-trigger">
-                <span class="select-arca-selected">${textoSelectSelecionado}</span>
-                <img width="12" height="8" src="./assets/imgs/icons/select-icon.svg">
-            </div>
-            <div class="select-arca-options">${optionsHtml}</div>`;
+        $container.html(
+            '<div class="select-arca-trigger">' +
+                '<span class="select-arca-selected">' + textoSelecionado + '</span>' +
+                '<img width="12" height="8" src="./assets/imgs/icons/select-icon.svg">' +
+            '</div>' +
+            '<div class="select-arca-options">' + optionsHtml + '</div>'
+        );
 
-        // Setando eventos de click pros options fakes da lista renderizada
-        const trigger = listaSelects.querySelector('.select-arca-trigger');
-        const optionsLista = listaSelects.querySelectorAll('.select-arca-option');
+        var $trigger = $container.find('.select-arca-trigger');
+        var $options = $container.find('.select-arca-option');
 
-        trigger.addEventListener('click', e => {
+        $trigger.on('click', function (e) {
             e.stopPropagation();
-
-            document.querySelectorAll('.select-arca.aberto').forEach(s => {
-                if (s !== listaSelects) {
-                    s.classList.remove('aberto');
-                }
-            });
-
-            listaSelects.classList.toggle('aberto');
+            $('.select-arca.aberto').not($container).removeClass('aberto');
+            $container.toggleClass('aberto');
         });
 
-        // Pegando o data-value do option fake, setando como value do select nativo e fechando a lista
-        optionsLista.forEach(option => {
-            option.addEventListener('click', e => {
-                e.stopPropagation();
-
-                const valor = option.dataset.value;
-
-                optionsLista.forEach(o => o.classList.remove('selected'));
-                option.classList.add('selected');
-
-                trigger.querySelector('.select-arca-selected').textContent = option.textContent.trim();
-                selectNativo.value = valor;
-
-                listaSelects.classList.remove('aberto');
-            });
+        $options.on('click', function (e) {
+            e.stopPropagation();
+            var valor = $(this).data('value');
+            $options.removeClass('selected');
+            $(this).addClass('selected');
+            $trigger.find('.select-arca-selected').text($(this).text().trim());
+            $selectNativo.val(valor);
+            $container.removeClass('aberto');
         });
     });
 }
 
-// Inicia os inputs de select assim que o DOM estiver preparado
-document.addEventListener('DOMContentLoaded', iniciarSelects);
+$(document).ready(iniciarSelects);

@@ -148,6 +148,11 @@ a {
     background-color: #B093FE !important;
 }
 
+.badge-arca-rosa {
+    color: #763F98 !important;
+    background-color: #F2E5FC !important;
+}
+
 /* Cards de campanha */
 
 .card-campanha, .card-org {

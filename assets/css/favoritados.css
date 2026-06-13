@@ -1,0 +1,189 @@
+.favoritados-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.favoritados-grid .card-animal {
+    border-radius: 24px !important;
+    border: 1px solid #E5E5E5;
+    overflow: hidden;
+    transition: box-shadow 0.2s, opacity 0.3s ease, transform 0.3s ease;
+}
+
+.favoritados-grid .card-animal:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.favoritados-grid .card-animal.removendo {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.favoritados-grid .card-animal-img {
+    width: 100%;
+    height: 280px;
+    border-radius: 15px;
+    object-fit: cover;
+    background-color: #F5F5F5;
+}
+
+.favoritados-grid .card-animal-text {
+    padding: 0 16px;
+}
+
+.favoritados-grid .card-animal-text h4 {
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--cor-preto);
+    margin-bottom: 8px;
+}
+
+.favoritados-grid .card-animal-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.favoritados-grid .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.card-animal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 16px 0 8px;
+}
+
+.action-btn {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 2px solid #E5E5E5;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.action-btn:hover {
+    border-color: #ccc;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.action-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: #555;
+    fill: none;
+    transition: all 0.2s ease;
+}
+
+.action-btn.btn-interesse.active svg {
+    stroke: #E53935;
+    fill: #E53935;
+}
+
+.action-btn.btn-interesse.active {
+    border-color: #FFCDD2;
+    background: #FFF5F5;
+}
+
+.action-btn.btn-favorito.active svg {
+    stroke: #FFB300;
+    fill: #FFB300;
+}
+
+.action-btn.btn-favorito.active {
+    border-color: #FFECB3;
+    background: #FFFDE7;
+}
+
+/* Tooltip */
+.action-btn .tooltip-text {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--cor-preto);
+    color: white;
+    font-size: 12px;
+    font-family: "Inter", sans-serif;
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.action-btn .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--cor-preto);
+}
+
+.action-btn:hover .tooltip-text {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Estado vazio */
+.favoritados-empty {
+    text-align: center;
+    color: #737373;
+    padding: 80px 32px;
+    width: 100%;
+}
+
+.favoritados-empty h3 {
+    font-family: "Montserrat", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--cor-preto);
+}
+
+.favoritados-empty a {
+    color: var(--cor-terciaria);
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .card-animal-footer {
+        gap: 24px;
+    }
+
+    .action-btn {
+        width: 48px;
+        height: 48px;
+    }
+
+    .action-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .favoritados-grid {
+        gap: 16px;
+    }
+}
