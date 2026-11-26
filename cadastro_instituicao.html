@@ -1,108 +1,124 @@
 <!DOCTYPE html>
-<html lang="pt-BBR">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Instituição - Programa Arca</title>
+    <title>Cadastro de instituição - Programa Arca</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="./assets/css/style.css"/>
-    <link rel="stylesheet" href="./assets/css/cadastro_instituicao.css"/>
-    <link rel="stylesheet" href="./assets/css/forms.css"/>
-    <link rel="shortcut icon" href="./assets/imgs/prefeitura.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/publico.css">
+    <link rel="icon" href="./assets/imgs/favicon.svg" type="image/svg+xml">
 </head>
 <body>
-    <main class="cadastro-container d-flex">
-        <div class="cadastro-image p-4 col-lg-6 d-lg-flex d-none align-items-center">
-            <img src="./assets/imgs/gato-lg.png" alt="Gatos">
-        </div>
-        <div class="cadastro-content col-lg-6 col-12 py-3 pe-4">
-            <div class="cadastro-header text-center mb-3">
-                <a href="./index.html"><img src="./assets/imgs/Logo.svg" alt="Logo Programa Arca" class="cadastro-logo"></a>
-                <h3 class="cadastro-title">Cadastro de Instituição</h3>
+    <div class="auth">
+        <aside class="auth__lateral sobre-escuro">
+            <a class="marca marca--clara" href="./index.html" aria-label="Programa Arca, página inicial">
+                <img src="./assets/imgs/Logo.svg" alt="" width="44" height="44">
+                <span class="marca__texto"><strong>Arca</strong><small>Prefeitura da Serra</small></span>
+            </a>
+            <div>
+                <h2>Agora, a <em>casa</em> de quem cuida.</h2>
+                <p>Com os dados da instituição, você já pode cadastrar animais e publicar campanhas.</p>
             </div>
-            <div class="cadastro-card">
-                <div class="cadastro-card-header">
-                    <div class="cadastro-card-text">
-                        <p class="corpo m-0">Cadastre sua organização</p>
-                        <p class="corpo corpo-sm">
-                            Já tem uma conta? Faça login no botão <span class="d-lg-inline-block d-none">ao lado.</span><span class="d-lg-none d-inline-block">abaixo.</span><br>
-                            Você é um cidadão comum? Se cadastre no botão <span class="d-lg-inline-block d-none">ao lado.</span><span class="d-lg-none d-inline-block">abaixo.</span>
-                        </p>
-                    </div>
-                    <div class="cadastro-card-links">
-                        <a class="corpo corpo-sm" href="./login.html">Login</a>
-                        <a class="corpo corpo-sm" href="./cadastro.html">Cadastrar-se como cidadão</a>
-                    </div>
+            <img class="auth__fundo" src="./assets/imgs/campanha-1.jpg" alt="" style="object-position: 58% 35%">
+            <div class="auth__arcos" aria-hidden="true"></div>
+        </aside>
+
+        <main class="auth__principal">
+            <a class="botao botao--texto auth__voltar" href="./cadastro_representante.html">
+                <svg class="icone" aria-hidden="true"><use href="./assets/imgs/icons/sprite.svg#seta-esquerda"></use></svg>
+                Voltar à etapa 1
+            </a>
+
+            <div class="auth__miolo entrada">
+                <div class="etapas">
+                    <span class="etapas__barra" aria-hidden="true"><span class="feita"></span><span class="feita"></span></span>
+                    <span>Etapa 2 de 2</span>
                 </div>
-                <form class="cadastro-form row g-md-3 cadastro-form justify-content-end" method="post">
-                        <div class="form-group-arca col-md-6 col-12">
-                            <label for="nome-instituicao">Nome da Instituição</label>
-                            <input type="text" id="nome-instituicao" name="nome-instituicao" placeholder="Digite o nome da instituição">
+                <h1>Dados da <em>instituição</em></h1>
+                <p class="auth__lead">Nome, CNPJ e e-mail de contato são obrigatórios. O restante pode ser completado depois.</p>
+
+                <div class="aviso aviso--erro" data-resumo role="alert" hidden style="margin-top: 1.5rem">
+                    <svg class="icone" aria-hidden="true"><use href="./assets/imgs/icons/sprite.svg#alerta"></use></svg>
+                    <div><strong>Não foi possível finalizar o cadastro.</strong><span data-resumo-texto></span></div>
+                </div>
+
+                <form class="cadastro-form form-auth" method="post" novalidate>
+                    <fieldset class="grade-campos">
+                        <legend>Identificação</legend>
+                        <div class="campo span-6">
+                            <label for="nome-instituicao">Nome da instituição</label>
+                            <input type="text" id="nome-instituicao" name="nome-instituicao" placeholder="Nome oficial" required data-erro="Informe o nome da instituição.">
                         </div>
-                        <div class="form-group-arca col-md-6 col-12">
-                            <label for="nome-fantasia">Nome Fantasia</label>
-                            <input type="text" id="nome-fantasia" name="nome-fantasia" placeholder="Digite o nome fantasia da instituição">
+                        <div class="campo span-6">
+                            <label for="nome-fantasia">Nome fantasia <span class="campo__opcional">(opcional)</span></label>
+                            <input type="text" id="nome-fantasia" name="nome-fantasia" placeholder="Como as pessoas conhecem vocês">
                         </div>
-                        <div class="form-group-arca col-md-5 col-12">
-                            <label for="tipo-instituicao">Tipo de Instituição</label>
+                        <div class="campo span-5">
+                            <label for="tipo-instituicao">Tipo de instituição</label>
                             <select id="tipo-instituicao" name="tipo-instituicao">
                                 <option value="ONG">ONG</option>
                                 <option value="protetor">Protetor independente</option>
                                 <option value="abrigo">Abrigo</option>
-                                <option value="projeto">Projeto Social</option>
+                                <option value="projeto">Projeto social</option>
                             </select>
-                            <div class="select-arca" data-select="tipo-instituicao"></div>
                         </div>
-                        <div class="form-group-arca col-md-4 col-12">
+                        <div class="campo span-4">
                             <label for="cnpj">CNPJ</label>
-                            <input type="text" id="cnpj" name="cnpj" placeholder="12.345.678/1234-56">
+                            <input type="text" id="cnpj" name="cnpj" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18" data-mascara="cnpj" required data-erro="Informe o CNPJ da instituição.">
                         </div>
-                        <div class="form-group-arca col-md-3 col-12">
-                            <label for="data-fundacao">Data de Fundação</label>
-                            <input type="text" id="data-fundacao" name="data-fundacao" placeholder="DD/MM/AAAA">
+                        <div class="campo span-3">
+                            <label for="data-fundacao">Fundação <span class="campo__opcional">(opcional)</span></label>
+                            <input type="text" id="data-fundacao" name="data-fundacao" inputmode="numeric" placeholder="DD/MM/AAAA" maxlength="10" data-mascara="data">
                         </div>
-                        <div class="form-group-arca col-md-3 col-12">
+                    </fieldset>
+
+                    <fieldset class="grade-campos">
+                        <legend>Endereço <span class="campo__opcional" style="font-family: var(--fonte-texto); font-size: .85rem">(opcional)</span></legend>
+                        <div class="campo span-4">
                             <label for="cep">CEP</label>
-                            <input type="text" id="cep" name="cep" placeholder="12345-678">
+                            <input type="text" id="cep" name="cep" inputmode="numeric" placeholder="00000-000" maxlength="9" data-mascara="cep" autocomplete="postal-code">
                         </div>
-                        <div class="form-group-arca col-md-6 col-12">
+                        <div class="campo span-5">
                             <label for="rua">Rua</label>
-                            <input type="text" id="rua" name="rua" placeholder="Rua Exemplo">
+                            <input type="text" id="rua" name="rua" placeholder="Rua Exemplo" autocomplete="address-line1">
                         </div>
-                        <div class="form-group-arca col-md-3 col-12">
+                        <div class="campo span-3">
                             <label for="numero">Número</label>
-                            <input type="text" id="numero" name="numero" placeholder="123">
+                            <input type="text" id="numero" name="numero" placeholder="123 ou s/n" maxlength="8">
                         </div>
-                        <div class="form-group-arca col-md-4 col-12">
+                        <div class="campo">
                             <label for="bairro">Bairro</label>
                             <input type="text" id="bairro" name="bairro" placeholder="Bairro Exemplo">
                         </div>
-                        <div class="form-group-arca col-md-4 col-12">
-                            <label for="celular">Celular de contato</label>
-                            <input type="tel" id="celular" name="celular" placeholder="(27) 99999-9999">
+                    </fieldset>
+
+                    <fieldset class="grade-campos">
+                        <legend>Contato</legend>
+                        <div class="campo span-6">
+                            <label for="celular">Celular <span class="campo__opcional">(opcional)</span></label>
+                            <input type="tel" id="celular" name="celular" inputmode="tel" placeholder="(00) 00000-0000" maxlength="15" data-mascara="telefone" autocomplete="tel">
                         </div>
-                        <div class="form-group-arca col-md-4 col-12">
+                        <div class="campo span-6">
                             <label for="email">E-mail de contato</label>
-                            <input type="email" id="email" name="email" placeholder="exemplo@exemplo.com">
+                            <input type="email" id="email" name="email" placeholder="contato@organizacao.org" required data-erro="Informe o e-mail de contato.">
                         </div>
-                        <div class="mt-4 mt-md-5 col-md-2 col-6 mb-2">
-                            <button type="button" onclick="history.back()">Voltar</button>
-                        </div>
-                        <div class="mt-4 mt-md-5 col-md-4 col-6 mb-2">
-                            <button type="submit">Finalizar cadastro</button>
-                        </div>
+                    </fieldset>
+
+                    <div class="form-auth__acoes">
+                        <a class="botao botao--contorno" href="./cadastro_representante.html">Voltar</a>
+                        <button type="submit" class="botao">Finalizar cadastro</button>
                     </div>
                 </form>
             </div>
-        </div>
-    </main>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        </main>
+    </div>
+
     <script src="./assets/js/funcoes.js"></script>
+    <script src="./assets/js/selecao.js"></script>
     <script src="./assets/js/conexao_bd.js"></script>
-    <script src="./assets/js/select.js"></script>
     <script src="./assets/js/cadastro_instituicao.js"></script>
 </body>
 </html>

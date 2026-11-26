@@ -1,71 +1,50 @@
-$(function () {
+// Cadastro de representante (etapa 1 de 2): cria a conta e segue para a instituição
 
-    var K_FORM = '.cadastro-form';
-    var K_SUBMIT = '.cadastro-form button[type="submit"]';
+var formCadastro = qs('.cadastro-form');
 
-    $(K_SUBMIT).on('click', function (e) {
-        e.preventDefault();
+ligarMostrarSenha();
+ligarLimpezaDeErros(formCadastro);
 
-        var dados = getValoresInput(K_FORM);
+formCadastro.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validarFormulario(formCadastro)) return;
 
-        if (!dados) {
-            window.alert('Preencha os campos de cadastro.');
-            return;
-        }
+    var dados = getValoresInput(formCadastro);
+    var botao = qs('button[type="submit"]', formCadastro);
+    ocupado(botao, true);
 
-        var camposObrigatorios = {
-            'nome': 'Nome completo',
-            'email': 'E-mail',
-            'senha': 'Senha'
-        };
-
-        for (var campo in camposObrigatorios) {
-            if (!dados[campo] || dados[campo].trim() === '') {
-                window.alert('Preencha o campo: ' + camposObrigatorios[campo]);
-                return;
+    buscarUsuarioPorEmail(dados.email.trim())
+        .then(function (existente) {
+            if (existente) {
+                mostrarErroCampo(qs('#email'), 'Este e-mail já está cadastrado. Tente entrar na sua conta.');
+                qs('#email').focus();
+                return null;
             }
-        }
 
-        if (!dados.senha || dados.senha.trim().length < 6) {
-            window.alert('A senha deve ter pelo menos 6 caracteres.');
-            return;
-        }
-
-        buscarUsuarioPorEmail(dados.email.trim())
-            .then(function (existente) {
-                if (existente) {
-                    window.alert('Este e-mail ja esta cadastrado no sistema.');
-                    return;
-                }
-
-                return criarUsuario({
-                    nome: dados.nome.trim(),
-                    email: dados.email.trim(),
-                    senha: dados.senha,
-                    tipo: 'representante',
-                    id_empresa: null,
-                    cpf: dados.cpf || '',
-                    'data-nascimento': dados['data-nascimento'] || '',
-                    cep: dados.cep || '',
-                    rua: dados.rua || '',
-                    numero: dados.numero || '',
-                    bairro: dados.bairro || ''
-                });
-            })
-            .then(function (novoUsuario) {
-                if (novoUsuario) {
-                    sessionStorage.setItem('representante_id', novoUsuario.id);
-                    window.location.href = './cadastro_instituicao.html';
-                }
-            })
-            .catch(function (erro) {
-                window.alert('Erro ao cadastrar: ' + erro.message);
+            return criarUsuario({
+                nome: dados.nome.trim(),
+                email: dados.email.trim(),
+                senha: dados.senha,
+                tipo: 'representante',
+                id_empresa: null,
+                cpf: dados.cpf || '',
+                'data-nascimento': dados['data-nascimento'] || '',
+                cep: dados.cep || '',
+                rua: dados.rua || '',
+                numero: dados.numero || '',
+                bairro: dados.bairro || ''
             });
-    });
-
-    $(K_FORM).on('submit', function (e) {
-        e.preventDefault();
-        $(K_SUBMIT).trigger('click');
-    });
-
+        })
+        .then(function (novoUsuario) {
+            if (novoUsuario) {
+                sessionStorage.setItem('representante_id', novoUsuario.id);
+                window.location.href = './cadastro_instituicao.html';
+            }
+        })
+        .catch(function (erro) {
+            toast('Erro ao cadastrar: ' + erro.message, 'erro');
+        })
+        .then(function () {
+            ocupado(botao, false);
+        });
 });

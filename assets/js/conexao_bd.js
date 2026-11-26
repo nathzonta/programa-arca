@@ -1,40 +1,57 @@
-let CHAVE_BD = 'bd_arca';
-let CHAVE_SESSAO = 'sessao_arca';
-let CAMINHO_BD_JSON = './assets/js/bd_fake.json';
+// ============================================================
+// "BANCO DE DADOS" DO ARCA
+// O projeto ainda não tem servidor: os dados ficam no localStorage e começam
+// a partir do arquivo bd_fake.json. As funções abaixo são as mesmas de antes
+// (mesmos nomes e mesmas chaves), apenas escritas com JavaScript puro.
+// Todas retornam Promise, então use .then(...) ou await.
+// ============================================================
 
-// FUNÇÕES ÚTEIS
+var CHAVE_BD = 'bd_arca';
+var CHAVE_SESSAO = 'sessao_arca';
+var CAMINHO_BD_JSON = './assets/js/bd_fake.json';
 
+// Versão dos dados de exemplo. Quando o bd_fake.json ganha dados novos, aumente este número
+// e o campo "versao" do JSON: o navegador descarta a cópia antiga do localStorage e recarrega.
+// (Contas e cadastros feitos durante testes são apagados nessa troca.)
+var VERSAO_BD = 2;
+
+// ---------- FUNÇÕES ÚTEIS ----------
+
+// Na primeira visita, busca o bd_fake.json e guarda no localStorage
 function _carregarBancoInicial() {
     return fetch(CAMINHO_BD_JSON)
-        .then(function (response) {
-            if (!response.ok) {
-                throw new Error('Erro ao carregar banco inicial: ' + response.status);
+        .then(function (resposta) {
+            if (!resposta.ok) {
+                throw new Error('Erro ao carregar banco inicial: ' + resposta.status);
             }
-            return response.json();
+            return resposta.json();
         })
-        .then(function (data) {
-            localStorage.setItem(CHAVE_BD, JSON.stringify(data));
-            return data;
+        .then(function (dados) {
+            localStorage.setItem(CHAVE_BD, JSON.stringify(dados));
+            return dados;
         })
-        .catch(function (error) {
-            console.error('Erro ao carregar JSON:', error);
-            throw error;
+        .catch(function (erro) {
+            console.error('Erro ao carregar JSON:', erro);
+            throw erro;
         });
 }
 
 function gerarId(colecao) {
     if (!colecao || colecao.length === 0) return 1;
-    return Math.max.apply(null, colecao.map(function (i) { return i.id; })) + 1;
+    return Math.max.apply(null, colecao.map(function (item) { return item.id; })) + 1;
 }
 
-
-// FUNÇÕES DE BANCO
+// ---------- BANCO ----------
 
 function getBanco() {
-    let dados = localStorage.getItem(CHAVE_BD);
+    var dados = localStorage.getItem(CHAVE_BD);
     if (dados !== null) {
-        return Promise.resolve(JSON.parse(dados));
+        var bd = JSON.parse(dados);
+        if (bd.versao === VERSAO_BD) {
+            return Promise.resolve(bd);
+        }
     }
+    // Sem banco salvo, ou com uma versão antiga dos dados de exemplo
     return _carregarBancoInicial();
 }
 
@@ -46,7 +63,38 @@ function atualizarBanco(bd_obj) {
     salvarBanco(bd_obj);
 }
 
-// FUNÇÕES DE CONTAS
+// Funções genéricas usadas pelas coleções (animais, campanhas etc.)
+function _inserir(colecao, obj) {
+    return getBanco().then(function (bd) {
+        if (!bd[colecao]) bd[colecao] = [];
+        var novo = Object.assign({}, obj, { id: gerarId(bd[colecao]) });
+        bd[colecao].push(novo);
+        salvarBanco(bd);
+        return novo;
+    });
+}
+
+function _alterar(colecao, id, dadosNovos, nome) {
+    return getBanco().then(function (bd) {
+        var index = (bd[colecao] || []).findIndex(function (item) { return item.id === id; });
+        if (index === -1) throw new Error(nome + ' nao encontrado.');
+        bd[colecao][index] = Object.assign({}, bd[colecao][index], dadosNovos);
+        salvarBanco(bd);
+        return bd[colecao][index];
+    });
+}
+
+function _excluir(colecao, id, nome) {
+    return getBanco().then(function (bd) {
+        var index = (bd[colecao] || []).findIndex(function (item) { return item.id === id; });
+        if (index === -1) throw new Error(nome + ' nao encontrado.');
+        bd[colecao].splice(index, 1);
+        salvarBanco(bd);
+        return true;
+    });
+}
+
+// ---------- CONTAS ----------
 
 function buscarTodosUsuarios() {
     return getBanco().then(function (bd) {
@@ -56,7 +104,7 @@ function buscarTodosUsuarios() {
 
 function buscarUsuarioPorEmail(email) {
     return getBanco().then(function (bd) {
-        return bd.contas.find(function (conta) {
+        return (bd.contas || []).find(function (conta) {
             return conta.email === email;
         });
     });
@@ -64,7 +112,7 @@ function buscarUsuarioPorEmail(email) {
 
 function buscarUsuarioPorId(id) {
     return getBanco().then(function (bd) {
-        return bd.contas.find(function (conta) {
+        return (bd.contas || []).find(function (conta) {
             return conta.id === id;
         });
     });
@@ -73,7 +121,7 @@ function buscarUsuarioPorId(id) {
 function criarUsuario(dados) {
     return getBanco().then(function (bd) {
         if (!bd.contas) bd.contas = [];
-        let novoUsuario = {
+        var novoUsuario = {
             id: gerarId(bd.contas),
             nome: dados.nome || '',
             email: dados.email,
@@ -91,18 +139,10 @@ function criarUsuario(dados) {
 
 function atualizarUsuario(id, dadosNovos) {
     return getBanco().then(function (bd) {
-        let index = bd.contas.findIndex(function (conta) {
-            return conta.id === id;
-        });
-        if (index === -1) {
-            throw new Error('Usuario nao encontrado.');
-        }
+        var index = bd.contas.findIndex(function (conta) { return conta.id === id; });
+        if (index === -1) throw new Error('Usuario nao encontrado.');
         Object.keys(dadosNovos).forEach(function (chave) {
-            if (chave === 'senha') {
-                bd.contas[index][chave] = MD5(dadosNovos[chave]);
-            } else {
-                bd.contas[index][chave] = dadosNovos[chave];
-            }
+            bd.contas[index][chave] = chave === 'senha' ? MD5(dadosNovos[chave]) : dadosNovos[chave];
         });
         salvarBanco(bd);
         return bd.contas[index];
@@ -111,19 +151,15 @@ function atualizarUsuario(id, dadosNovos) {
 
 function removerUsuario(id) {
     return getBanco().then(function (bd) {
-        let index = bd.contas.findIndex(function (conta) {
-            return conta.id === id;
-        });
-        if (index === -1) {
-            throw new Error('Usuario nao encontrado.');
-        }
+        var index = bd.contas.findIndex(function (conta) { return conta.id === id; });
+        if (index === -1) throw new Error('Usuario nao encontrado.');
         bd.contas.splice(index, 1);
         salvarBanco(bd);
         return true;
     });
 }
 
-// FUNÇÕES DE SESSÃO
+// ---------- SESSÃO ----------
 
 function salvarSessao(usuario) {
     var sessao = {
@@ -138,11 +174,13 @@ function salvarSessao(usuario) {
 }
 
 function getSessao() {
-    let dados = localStorage.getItem(CHAVE_SESSAO);
-    if (dados !== null) {
+    var dados = localStorage.getItem(CHAVE_SESSAO);
+    if (dados === null) return null;
+    try {
         return JSON.parse(dados);
+    } catch (erro) {
+        return null;
     }
-    return null;
 }
 
 function encerrarSessao() {
@@ -150,12 +188,11 @@ function encerrarSessao() {
 }
 
 function estaLogado() {
-    let sessao = getSessao();
+    var sessao = getSessao();
     return sessao !== null && sessao.logado === true;
 }
 
-
-// FUNÇÕES DE ANIMAIS
+// ---------- ANIMAIS ----------
 
 function listarAnimais() {
     return getBanco().then(function (bd) {
@@ -164,44 +201,24 @@ function listarAnimais() {
 }
 
 function buscarAnimalPorId(id) {
-    return getBanco().then(function (bd) {
-        return (bd.animais || []).find(function (a) {
-            return a.id === id;
-        });
+    return listarAnimais().then(function (animais) {
+        return animais.find(function (a) { return a.id === id; });
     });
 }
 
 function criarAnimal(obj) {
-    return getBanco().then(function (bd) {
-        if (!bd.animais) bd.animais = [];
-        let novo = $.extend({}, obj, { id: gerarId(bd.animais) });
-        bd.animais.push(novo);
-        salvarBanco(bd);
-        return novo;
-    });
+    return _inserir('animais', obj);
 }
 
 function atualizarAnimal(id, dadosNovos) {
-    return getBanco().then(function (bd) {
-        let index = (bd.animais || []).findIndex(function (a) { return a.id === id; });
-        if (index === -1) throw new Error('Animal nao encontrado.');
-        bd.animais[index] = $.extend({}, bd.animais[index], dadosNovos);
-        salvarBanco(bd);
-        return bd.animais[index];
-    });
+    return _alterar('animais', id, dadosNovos, 'Animal');
 }
 
 function removerAnimal(id) {
-    return getBanco().then(function (bd) {
-        let index = (bd.animais || []).findIndex(function (a) { return a.id === id; });
-        if (index === -1) throw new Error('Animal nao encontrado.');
-        bd.animais.splice(index, 1);
-        salvarBanco(bd);
-        return true;
-    });
+    return _excluir('animais', id, 'Animal');
 }
 
-// FUNÇÕES DE CAMPANHAS
+// ---------- CAMPANHAS ----------
 
 function listarCampanhas() {
     return getBanco().then(function (bd) {
@@ -210,65 +227,42 @@ function listarCampanhas() {
 }
 
 function buscarCampanhaPorId(id) {
-    return getBanco().then(function (bd) {
-        return (bd.campanhas || []).find(function (c) {
-            return c.id === id;
-        });
+    return listarCampanhas().then(function (campanhas) {
+        return campanhas.find(function (c) { return c.id === id; });
     });
 }
 
 function criarCampanha(obj) {
-    return getBanco().then(function (bd) {
-        if (!bd.campanhas) bd.campanhas = [];
-        let novo = $.extend({}, obj, { id: gerarId(bd.campanhas) });
-        bd.campanhas.push(novo);
-        salvarBanco(bd);
-        return novo;
-    });
+    return _inserir('campanhas', obj);
 }
 
 function atualizarCampanha(id, dadosNovos) {
-    return getBanco().then(function (bd) {
-        let index = (bd.campanhas || []).findIndex(function (c) { return c.id === id; });
-        if (index === -1) throw new Error('Campanha nao encontrada.');
-        bd.campanhas[index] = $.extend({}, bd.campanhas[index], dadosNovos);
-        salvarBanco(bd);
-        return bd.campanhas[index];
-    });
+    return _alterar('campanhas', id, dadosNovos, 'Campanha');
 }
 
 function removerCampanha(id) {
+    return _excluir('campanhas', id, 'Campanha');
+}
+
+// ---------- INSTITUIÇÕES ----------
+
+function listarInstituicoes() {
     return getBanco().then(function (bd) {
-        let index = (bd.campanhas || []).findIndex(function (c) { return c.id === id; });
-        if (index === -1) throw new Error('Campanha nao encontrada.');
-        bd.campanhas.splice(index, 1);
-        salvarBanco(bd);
-        return true;
+        return bd.instituicoes || [];
     });
 }
 
-// FUNÇÕES DE INSTITUIÇÕES
-
 function criarInstituicao(obj) {
-    return getBanco().then(function (bd) {
-        if (!bd.instituicoes) bd.instituicoes = [];
-        var novo = $.extend({}, obj, { id: gerarId(bd.instituicoes) });
-        bd.instituicoes.push(novo);
-        salvarBanco(bd);
-        return novo;
-    });
+    return _inserir('instituicoes', obj);
 }
 
 function buscarInstituicaoPorId(id) {
-    return getBanco().then(function (bd) {
-        return (bd.instituicoes || []).find(function (i) {
-            return i.id === id;
-        });
+    return listarInstituicoes().then(function (lista) {
+        return lista.find(function (i) { return i.id === id; });
     });
 }
 
-
-// FUNÇÕES DE NOTIFICAÇÕES
+// ---------- NOTIFICAÇÕES ----------
 
 function listarNotificacoesPorInstituicao(idInstituicao) {
     return getBanco().then(function (bd) {
@@ -279,13 +273,7 @@ function listarNotificacoesPorInstituicao(idInstituicao) {
 }
 
 function criarNotificacao(obj) {
-    return getBanco().then(function (bd) {
-        if (!bd.notificacoes) bd.notificacoes = [];
-        var novo = $.extend({}, obj, { id: gerarId(bd.notificacoes) });
-        bd.notificacoes.push(novo);
-        salvarBanco(bd);
-        return novo;
-    });
+    return _inserir('notificacoes', obj);
 }
 
 function marcarNotificacaoLida(id) {
@@ -298,12 +286,17 @@ function marcarNotificacaoLida(id) {
     });
 }
 
-// FUNÇÕES DE FAVORITOS E HISTÓRICO
+// ---------- FAVORITOS E HISTÓRICO ----------
+
+function _acharConta(bd, idConta) {
+    var conta = (bd.contas || []).find(function (c) { return c.id === idConta; });
+    if (!conta) throw new Error('Conta nao encontrada.');
+    return conta;
+}
 
 function adicionarFavorito(idConta, idAnimal) {
     return getBanco().then(function (bd) {
-        var conta = bd.contas.find(function (c) { return c.id === idConta; });
-        if (!conta) throw new Error('Conta nao encontrada.');
+        var conta = _acharConta(bd, idConta);
         if (!conta.favoritos) conta.favoritos = [];
         if (conta.favoritos.indexOf(idAnimal) === -1) {
             conta.favoritos.push(idAnimal);
@@ -315,8 +308,7 @@ function adicionarFavorito(idConta, idAnimal) {
 
 function removerFavorito(idConta, idAnimal) {
     return getBanco().then(function (bd) {
-        var conta = bd.contas.find(function (c) { return c.id === idConta; });
-        if (!conta) throw new Error('Conta nao encontrada.');
+        var conta = _acharConta(bd, idConta);
         if (!conta.favoritos) conta.favoritos = [];
         var idx = conta.favoritos.indexOf(idAnimal);
         if (idx > -1) conta.favoritos.splice(idx, 1);
@@ -327,8 +319,7 @@ function removerFavorito(idConta, idAnimal) {
 
 function adicionarHistorico(idConta, idAnimal, acao) {
     return getBanco().then(function (bd) {
-        var conta = bd.contas.find(function (c) { return c.id === idConta; });
-        if (!conta) throw new Error('Conta nao encontrada.');
+        var conta = _acharConta(bd, idConta);
         if (!conta.historico) conta.historico = [];
         var hoje = new Date();
         var dataStr = hoje.getFullYear() + '-' +
@@ -346,7 +337,7 @@ function adicionarHistorico(idConta, idAnimal, acao) {
 
 function listarFavoritosDaConta(idConta) {
     return getBanco().then(function (bd) {
-        var conta = bd.contas.find(function (c) { return c.id === idConta; });
+        var conta = (bd.contas || []).find(function (c) { return c.id === idConta; });
         if (!conta || !conta.favoritos || conta.favoritos.length === 0) return [];
         return (bd.animais || []).filter(function (a) {
             return conta.favoritos.indexOf(a.id) > -1;
@@ -356,7 +347,7 @@ function listarFavoritosDaConta(idConta) {
 
 function listarHistoricoDaConta(idConta) {
     return getBanco().then(function (bd) {
-        var conta = bd.contas.find(function (c) { return c.id === idConta; });
+        var conta = (bd.contas || []).find(function (c) { return c.id === idConta; });
         if (!conta || !conta.historico || conta.historico.length === 0) return [];
         var animais = bd.animais || [];
         return conta.historico.map(function (h) {
@@ -374,10 +365,8 @@ function listarHistoricoDaConta(idConta) {
     });
 }
 
-// INICIALIZAÇÃO AUTOMÁTICA
-
-$(function () {
-    getBanco().catch(function (err) {
-        console.error('Falha ao inicializar banco:', err);
-    });
+// ---------- INICIALIZAÇÃO AUTOMÁTICA ----------
+// Garante que o banco exista no localStorage assim que a página abre
+getBanco().catch(function (erro) {
+    console.error('Falha ao inicializar banco:', erro);
 });

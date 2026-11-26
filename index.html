@@ -1,198 +1,175 @@
 <!DOCTYPE html>
-<html lang="pt-Br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programa Arca</title>
+    <title>Programa Arca - Adoção responsável e castração na Serra</title>
+    <meta name="description" content="Programa Arca, da Prefeitura da Serra: adoção responsável, campanhas de castração e vacinação, e apoio às organizações de proteção animal.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="./assets/css/style.css"/>
-    <link rel="stylesheet" href="./assets/css/landing.css"/>
-    <link rel="shortcut icon" href="./assets/imgs/prefeitura.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/publico.css">
+    <link rel="icon" href="./assets/imgs/favicon.svg" type="image/svg+xml">
 </head>
 <body>
-    <header class="d-flex align-items-center justify-content-between px-4 py-3 px-lg-5 mx-lg-3 py-3">
-        <div class="d-flex align-items-center gap-md-5">
-            <img src="./assets/imgs/Logo.svg" alt="">
-            <nav class="ms-4 d-none d-lg-flex gap-4">
-                <a href="#adoption">Adotar agora</a>
-                <a href="#campaigns">Ver campanhas</a>
-                <a href="#organizations">Para ONGs</a>
-            </nav>
-        </div>
-        <!-- Menu no computador -->
-        <div class="d-none d-md-flex gap-3">
-            <a class="botao-arca botao-roxo" href="./cadastro.html">Cadastre-se</a>
-            <a class="botao-arca botao-roxo" href="./login.html">Login</a>
-        </div>
+    <a class="pular" href="#adocao">Pular para o conteúdo</a>
 
-        <!-- Menu no mobile -->
-        <div class="menu-container d-md-none">
-            <img src="./assets/imgs/burguer-menu.svg" alt="dropdown menu" id="hamburguer-menu">
+    <header class="topo">
+        <div class="contem topo__barra">
+            <a class="marca" href="./index.html" aria-label="Programa Arca, página inicial">
+                <img src="./assets/imgs/Logo.svg" alt="" width="44" height="44">
+                <span class="marca__texto"><strong>Arca</strong><small>Prefeitura da Serra</small></span>
+            </a>
 
-            <div id="menu-mobile">
-                <a class="botao-arca botao-roxo" href="./cadastro.html" style="background-color: var(--cor-primaria);">Cadastre-se</a>
-                <a class="botao-arca botao-roxo" href="./login.html" style="background-color: var(--cor-primaria);">Login</a>
+            <button type="button" class="botao botao--contorno botao--icone topo__menu" id="topo-menu" aria-expanded="false" aria-controls="topo-painel" aria-label="Abrir menu">
+                <svg class="icone" aria-hidden="true"><use href="./assets/imgs/icons/sprite.svg#menu"></use></svg>
+            </button>
+
+            <div class="topo__painel" id="topo-painel">
+                <nav class="topo__nav" aria-label="Seções da página">
+                    <a href="#adocao">Adotar</a>
+                    <a href="#campanhas">Campanhas</a>
+                    <a href="#organizacoes">Para organizações</a>
+                </nav>
+                <div class="topo__acoes">
+                    <a class="botao botao--texto" href="./login.html">Entrar</a>
+                    <a class="botao" href="./cadastro.html">Cadastre-se</a>
+                </div>
             </div>
         </div>
     </header>
+
     <main>
-        <section id="main" class="main">
-            <img class="d-none d-md-block folhinha-1" src="./assets/imgs/folhinha.png" alt="">
-            <img class="d-none d-md-block folhinha-2" src="./assets/imgs/folhinha.png" alt="">
-            <img class="d-none d-md-block folhinha-3" src="./assets/imgs/folhinha.png" alt="">
-            <img class="d-none d-md-block main-title" src="./assets/imgs/projeto-texto.svg" alt="projeto">
-            <img class="d-block d-md-none main-title-mobile" src="./assets/imgs/projeto-arca-texto.svg" alt="projeto arca">
-            <img class="main-cachorro" src="./assets/imgs/main-cachorro.png" alt="cachorro">
-            <img class="d-none d-md-block main-subtitle" src="./assets/imgs/arca-texto.svg" alt="arca">
-            <span class="d-none d-md-block main-badge-1 badge-arca badge-arca-roxa">Adote agora</span>         
-            <span class="d-none d-md-block main-badge-2 badge-arca badge-arca-roxa">Apoio às ONGs</span>         
-            <span class="d-none d-md-block main-badge-3 badge-arca badge-arca-roxa">Encontre seu novo companheiro</span>         
-        </section>
-        <section id="adoption" class="adoption">
-            <div class="adoption-carousel d-flex h-100">
-                <div class="adoption-botoes d-flex px-5 w-100 justify-content-between align-items-center">
-                    <button class="d-none d-md-block"><span><img src="./assets/imgs/icons/seta.svg" alt=""></span></button>
-                    <button class="d-none d-md-block"><span><img style="transform: translateY(90deg);"  src="./assets/imgs/icons/seta.svg" alt=""></span></button>
-                </div>
-                <div id="carousel-1" class="adoption-card w-100 h-100">
-                    <div class="p-1 adoption-card-infos">
-                        <h2>Luna</h2>
-                        <p class="corpo corpo-sm">
-                            Luna é uma gatinha de 1 ano, tranquila e observadora que adora encontrar um cantinho confortável para descansar perto das pessoas. Carinhosa no seu próprio tempo, ela conquista todos com seu jeitinho doce e seu olhar cheio de ternura.
-                        </p>
-                        <button class="botao-arca" style="backdrop-filter: blur(10px)">Adotar agora!</button>
+        <section class="heroi" aria-labelledby="heroi-titulo">
+            <div class="contem heroi__grade">
+                <div class="entrada">
+                    <span class="sobrelinha">Programa de castração e adoção responsável</span>
+                    <h1 class="heroi__titulo" id="heroi-titulo">Todo bicho merece <em>um lar.</em> Toda cidade, cuidado.</h1>
+                    <p class="heroi__texto">O Programa Arca, da Prefeitura da Serra, conecta quem quer adotar às organizações de proteção animal e divulga as campanhas de castração e vacinação.</p>
+                    <div class="heroi__acoes">
+                        <a class="botao botao--dourado" href="./adocao.html">Conhecer os animais
+                            <svg class="icone icone--seta" aria-hidden="true"><use href="./assets/imgs/icons/sprite.svg#seta-direita"></use></svg>
+                        </a>
+                        <a class="botao botao--contorno" href="#campanhas">Ver campanhas</a>
+                    </div>
+                    <div class="heroi__numeros" id="numeros" hidden>
+                        <div><strong id="num-animais">0</strong><span>animais esperando um lar</span></div>
+                        <div><strong id="num-campanhas">0</strong><span>campanhas na cidade</span></div>
+                        <div><strong id="num-orgs">0</strong><span>organizações parceiras</span></div>
                     </div>
                 </div>
-                <div id="carousel-2" class="adoption-card w-100 h-100">
-                    <div class="p-1 adoption-card-infos">
-                        <h2>Tobias</h2>
-                        <p class="corpo corpo-sm">
-                            Tobias é um cãozinho de 4 anos, alegre e companheiro, sempre pronto para um passeio ou alguns minutos de brincadeira. Muito sociável e afetuoso, ele adora estar por perto e encher os dias da família de carinho e diversão.
-                        </p>
-                        <button class="botao-arca">Adotar agora!</button>
+
+                <div class="heroi__arte entrada" style="--i:2">
+                    <div class="heroi__arco">
+                        <img src="./assets/imgs/main-cachorro.png" alt="Cachorro de pelagem preta, branca e caramelo, sentado e sorrindo" width="800" height="754">
                     </div>
+                    <svg class="heroi__selo" viewBox="0 0 100 100" role="img" aria-label="Castração, adoção e cuidado">
+                        <defs><path id="selo-caminho" d="M50 50 m-37 0 a37 37 0 1 1 74 0 a37 37 0 1 1 -74 0"/></defs>
+                        <text><textPath href="#selo-caminho">Castração · Adoção · Cuidado · </textPath></text>
+                        <use class="icone" href="./assets/imgs/icons/sprite.svg#pata" x="37" y="37" width="26" height="26"></use>
+                    </svg>
                 </div>
             </div>
+            <div class="heroi__arcos" aria-hidden="true"></div>
         </section>
-        <section id="campaigns" class="campaigns mt-5 mt-none d-flex flex-column justify-content-center align-items-center">
-            <h3 class="campaign-title text-center">Campanhas Ativas</h3>
-            <div id="filtro-campanhas" class="p-md-0 p-3">
-                <span class="badge-arca mb-2 me-1">Todos</span>
-                <span class="badge-arca badge-arca-sucesso mb-2 me-1">Castração</span>
-                <span class="badge-arca badge-arca-aviso mb-2 me-1">Feira de Adoção</span>
-                <span class="badge-arca badge-arca-info mb-2 me-1">Vacinação</span>
-            </div>
-            <div id="campanhas" class="d-flex flex-wrap justify-content-center gap-4 p-4">
-                <!-- Card -->
-                <div id="card" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1">
-                    <div class="card-body d-flex flex-column justify-content-between gap-4">
-                        <img class="col-12" style="border-radius: 15px;" src="./assets/imgs/campanha-1.jpg">
-                        <div class="card-campanha-text mx-4">
-                            <h4>Patinhas da Serra</h4>
-                            <span class="badge-arca badge-arca-sucesso mb-2 me-1">Castração</span>
-                            <p class="corpo corpo-sm text-muted mt-2">A Patinhas da Serra realizará uma campanha de castração para cães e gatos, com vagas limitadas. A ação promove a saúde e o bem-estar animal, além de contribuir para o controle populacional. <b>Levar CPF!</b></p>
-                        </div>
-                        <div class="card-campanha-infos mx-4">
-                            <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">11/07/2026 às 12h até 16h</p>
-                            <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Shopping Montserrat</p>
-                        </div>
+
+        <section class="secao" id="adocao" aria-labelledby="adocao-titulo">
+            <div class="contem">
+                <div class="secao__cabecalho">
+                    <div>
+                        <span class="sobrelinha">Adoção</span>
+                        <h2 id="adocao-titulo">Quem está <em>esperando</em> por você</h2>
                     </div>
+                    <p>Estes são alguns dos animais cadastrados pelas organizações. Entre na sua conta para conhecer todos e demonstrar interesse.</p>
                 </div>
-                <!---->
-                <!-- Card -->
-                <div id="card" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1">
-                    <div class="card-body d-flex flex-column justify-content-between gap-4">
-                        <img class="col-12" style="border-radius: 15px;" src="./assets/imgs/campanha-2.jpg">
-                        <div class="card-campanha-text mx-4">
-                            <h4>ONG Amor de Pet</h4>
-                            <span class="badge-arca badge-arca-aviso mb-2 me-1">Feira de Adoção</span>
-                            <p class="corpo corpo-sm text-muted mt-2">A ONG Amor de Pet convida você para uma feira de adoção repleta de animais à procura de um lar cheio de carinho. Venha conhecer cães e gatos resgatados e encontre um novo melhor amigo para a vida toda.</p>
-                        </div>
-                        <div class="card-campanha-infos mx-4">
-                            <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">08/07/2026 às 07h até 13h</p>
-                            <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Shopping Mestre Álvaro</p>
-                        </div>
-                    </div>
+                <div class="espera" id="espera">
+                    <p class="texto-suave">Carregando animais...</p>
                 </div>
-                <!---->
-                <!-- Card -->
-                <div id="card" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-campanha p-1">
-                    <div class="card-body d-flex flex-column justify-content-between gap-4">
-                        <img class="col-12" style="border-radius: 15px;" src="./assets/imgs/campanha-3.jpg">
-                        <div class="card-campanha-text mx-4">
-                            <h4>Instituto Vida Animal</h4>
-                            <span class="badge-arca badge-arca-info mb-2 me-1">Vacinação</span>
-                            <p class="corpo corpo-sm text-muted mt-2">O Instituto Vida Animal ES promoverá uma ação de vacinação gratuita para cães e gatos. A iniciativa visa reforçar a prevenção de doenças e incentivar os cuidados essenciais com a saúde dos pets.</p>
-                        </div>
-                        <div class="card-campanha-infos mx-4">
-                            <p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">28/07/2026 às 08h até 12h</p>
-                            <p class="corpo corpo-micro mb-0"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Pracinha de Cidade Continental</p>
-                        </div>
-                    </div>
-                </div>
-                <!---->
+                <p class="secao__mais" id="espera-mais" hidden></p>
             </div>
         </section>
-        <section id="organizations" class="organizations mt-5 pt-5 mt-none d-block d-md-flex flex-column justify-content-center align-items-center">
-            <h3 class="organizations-title text-center">Para <br class="d-block d-md-none">organizações</h3>
-            <div class="org-container d-block d-md-flex flex-wrap justify-content-center gap-4 p-4">
-                <div id="card-main" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-org pt-3">
-                    <div style="position: relative;" class="card-body d-flex flex-column gap-4">
-                        <div class="mx-4 p-3">
-                            <h4>Cadastre animais para adoção</h4>
-                            <p class="corpo corpo-l text-muted">Adicione informações, fotos e detalhes dos animais disponíveis para encontrar novos lares.</p>
+
+        <section class="secao secao--campanhas" id="campanhas" aria-labelledby="campanhas-titulo">
+            <div class="contem">
+                <div class="secao__cabecalho">
+                    <div>
+                        <span class="sobrelinha">Campanhas</span>
+                        <h2 id="campanhas-titulo">Na agenda da <em>cidade</em></h2>
+                    </div>
+                    <p>Castração, vacinação e feiras de adoção organizadas pelas parceiras do programa.</p>
+                </div>
+
+                <div class="filtros">
+                    <div>
+                        <p class="campo__rotulo" id="rotulo-filtro-campanhas">Filtrar por objetivo</p>
+                        <div class="chips" id="filtro-campanhas" role="group" aria-labelledby="rotulo-filtro-campanhas">
+                            <button type="button" class="chip" data-tipo="" aria-pressed="true">Todas</button>
+                            <button type="button" class="chip" data-tipo="Castração" aria-pressed="false">Castração</button>
+                            <button type="button" class="chip" data-tipo="Vacinação" aria-pressed="false">Vacinação</button>
+                            <button type="button" class="chip" data-tipo="Feira de Adoção" aria-pressed="false">Feira de Adoção</button>
                         </div>
-                        <img src="./assets/imgs/Cachorro.png">
                     </div>
                 </div>
-                <div class="cards-sec mt-2 mt-md-0 d-flex flex-column gap-2">
-                    <div id="card-1" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-org pt-3">
-                        <div style="position: relative;" class="card-body d-flex flex-column gap-4">
-                            <div style="max-width: 400px;" class="mx-4">
-                                <h4>Divulgue suas Ações</h4>
-                                <p class="corpo corpo-l text-muted">Crie campanhas de adoção, vacinação, arrecadação e eventos solidários.</p>
-                            </div>
-                            <img src="./assets/imgs/Cachorro-2.png">
-                        </div>
+
+                <div id="campanhas-lista" aria-live="polite"></div>
+                <p class="secao__mais" id="campanhas-mais" hidden></p>
+            </div>
+        </section>
+
+        <section class="secao org sobre-escuro" id="organizacoes" aria-labelledby="org-titulo">
+            <div class="contem">
+                <div class="org__grade">
+                    <div>
+                        <span class="sobrelinha">Para organizações</span>
+                        <h2 id="org-titulo">Sua ONG também cabe na <em>Arca</em></h2>
+                        <ol class="org__passos">
+                            <li><div><h3>Cadastre sua organização</h3><p>Crie sua conta de representante e registre os dados da instituição.</p></div></li>
+                            <li><div><h3>Mostre seus animais</h3><p>Adicione fotos, saúde e custo médio para quem quer adotar com responsabilidade.</p></div></li>
+                            <li><div><h3>Receba interessados e divulgue ações</h3><p>Acompanhe quem quer adotar e publique campanhas de castração, vacinação e feiras.</p></div></li>
+                        </ol>
+                        <a class="botao botao--dourado" href="./cadastro_representante.html">Cadastrar minha organização
+                            <svg class="icone icone--seta" aria-hidden="true"><use href="./assets/imgs/icons/sprite.svg#seta-direita"></use></svg>
+                        </a>
                     </div>
-                    <div id="card-2" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-org pt-3">
-                        <div style="position: relative;" class="card-body d-flex flex-column gap-4">
-                            <div class="mx-4">
-                                <h4>Quem confia em nós</h4>
-                                <div class="d-flex flex-wrap justify-content-evenly">
-                                    <img style="width: 80px; height: 80px;" src="./assets/imgs/orgs/img1.png">
-                                    <img style="width: 80px; height: 80px;" src="./assets/imgs/orgs/img2.png">
-                                    <img style="width: 80px; height: 80px;" src="./assets/imgs/orgs/img3.png">
-                                    <img style="width: 80px; height: 80px;" src="./assets/imgs/orgs/img4.png">
-                                    <img style="width: 80px; height: 80px;" src="./assets/imgs/orgs/img5.png">
-                                    <img style="width: 80px; height: 80px;" src="./assets/imgs/orgs/img6.png">
-                                    <img style="width: 80px; height: 80px;" src="./assets/imgs/orgs/img7.png">
-                                </div>
-                            </div>
-                        </div>
+                    <div class="org__foto arco">
+                        <img src="./assets/imgs/campanha-1.jpg" alt="Veterinários aplicando vacina em um filhote de cachorro" loading="lazy" style="object-position: 38% 50%">
                     </div>
-                    <div id="card-3" class="col-xl-3 col-lg-5 col-md-6 col-sm-8 col-12 card card-org pt-3">
-                        <div style="position: relative;" class="card-body d-md-flex justify-content-end p-5">
-                            <div class="me-4">
-                                <h4>Junte-se ao <span style="color: var(--cor-secundaria)">ARCA</span>!</h4>
-                                <a href="./cadastro_representante.html" class="botao-arca botao-roxo">Cadastre sua organização agora</a>
-                            </div>
-                            <img src="./assets/imgs/Gato.png">
-                        </div>
-                    </div>
+                </div>
+
+                <div class="parceiros">
+                    <p class="parceiros__titulo">Quem já confia na Arca</p>
+                    <ul class="parceiros__lista">
+                        <li><img src="./assets/imgs/orgs/img1.png" alt="Patinhas do Bem" loading="lazy"></li>
+                        <li><img src="./assets/imgs/orgs/img2.png" alt="Organização parceira 2" loading="lazy"></li>
+                        <li><img src="./assets/imgs/orgs/img3.png" alt="Organização parceira 3" loading="lazy"></li>
+                        <li><img src="./assets/imgs/orgs/img4.png" alt="Organização parceira 4" loading="lazy"></li>
+                        <li><img src="./assets/imgs/orgs/img5.png" alt="Organização parceira 5" loading="lazy"></li>
+                        <li><img src="./assets/imgs/orgs/img6.png" alt="Organização parceira 6" loading="lazy"></li>
+                        <li><img src="./assets/imgs/orgs/img7.png" alt="Organização parceira 7" loading="lazy"></li>
+                    </ul>
                 </div>
             </div>
         </section>
     </main>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <footer class="rodape">
+        <div class="contem rodape__grade">
+            <a class="marca marca--clara" href="./index.html" aria-label="Programa Arca, página inicial">
+                <img src="./assets/imgs/Logo.svg" alt="" width="36" height="36">
+                <span class="marca__texto"><strong>Arca</strong><small>Prefeitura da Serra</small></span>
+            </a>
+            <nav class="rodape__links" aria-label="Rodapé">
+                <a href="./login.html">Entrar</a>
+                <a href="./cadastro.html">Cadastro de cidadão</a>
+                <a href="./cadastro_representante.html">Cadastro de organização</a>
+            </nav>
+            <p>© 2026 Programa Arca</p>
+        </div>
+    </footer>
+
     <script src="./assets/js/funcoes.js"></script>
     <script src="./assets/js/conexao_bd.js"></script>
-    <script src="./assets/js/select.js"></script>
     <script src="./assets/js/landing.js"></script>
-    <script src="./assets/js/sistema.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -1,87 +1,93 @@
-let sessao = null;
+// Tela do representante: pessoas que demonstraram interesse nos animais da organização
 
-$(document).ready(function () {
-    if (!protegerRota(['representante'])) {
-        return;
-    }
+var sessao = null;
+var interessados = [];
+
+if (protegerRota(['representante'])) {
     sessao = getSessao();
-    carregarDadosSidebar();
+    montarMenu('notificacoes');
+    iniciar();
+}
+
+function iniciar() {
     carregarNotificacoes();
-});
 
-function carregarNotificacoes() {
-    if (!sessao || !sessao.id_empresa) return;
+    qs('#notif-list').addEventListener('click', function (e) {
+        var botao = e.target.closest('[data-lida]');
+        if (!botao) return;
+        marcarNotificacaoLida(Number(botao.dataset.lida)).then(carregarNotificacoes);
+    });
 
-    listarNotificacoesPorInstituicao(sessao.id_empresa).then(function (notificacoes) {
-        let listaComAnimal = [];
-        let pendentes = notificacoes.length;
-
-        if (pendentes === 0) {
-            renderizarNotificacoes([]);
-            return;
-        }
-
-        notificacoes.forEach(function (notif) {
-            buscarAnimalPorId(notif.id_animal).then(function (animal) {
-                listaComAnimal.push({
-                    id: notif.id,
-                    nome_pessoa: notif.nome_pessoa,
-                    email_pessoa: notif.email_pessoa,
-                    nome_animal: animal ? animal.nome : 'Desconhecido',
-                    imagem: animal ? animal.imagem : '',
-                    data: notif.data,
-                    lida: notif.lida
-                });
-                pendentes--;
-                if (pendentes === 0) {
-                    renderizarNotificacoes(listaComAnimal);
-                }
-            });
+    qs('#btn-marcar-todas').addEventListener('click', function () {
+        var pendentes = interessados.filter(function (n) { return !n.lida; });
+        Promise.all(pendentes.map(function (n) { return marcarNotificacaoLida(n.id); })).then(function () {
+            toast('Tudo marcado como lido.', 'sucesso');
+            carregarNotificacoes();
         });
     });
 }
 
-function renderizarNotificacoes(lista) {
-    let $container = $('#notif-list');
-    if (!$container.length) return;
+function carregarNotificacoes() {
+    listarNotificacoesPorInstituicao(sessao.id_empresa).then(function (notificacoes) {
+        // Junta cada notificação com os dados do animal e mostra as mais recentes primeiro
+        return listarAnimais().then(function (animais) {
+            return notificacoes.map(function (n) {
+                var animal = animais.find(function (a) { return a.id === n.id_animal; });
+                return {
+                    id: n.id,
+                    nome_pessoa: n.nome_pessoa,
+                    email_pessoa: n.email_pessoa,
+                    nome_animal: animal ? animal.nome : 'Desconhecido',
+                    imagem: animal ? animal.imagem : '',
+                    data: n.data,
+                    lida: n.lida
+                };
+            }).sort(function (a, b) {
+                return b.id - a.id;
+            });
+        });
+    }).then(function (lista) {
+        interessados = lista;
+        renderizarNotificacoes();
+    });
+}
 
-    if (lista.length === 0) {
-        $container.html('<p class="notif-empty">Nenhuma notificacao no momento.</p>');
+function renderizarNotificacoes() {
+    var area = qs('#notif-list');
+    var naoLidas = interessados.filter(function (n) { return !n.lida; }).length;
+    qs('#btn-marcar-todas').hidden = naoLidas === 0;
+
+    if (interessados.length === 0) {
+        area.innerHTML =
+            '<div class="vazio">' +
+                '<img src="./assets/imgs/illus-cat.svg" alt="">' +
+                '<h3>Nenhum interessado ainda</h3>' +
+                '<p>Quando alguém demonstrar interesse em um dos seus animais, o contato aparece aqui.</p>' +
+                '<a class="botao" href="./listagem_animais.html">Ver meus animais ' + icone('seta-direita', 'icone--seta') + '</a>' +
+            '</div>';
         return;
     }
 
-    let html = '';
-    $.each(lista, function (i, notif) {
-        let classeLida = notif.lida ? ' notif-lida' : '';
+    var html = '<p class="contagem">' + naoLidas + (naoLidas === 1 ? ' nova' : ' novas') + ' · ' + interessados.length + ' no total</p>';
+    html += '<div class="interessados">';
+    interessados.forEach(function (n) {
         html +=
-        '<div class="notif-card align-items-center' + classeLida + '" data-id="' + notif.id + '">' +
-            '<div class="notif-card-img">' +
-                '<img src="' + (notif.imagem || './assets/imgs/placeholder.png') + '" alt="' + notif.nome_animal + '">' +
+        '<article class="interessado' + (n.lida ? ' interessado--lida' : '') + '">' +
+            '<div class="tabela__foto"><img src="' + esc(n.imagem || IMG_PADRAO) + '" alt="" loading="lazy"></div>' +
+            '<div>' +
+                '<h2 class="interessado__titulo">' + (n.lida ? '' : '<span class="ponto-novo" title="Nova"></span><span class="sr-only">Nova: </span>') +
+                    esc(n.nome_pessoa) + ' quer adotar ' + esc(n.nome_animal) + '</h2>' +
+                '<p class="interessado__meta">' +
+                    '<span>' + esc(formatarDataISO(n.data)) + '</span>' +
+                    '<a href="mailto:' + esc(n.email_pessoa) + '">' + icone('email') + esc(n.email_pessoa) + '</a>' +
+                '</p>' +
             '</div>' +
-            '<div class="notif-card-body">' +
-                '<h2 class="notif-card-title m-0">' + notif.nome_pessoa + ' quer adotar ' + notif.nome_animal + '!</h2>' +
-                '<p class="notif-card-desc m-0">Data: ' + notif.data + '</p>' +
-                '<div class="notif-card-contato mt-3">' +
-                    '<a href="mailto:' + notif.email_pessoa + '" class="notif-contato-pill">' +
-                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-                            '<rect x="2" y="4" width="20" height="16" rx="2"/>' +
-                            '<path d="M22 4L12 13L2 4"/>' +
-                        '</svg>' +
-                        notif.email_pessoa +
-                    '</a>' +
-                '</div>' +
+            '<div class="interessado__acao">' +
+                (n.lida ? '<span class="etiqueta etiqueta--neutra">Lida</span>'
+                        : '<button type="button" class="botao botao--contorno botao--pequeno" data-lida="' + n.id + '">' + icone('check') + 'Marcar como lida</button>') +
             '</div>' +
-        '</div>';
+        '</article>';
     });
-
-    $container.html(html);
+    html += '</div>';
+    area.innerHTML = html;
 }
-
-$(document).on('click', '.notif-btn-marcar-lida', function () {
-    let id = $(this).data('id');
-    marcarNotificacaoLida(id).then(function () {
-        let $card = $('.notif-card[data-id="' + id + '"]');
-        $card.addClass('notif-lida');
-        $card.find('.notif-btn-marcar-lida').remove();
-    });
-});

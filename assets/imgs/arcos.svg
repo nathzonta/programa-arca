@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -2 720 122" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <path d="M0 120V70a40 40 0 0 1 80 0v50Z" fill="#A9B9A1"/>
+  <path d="M90 120V52a50 50 0 0 1 100 0v68Z" fill="#E7A94B"/>
+  <path d="M200 120V84a30 30 0 0 1 60 0v36Z" fill="#E77962"/>
+  <path d="M270 120V58a46 46 0 0 1 92 0v62Z" fill="#24504A"/>
+  <path d="M372 120V80a34 34 0 0 1 68 0v40Z" fill="#A9B9A1"/>
+  <path d="M450 120V56a54 54 0 0 1 108 0v64Z" fill="#E77962"/>
+  <path d="M568 120V76a36 36 0 0 1 72 0v44Z" fill="#E7A94B"/>
+  <path d="M650 120V64a35 35 0 0 1 70 0v56Z" fill="#24504A"/>
+</svg>

@@ -1,264 +1,268 @@
-let animalEditando = null;
-let animaisFiltrados = [];
-let sessao = null;
+// Tela do representante: gerenciar os animais da organização
 
-$(document).ready(function () {
-    if (!protegerRota(['representante'])) {
-        return;
-    }
+var animalEditando = null;   // animal que está sendo editado (null = cadastrando um novo)
+var animaisDaOrg = [];       // todos os animais da organização
+var imagemNova = null;       // foto escolhida no formulário (já reduzida)
+var sessao = null;
+
+if (protegerRota(['representante'])) {
     sessao = getSessao();
+    montarMenu('listagem_animais');
+    iniciar();
+}
 
-    carregarDadosSidebar();
+function iniciar() {
     inicializarModal();
     inicializarFiltros();
-    inicializarPreview();
+    inicializarTabela();
     carregarAnimais();
-});
+    carregarResumoInteressados();
+}
 
 function carregarAnimais() {
-    listarAnimais().then(function (todosAnimais) {
-        animaisFiltrados = todosAnimais.filter(function (a) {
+    listarAnimais().then(function (todos) {
+        animaisDaOrg = todos.filter(function (a) {
             return a.fk_instituicao === sessao.id_empresa;
         });
-        renderizarAnimais(animaisFiltrados);
+        atualizarResumo();
+        aplicarFiltros();
     });
 }
 
+function atualizarResumo() {
+    qs('#resumo-total').textContent = animaisDaOrg.length;
+    qs('#resumo-atencao').textContent = animaisDaOrg.filter(function (a) {
+        return a.saude && a.saude !== 'Saudável, vacinas em dia';
+    }).length;
+}
+
+function carregarResumoInteressados() {
+    listarNotificacoesPorInstituicao(sessao.id_empresa).then(function (lista) {
+        qs('#resumo-interessados').textContent = lista.filter(function (n) { return !n.lida; }).length;
+    });
+}
+
+// ---------- Tabela ----------
+
+function renderizarAnimais(lista) {
+    var area = qs('#animais-grid');
+
+    if (animaisDaOrg.length === 0) {
+        area.innerHTML =
+            '<div class="vazio">' +
+                '<img src="./assets/imgs/illus-cat.svg" alt="">' +
+                '<h3>Nenhum animal cadastrado</h3>' +
+                '<p>Cadastre o primeiro animal para ele aparecer para quem quer adotar.</p>' +
+                '<button type="button" class="botao botao--dourado" data-novo>' + icone('mais') + 'Novo animal</button>' +
+            '</div>';
+        return;
+    }
+
+    if (lista.length === 0) {
+        area.innerHTML = '<div class="vazio"><h3>Nenhum animal encontrado</h3><p>Nenhum animal combina com os filtros. Tente limpar a busca.</p></div>';
+        return;
+    }
+
+    var linhas = lista.map(function (animal) {
+        var saudavel = animal.saude === 'Saudável, vacinas em dia';
+        return '<tr>' +
+            '<td class="tabela__celula-principal">' +
+                '<div class="tabela__principal">' +
+                    '<div class="tabela__foto"><img src="' + esc(animal.imagem || IMG_PADRAO) + '" alt="" loading="lazy"></div>' +
+                    '<div>' +
+                        '<div class="tabela__nome">' + esc(animal.nome) + '</div>' +
+                        '<div class="tabela__sub">' + esc(animal.especie || '') + ' · ' + esc(animal.raca || '') + ' · ' + esc(idadeEmAnos(animal.idade_aprox)) + ' · ' + esc(animal.sexo || '') + '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</td>' +
+            '<td data-rotulo="Porte">' + esc(animal.porte || '') + '</td>' +
+            '<td data-rotulo="Saúde"><span class="etiqueta ' + (saudavel ? 'etiqueta--castracao' : 'etiqueta--feira') + '">' + esc(animal.saude || '') + '</span></td>' +
+            '<td data-rotulo="Custo mensal" class="tabela__numero">R$ ' + esc(animal.valor_custo || '0') + '</td>' +
+            '<td><div class="tabela__acoes">' +
+                '<button type="button" class="botao botao--texto botao--pequeno" data-editar="' + animal.id + '" aria-label="Editar ' + esc(animal.nome) + '">' + icone('editar') + 'Editar</button>' +
+                '<button type="button" class="botao botao--texto-perigo botao--pequeno" data-excluir="' + animal.id + '" aria-label="Excluir ' + esc(animal.nome) + '">' + icone('lixeira') + 'Excluir</button>' +
+            '</div></td>' +
+        '</tr>';
+    }).join('');
+
+    area.innerHTML =
+        '<p class="contagem">' + lista.length + (lista.length === 1 ? ' animal' : ' animais') + '</p>' +
+        '<div class="tabela-wrap"><table class="tabela">' +
+            '<caption class="sr-only">Animais da organização</caption>' +
+            '<thead><tr><th scope="col">Animal</th><th scope="col">Porte</th><th scope="col">Saúde</th><th scope="col">Custo mensal</th><th scope="col"><span class="sr-only">Ações</span></th></tr></thead>' +
+            '<tbody>' + linhas + '</tbody>' +
+        '</table></div>';
+}
+
+function inicializarTabela() {
+    qs('#animais-grid').addEventListener('click', function (e) {
+        var editar = e.target.closest('[data-editar]');
+        var excluir = e.target.closest('[data-excluir]');
+
+        if (e.target.closest('[data-novo]')) {
+            abrirModal();
+        } else if (editar) {
+            buscarAnimalPorId(Number(editar.dataset.editar)).then(function (animal) {
+                if (animal) abrirModal(animal);
+            });
+        } else if (excluir) {
+            var id = Number(excluir.dataset.excluir);
+            var animal = animaisDaOrg.find(function (a) { return a.id === id; });
+            confirmar({
+                titulo: 'Excluir ' + (animal ? animal.nome : 'animal') + '?',
+                mensagem: 'O animal deixa de aparecer para quem quer adotar. Essa ação não pode ser desfeita.',
+                botao: 'Excluir',
+                perigo: true
+            }).then(function (ok) {
+                if (!ok) return;
+                removerAnimal(id).then(function () {
+                    toast('Animal excluído.', 'sucesso');
+                    carregarAnimais();
+                });
+            });
+        }
+    });
+}
+
+// ---------- Diálogo de cadastro / edição ----------
+
 function inicializarModal() {
-    $('#btn-novo-animal').on('click', function () { 
-        abrirModal(); 
+    var dialogo = qs('#modal-animal');
+    var form = qs('#form-animal');
+
+    ligarDialogo(dialogo);
+    ligarLimpezaDeErros(form);
+    dialogo.addEventListener('close', function () {
+        animalEditando = null;
+        imagemNova = null;
+        form.reset();
+        limparErros(form);
     });
 
-    $('#modal-close').on('click', fecharModal);
-    $('#btn-cancelar').on('click', fecharModal);
+    qs('#btn-novo-animal').addEventListener('click', function () { abrirModal(); });
 
-    $('#modal-animal').on('click', function (e) {
-        if (e.target === this) {
-            fecharModal();
+    // Atualiza a pré-visualização enquanto a pessoa digita
+    form.addEventListener('input', atualizarPreview);
+    form.addEventListener('change', atualizarPreview);
+
+    qs('#animal-imagem').addEventListener('change', function (e) {
+        var arquivo = e.target.files[0];
+        if (!arquivo) {
+            imagemNova = null;
+            atualizarPreview();
+            return;
         }
+        lerImagem(arquivo, 700).then(function (url) {
+            imagemNova = url;
+            atualizarPreview();
+        }).catch(function () {
+            imagemNova = null;
+            e.target.value = '';
+            toast('Esse arquivo não parece ser uma imagem. Escolha outro.', 'erro');
+        });
     });
 
-    $('#form-animal').on('submit', function (e) {
+    form.addEventListener('submit', function (e) {
         e.preventDefault();
-        if (validarFormulario('#form-animal')) {
-            salvarAnimal();
-        }
+        if (validarFormulario(form)) salvarAnimal();
     });
 }
 
 function abrirModal(animal) {
     animalEditando = animal || null;
-    $('#modal-title').text(animal ? 'Editar animal' : 'Adicionar animal');
-    $('#modal-alert').removeClass('visible');
+    imagemNova = null;
+    var form = qs('#form-animal');
+    form.reset();
+    limparErros(form);
+
+    qs('#modal-title').textContent = animal ? 'Editar animal' : 'Adicionar animal';
 
     if (animal) {
-        preencherFormulario(animal);
-    } else {
-        limparFormulario();
+        qs('#animal-nome').value = animal.nome || '';
+        qs('#animal-porte').value = animal.porte || '';
+        qs('#animal-especie').value = animal.especie || '';
+        qs('#animal-raca').value = animal.raca || '';
+        qs('#animal-idade').value = animal.idade_aprox || '';
+        qs('#animal-custo').value = animal.valor_custo || '';
+        qs('#animal-sexo').value = animal.sexo || '';
+        qs('#animal-saude').value = animal.saude || '';
+        qs('#animal-descricao').value = animal.descricao || '';
     }
 
-    $('#modal-animal').addClass('open');
     atualizarPreview();
-}
-
-function fecharModal() {
-    $('#modal-animal').removeClass('open');
-    animalEditando = null;
-    limparFormulario();
-    limparErros();
-}
-
-function preencherFormulario(animal) {
-    $('#animal-nome').val(animal.nome || '');
-    $('#animal-porte').val(animal.porte || '');
-    $('#animal-especie').val(animal.especie || '');
-    $('#animal-raca').val(animal.raca || '');
-    $('#animal-idade').val(animal.idade_aprox || '');
-    $('#animal-custo').val(animal.valor_custo || '');
-    $('#animal-sexo').val(animal.sexo || '');
-    $('#animal-saude').val(animal.saude || '');
-    $('#animal-descricao').val(animal.descricao || '');
-    $('#preview-img').attr('src', animal.imagem || '');
-
-    setTimeout(function () {
-        if (typeof iniciarSelects === 'function') {
-            iniciarSelects();
-        }
-        atualizarPreview();
-    }, 100);
-}
-
-function limparFormulario() {
-    $('#form-animal')[0].reset();
-    $('#animal-imagem').val('');
-    $('#preview-name').text('Nome do pet');
-    $('#preview-porte').text('Porte');
-    $('#preview-vacina').text('Saude');
-    $('#preview-custo').text('Custo mensal medio de R$ --');
-    $('#preview-desc').html('Especie: Raca | Idade | Sexo<br><br>Preencha os campos para ver a pre-visualizacao do animal.');
-    $('#preview-img').attr('src', './assets/imgs/placeholder.png');
-
-    setTimeout(function () {
-        if (typeof iniciarSelects === 'function') {
-            iniciarSelects();
-        }
-    }, 100);
-}
-
-function inicializarPreview() {
-    $('[data-preview]').on('input change', atualizarPreview);
-
-    let observer = new MutationObserver(atualizarPreview);
-    $('.select-arca').each(function () {
-        observer.observe(this, { 
-            childList: true, 
-            subtree: true, 
-            attributes: true 
-        });
-    });
+    qs('#modal-animal').showModal();
 }
 
 function atualizarPreview() {
-    const dados = getValoresInput('#form-animal');
+    var dados = getValoresInput('#form-animal');
+    var fotoAtual = animalEditando ? animalEditando.imagem : IMG_PADRAO;
 
-    $('#preview-name').text(dados['animal_nome']);
-    $('#preview-porte').text(dados['animal_porte'] !== 'Porte' ? 'Porte ' + dados['animal_porte'].toLowerCase() : 'Porte --');
-    $('#preview-custo').text(dados['animal_custo'] !== '--' ? 'Custo mensal medio de R$ ' + dados['animal_custo'] : 'Custo mensal medio de R$ --');
-    $('#preview-vacina').text(dados['animal_saude'] || 'Saúde');
+    qs('#preview-name').textContent = dados.animal_nome || 'Nome do animal';
+    qs('#preview-porte').textContent = dados.animal_porte ? 'Porte ' + dados.animal_porte.toLowerCase() : 'Porte';
+    qs('#preview-vacina').textContent = dados.animal_saude || 'Saúde';
+    qs('#preview-custo').textContent = dados.animal_custo ? 'R$ ' + dados.animal_custo + '/mês' : 'R$ --/mês';
+    qs('#preview-img').src = imagemNova || fotoAtual || IMG_PADRAO;
 
-    const textoInfo = (dados['animal_especie'] || 'Espécie') + ': ' + (dados['animal_raca'] || 'Raça') + ' | ' + (dados['animal_idade'] || 'Idade') + ' anos | ' + (dados['animal_sexo'] || 'Sexo');
-    $('#preview-desc').html(textoInfo + '<br><br>' + (dados['animal_descricao'] || 'Preencha os campos ao lado'));
-
-    let fileInput = document.getElementById('animal-imagem');
-    if (fileInput && fileInput.files && fileInput.files[0]) {
-        let reader = new FileReader();
-        reader.onload = function (e) {
-            $('#preview-img').attr('src', e.target.result);
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-    }
+    var linha = [dados.animal_especie, dados.animal_raca, dados.animal_idade ? idadeEmAnos(dados.animal_idade) : '', dados.animal_sexo]
+        .filter(Boolean).join(' · ');
+    qs('#preview-desc').textContent = (linha ? linha + '. ' : '') + (dados.animal_descricao || (linha ? '' : 'Preencha os campos para ver como o animal aparece para quem quer adotar.'));
 }
 
 function salvarAnimal() {
-    let dados = getValoresInput('#form-animal');
+    var dados = getValoresInput('#form-animal');
+    var botao = qs('#btn-salvar');
 
-    let objetoAnimal = {
-        nome: dados['animal_nome'],
-        porte: dados['animal_porte'],
-        especie: dados['animal_especie'],
-        raca: dados['animal_raca'],
-        idade_aprox: dados['animal_idade'],
-        valor_custo: dados['animal_custo'],
-        sexo: dados['animal_sexo'],
-        saude: dados['animal_saude'],
-        descricao: dados['animal_descricao'],
-        personalidade: '',
-        ficha_medica: '',
-        imagem: dados['animal_imagem'] || './assets/imgs/placeholder.png',
+    var objetoAnimal = {
+        nome: dados.animal_nome.trim(),
+        porte: dados.animal_porte,
+        especie: dados.animal_especie,
+        raca: dados.animal_raca,
+        idade_aprox: dados.animal_idade.trim(),
+        valor_custo: dados.animal_custo.trim(),
+        sexo: dados.animal_sexo,
+        saude: dados.animal_saude,
+        descricao: dados.animal_descricao.trim(),
+        personalidade: animalEditando ? (animalEditando.personalidade || '') : '',
+        ficha_medica: animalEditando ? (animalEditando.ficha_medica || '') : '',
+        imagem: imagemNova || (animalEditando ? animalEditando.imagem : IMG_PADRAO),
         fk_instituicao: sessao.id_empresa
     };
 
-    if (animalEditando) {
-        atualizarAnimal(animalEditando.id, objetoAnimal).then(function () {
-            carregarAnimais();
-            fecharModal();
-        });
-    } else {
-        criarAnimal(objetoAnimal).then(function () {
-            carregarAnimais();
-            fecharModal();
-        });
-    }
+    ocupado(botao, true);
+    var operacao = animalEditando ? atualizarAnimal(animalEditando.id, objetoAnimal) : criarAnimal(objetoAnimal);
+
+    operacao.then(function () {
+        toast(animalEditando ? 'Animal atualizado.' : objetoAnimal.nome + ' foi cadastrado.', 'sucesso');
+        qs('#modal-animal').close();
+        carregarAnimais();
+    }).catch(function () {
+        toast('Não foi possível salvar. O armazenamento do navegador pode estar cheio.', 'erro');
+    }).then(function () {
+        ocupado(botao, false);
+    });
 }
 
-function renderizarAnimais(lista) {
-    let $grid = $('#animais-grid');
-    if (!$grid.length) return;
-
-    if (lista.length === 0) {
-        $grid.html('<p style="text-align: center; color: #737373; grid-column: 1 / -1;">Nenhum animal encontrado.</p>');
-        return;
-    }
-
-    let html = '';
-    $.each(lista, function (i, animal) {
-        html +=
-        '<div class="col-12 col-md-4 card card-animal p-1" data-id="' + animal.id + '">' +
-            '<div class="card-body">' +
-                '<img class="card-animal-img" src="' + (animal.imagem || './assets/imgs/placeholder.png') + '" alt="' + animal.nome + '">' +
-                '<div class="card-animal-text mt-4">' +
-                    '<h4 class="d-flex justify-content-between">' + animal.nome +
-                        '<span class="card-animal-edit btn-editar-animal" data-id="' + animal.id + '">' +
-                            '<img src="./assets/imgs/icons/editar.svg">' +
-                        '</span>' +
-                    '</h4>' +
-                    '<div class="card-animal-badges">' +
-                        '<span class="badge-arca badge-arca-sucesso">Porte ' + (animal.porte || '').toLowerCase() + '</span>' +
-                        '<span class="badge-arca badge-arca-info">' + (animal.saude || '') + '</span>' +
-                        '<span class="badge-arca badge-arca-rosa">R$ ' + (animal.valor_custo || '0') + '/mês</span>' +
-                    '</div>' +
-                    '<div class="card-animal-info d-grid g-2 mt-2">' +
-                        '<p class="corpo corpo-sm text-muted mt-2" style="font-size: clamp(0.9rem, 0.9vw, 0.9rem)">' +
-                        (animal.especie || '') + ': ' + (animal.raca || '') + ' | ' + (animal.idade_aprox || '') + ' anos | ' + (animal.sexo) +
-                        '</p>' +
-                        '<p class="corpo corpo-sm text-muted mt-2" style="font-size: clamp(0.9rem, 0.9vw, 0.9rem)">' +
-                        (animal.descricao || '') +
-                        '</p>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="card-animal-footer mt-auto">' +
-                    '<button class="btn-excluir-animal" data-id="' + animal.id + '" style="border:none; background:none; color:#e74c3c; cursor:pointer; font-size:13px;">Excluir</button>' +
-                '</div>' +
-            '</div>' +
-        '</div>';
-    });
-
-    $grid.html(html);
-}
-
-$(document).on('click', '.btn-editar-animal', function () {
-    let id = $(this).data('id');
-    buscarAnimalPorId(id).then(function (animal) {
-        if (animal) abrirModal(animal);
-    });
-});
-
-$(document).on('click', '.btn-excluir-animal', function () {
-    let id = $(this).data('id');
-    if (confirm('Tem certeza que deseja excluir este animal?')) {
-        removerAnimal(id).then(function () {
-            carregarAnimais();
-        });
-    }
-});
+// ---------- Filtros ----------
 
 function inicializarFiltros() {
-    $('#filtro-nome').on('input', aplicarFiltros);
-    $('#filtro-custo').on('input', aplicarFiltros);
-
-    let observer = new MutationObserver(aplicarFiltros);
-    $('.sidebar-filtros .select-arca').each(function () {
-        observer.observe(this, { childList: true, subtree: true, attributes: true });
+    ['#filtro-nome', '#filtro-custo'].forEach(function (id) {
+        qs(id).addEventListener('input', aplicarFiltros);
+    });
+    ['#filtro-porte', '#filtro-sexo'].forEach(function (id) {
+        qs(id).addEventListener('change', aplicarFiltros);
     });
 }
 
 function aplicarFiltros() {
-    let nome = ($('#filtro-nome').val() || '').toLowerCase();
-    let custoMax = parseFloat(($('#filtro-custo').val() || '').replace(/[^0-9.,]/g, '').replace(',', '.')) || Infinity;
-    let porte = $('#filtro-porte').val() || '';
+    var nome = normalizar(qs('#filtro-nome').value);
+    var custoMax = parseFloat(qs('#filtro-custo').value.replace(/[^0-9.,]/g, '').replace(',', '.')) || Infinity;
+    var porte = qs('#filtro-porte').value;
+    var sexo = qs('#filtro-sexo').value;
 
-    listarAnimais().then(function (todosAnimais) {
-        let daInstituicao = todosAnimais.filter(function (a) {
-            return a.fk_instituicao === sessao.id_empresa;
-        });
-
-        animaisFiltrados = daInstituicao.filter(function (animal) {
-            let matchNome = (animal.nome || '').toLowerCase().indexOf(nome) > -1;
-            let matchCusto = parseFloat(animal.valor_custo || 0) <= custoMax;
-            let matchPorte = !porte || (animal.porte || '').toLowerCase() === porte;
-            return matchNome && matchCusto && matchPorte;
-        });
-
-        renderizarAnimais(animaisFiltrados);
-    });
+    renderizarAnimais(animaisDaOrg.filter(function (animal) {
+        return (!nome || normalizar(animal.nome).indexOf(nome) > -1) &&
+               parseFloat(animal.valor_custo || 0) <= custoMax &&
+               (!porte || normalizar(animal.porte) === porte) &&
+               (!sexo || normalizar(animal.sexo) === sexo);
+    }));
 }

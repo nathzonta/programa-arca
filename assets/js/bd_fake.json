@@ -1,4 +1,5 @@
 {
+    "versao": 2,
     "contas": [
         {
             "id": 1,
@@ -17,6 +18,43 @@
             "senha": "ea899ba5a202ad8253b6ce5ad06c12d0",
             "tipo": "cidadao",
             "id_empresa": null,
+            "favoritos": [2, 4, 6],
+            "historico": [
+                { "id_animal": 4, "acao": "favorito", "data": "2026-11-18" },
+                { "id_animal": 2, "acao": "interessado", "data": "2026-11-18" },
+                { "id_animal": 6, "acao": "favorito", "data": "2026-11-15" },
+                { "id_animal": 5, "acao": "desfavoritado", "data": "2026-11-12" },
+                { "id_animal": 5, "acao": "favorito", "data": "2026-11-11" },
+                { "id_animal": 2, "acao": "favorito", "data": "2026-11-10" }
+            ]
+        },
+        {
+            "id": 3,
+            "nome": "Ana Souza",
+            "email": "ana@arca.br",
+            "senha": "ea899ba5a202ad8253b6ce5ad06c12d0",
+            "tipo": "cidadao",
+            "id_empresa": null,
+            "favoritos": [],
+            "historico": []
+        },
+        {
+            "id": 4,
+            "nome": "Carlos Lima",
+            "email": "carlos@arca.br",
+            "senha": "ea899ba5a202ad8253b6ce5ad06c12d0",
+            "tipo": "cidadao",
+            "id_empresa": null,
+            "favoritos": [],
+            "historico": []
+        },
+        {
+            "id": 5,
+            "nome": "Marina Alves",
+            "email": "patinhas@arca.br",
+            "senha": "ea899ba5a202ad8253b6ce5ad06c12d0",
+            "tipo": "representante",
+            "id_empresa": 2,
             "favoritos": [],
             "historico": []
         }
@@ -53,6 +91,134 @@
             "descricao": "Luna é uma gatinha tranquila e observadora que adora encontrar um cantinho confortável para descansar perto das pessoas.",
             "imagem": "./assets/imgs/luna-card.jpg",
             "fk_instituicao": 1
+        },
+        {
+            "id": 3,
+            "nome": "Thor",
+            "porte": "Grande",
+            "especie": "Cachorro",
+            "raca": "Border Collie",
+            "idade_aprox": "3",
+            "valor_custo": "260",
+            "personalidade": "Brincalhao",
+            "ficha_medica": "",
+            "sexo": "Macho",
+            "saude": "Saudável, vacinas em dia",
+            "descricao": "Thor é cheio de energia e adora correr atrás de bolinhas. Precisa de espaço e de uma família que goste de passear.",
+            "imagem": "./assets/imgs/animais/thor.jpg",
+            "fk_instituicao": 1
+        },
+        {
+            "id": 4,
+            "nome": "Ruivo",
+            "porte": "Pequeno",
+            "especie": "Gato",
+            "raca": "Indefinida",
+            "idade_aprox": "2",
+            "valor_custo": "120",
+            "personalidade": "Curioso",
+            "ficha_medica": "",
+            "sexo": "Macho",
+            "saude": "Precisa de vacinas",
+            "descricao": "Ruivo é curioso e brincalhão, se dá bem com outros gatos e adora um cantinho de sol para tirar sonecas.",
+            "imagem": "./assets/imgs/gato-lg.jpg",
+            "fk_instituicao": 1
+        },
+        {
+            "id": 5,
+            "nome": "Bolinha",
+            "porte": "Médio",
+            "especie": "Cachorro",
+            "raca": "Indefinida",
+            "idade_aprox": "2",
+            "valor_custo": "170",
+            "personalidade": "Docil",
+            "ficha_medica": "",
+            "sexo": "Macho",
+            "saude": "Saudável, vacinas em dia",
+            "descricao": "Bolinha é um doce: obediente, calmo e ótimo com crianças. Já aprendeu a andar de guia e a esperar a hora da comida.",
+            "imagem": "./assets/imgs/animais/bolinha.svg",
+            "fk_instituicao": 2
+        },
+        {
+            "id": 6,
+            "nome": "Mingau",
+            "porte": "Pequeno",
+            "especie": "Gato",
+            "raca": "Persa",
+            "idade_aprox": "5",
+            "valor_custo": "210",
+            "personalidade": "Calmo",
+            "ficha_medica": "",
+            "sexo": "Macho",
+            "saude": "Em tratamento",
+            "descricao": "Mingau é tranquilo e carinhoso. Está em tratamento de pele, com boa evolução, e procura um lar paciente.",
+            "imagem": "./assets/imgs/animais/mingau.svg",
+            "fk_instituicao": 2
+        },
+        {
+            "id": 7,
+            "nome": "Nina",
+            "porte": "Pequeno",
+            "especie": "Cachorro",
+            "raca": "Poodle",
+            "idade_aprox": "6",
+            "valor_custo": "230",
+            "personalidade": "Companheira",
+            "ficha_medica": "",
+            "sexo": "Fêmea",
+            "saude": "Saudável, vacinas em dia",
+            "descricao": "Nina é uma companheira fiel que adora colo. Prefere ambientes tranquilos e é perfeita para apartamento.",
+            "imagem": "./assets/imgs/animais/nina.svg",
+            "fk_instituicao": 3
+        },
+        {
+            "id": 8,
+            "nome": "Tigre",
+            "porte": "Médio",
+            "especie": "Gato",
+            "raca": "Indefinida",
+            "idade_aprox": "3",
+            "valor_custo": "130",
+            "personalidade": "Explorador",
+            "ficha_medica": "",
+            "sexo": "Macho",
+            "saude": "Saudável, vacinas em dia",
+            "descricao": "Tigre é explorador e adora escalar. Vai ser feliz em uma casa com janelas protegidas e muitos brinquedos.",
+            "imagem": "./assets/imgs/animais/tigre.svg",
+            "fk_instituicao": 3
+        },
+        {
+            "id": 9,
+            "nome": "Pipoca",
+            "porte": "Grande",
+            "especie": "Cachorro",
+            "raca": "Labrador",
+            "idade_aprox": "1",
+            "valor_custo": "290",
+            "personalidade": "Festeira",
+            "ficha_medica": "",
+            "sexo": "Fêmea",
+            "saude": "Precisa de vacinas",
+            "descricao": "Pipoca é uma filhote enorme de alegria. Ainda está aprendendo as regras da casa e precisa de uma família com tempo.",
+            "imagem": "./assets/imgs/animais/pipoca.svg",
+            "fk_instituicao": 4
+        },
+        {
+            "id": 10,
+            "nome": "Pantera",
+            "porte": "Pequeno",
+            "especie": "Gato",
+            "raca": "Indefinida",
+            "idade_aprox": "4",
+            "valor_custo": "125",
+            "personalidade": "Misteriosa",
+            "ficha_medica": "",
+            "sexo": "Fêmea",
+            "saude": "Saudável, vacinas em dia",
+            "descricao": "Pantera é elegante e reservada no começo, mas vira uma manteiga assim que ganha confiança.",
+            "imagem": "./assets/imgs/animais/pantera.svg",
+            "fk_instituicao": 4
         }
     ],
     "instituicoes": [
@@ -66,6 +232,39 @@
             "cidade": "Vitoria",
             "estado": "ES",
             "descricao": "ONG dedicada ao resgate animal"
+        },
+        {
+            "id": 2,
+            "nome": "Patinhas da Serra",
+            "cnpj": "11.111.111/0001-11",
+            "email": "contato@patinhasdaserra.org",
+            "telefone": "(27) 98888-1111",
+            "endereco": "Av. Central, 450",
+            "cidade": "Serra",
+            "estado": "ES",
+            "descricao": "Resgate e adoção de cães e gatos no centro da cidade"
+        },
+        {
+            "id": 3,
+            "nome": "ONG Amor de Pet",
+            "cnpj": "22.222.222/0001-22",
+            "email": "ola@amordepet.org",
+            "telefone": "(27) 97777-2222",
+            "endereco": "Rua do Comércio, 72",
+            "cidade": "Serra",
+            "estado": "ES",
+            "descricao": "Feiras de adoção e lar temporário para animais resgatados"
+        },
+        {
+            "id": 4,
+            "nome": "Instituto Vida Animal",
+            "cnpj": "33.333.333/0001-33",
+            "email": "contato@vidaanimal.org",
+            "telefone": "(27) 96666-3333",
+            "endereco": "Rua das Acácias, 15",
+            "cidade": "Serra",
+            "estado": "ES",
+            "descricao": "Vacinação, castração e cuidado veterinário para a comunidade"
         }
     ],
     "campanhas": [
@@ -98,6 +297,46 @@
             "data": "28/07/2026 às 08h até 12h",
             "local": "Pracinha de Cidade Continental",
             "fk_instituicao": 1
+        },
+        {
+            "id": 4,
+            "titulo": "Mutirão de castração de gatos",
+            "descricao": "A Patinhas da Serra abre vagas para castração de gatos, com atendimento por ordem de chegada. Os animais devem chegar em jejum de 8 horas. <b>Levar CPF e caixa de transporte!</b>",
+            "imagem": "./assets/imgs/campanha-1.jpg",
+            "tipo": "Castração",
+            "data": "05/12/2026 às 8h até 14h",
+            "local": "Praça da Igreja, Centro",
+            "fk_instituicao": 2
+        },
+        {
+            "id": 5,
+            "titulo": "Vacinação antirrábica no bairro",
+            "descricao": "A ONG Amor de Pet e a Prefeitura vacinam cães e gatos contra a raiva. Basta levar o animal com guia ou caixa de transporte.",
+            "imagem": "./assets/imgs/campanha-3.jpg",
+            "tipo": "Vacinação",
+            "data": "12/12/2026 às 9h até 13h",
+            "local": "Escola Municipal Jardim Floresta",
+            "fk_instituicao": 3
+        },
+        {
+            "id": 6,
+            "titulo": "Feira de adoção de fim de ano",
+            "descricao": "O Instituto Vida Animal reúne várias organizações em uma feira com cães e gatos resgatados. Venha conhecer quem está à espera de um lar para o novo ano.",
+            "imagem": "./assets/imgs/campanha-2.jpg",
+            "tipo": "Feira de Adoção",
+            "data": "19/12/2026 às 10h até 16h",
+            "local": "Parque da Cidade",
+            "fk_instituicao": 4
+        },
+        {
+            "id": 7,
+            "titulo": "Castração de cães de pequeno porte",
+            "descricao": "A ONG Teste oferece vagas para castração de cães de pequeno porte, com orientação sobre pós-operatório para os tutores. <b>Vagas limitadas, confirme presença.</b>",
+            "imagem": "./assets/imgs/campanha-1.jpg",
+            "tipo": "Castração",
+            "data": "16/01/2027 às 8h até 15h",
+            "local": "Colina de Laranjeiras",
+            "fk_instituicao": 1
         }
     ],
     "notificacoes": [
@@ -109,6 +348,66 @@
             "id_animal": 1,
             "id_instituicao": 1,
             "data": "2025-06-01",
+            "lida": false
+        },
+        {
+            "id": 2,
+            "nome_pessoa": "Cidadão Teste",
+            "email_pessoa": "cidadao@arca.br",
+            "id_conta": 2,
+            "id_animal": 2,
+            "id_instituicao": 1,
+            "data": "2026-11-18",
+            "lida": false
+        },
+        {
+            "id": 3,
+            "nome_pessoa": "Ana Souza",
+            "email_pessoa": "ana@arca.br",
+            "id_conta": 3,
+            "id_animal": 3,
+            "id_instituicao": 1,
+            "data": "2026-11-22",
+            "lida": false
+        },
+        {
+            "id": 4,
+            "nome_pessoa": "Carlos Lima",
+            "email_pessoa": "carlos@arca.br",
+            "id_conta": 4,
+            "id_animal": 1,
+            "id_instituicao": 1,
+            "data": "2026-11-10",
+            "lida": true
+        },
+        {
+            "id": 5,
+            "nome_pessoa": "Ana Souza",
+            "email_pessoa": "ana@arca.br",
+            "id_conta": 3,
+            "id_animal": 4,
+            "id_instituicao": 1,
+            "data": "2026-11-23",
+            "lida": false
+        },
+        {
+            "id": 6,
+            "nome_pessoa": "Carlos Lima",
+            "email_pessoa": "carlos@arca.br",
+            "id_conta": 4,
+            "id_animal": 5,
+            "id_instituicao": 2,
+            "data": "2026-11-23",
+            "lida": false
+        },
+        {
+            "id": 7,
+            "nome_pessoa": "Ana Souza",
+            "email_pessoa": "ana@arca.br",
+            "id_conta": 3,
+            "id_animal": 8,
+            "id_instituicao": 3,
+            "data": "2026-11-21",
             "lida": false
         }
     ]

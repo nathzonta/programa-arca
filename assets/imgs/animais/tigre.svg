@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Ilustração de um gato: Tigre">
+  <rect width="400" height="500" fill="#FBEBCF"/>
+  <circle cx="82" cy="96" r="30" fill="#E77962" opacity=".85"/>
+  <path d="M322 500c68-6 82-88 40-128" fill="none" stroke="#8B9096" stroke-width="30" stroke-linecap="round"/>
+  <path d="M84 500V396C84 330 136 296 200 296s116 34 116 100v104Z" fill="#8B9096"/>
+  <ellipse cx="200" cy="440" rx="50" ry="70" fill="#C9CCCF"/>
+  <path d="M186 120v28M200 116v34M214 120v28" stroke="#5E6368" stroke-width="7" stroke-linecap="round"/>
+  <path d="M104 340h34M98 372h40M296 340h-34M302 372h-40" stroke="#5E6368" stroke-width="8" stroke-linecap="round"/>
+  <path d="M112 196 98 84l92 60Z" fill="#8B9096"/><path d="M288 196 302 84l-92 60Z" fill="#8B9096"/>
+  <path d="M120 170 112 112l46 32Z" fill="#E9A394"/><path d="M280 170l8-58-46 32Z" fill="#E9A394"/>
+  <circle cx="200" cy="222" r="92" fill="#8B9096"/>
+  <ellipse cx="200" cy="262" rx="46" ry="34" fill="#C9CCCF"/>
+  <path d="M186 120v28M200 116v34M214 120v28" stroke="#5E6368" stroke-width="7" stroke-linecap="round"/>
+  <ellipse cx="164" cy="214" rx="14" ry="17" fill="#E7A94B"/><ellipse cx="236" cy="214" rx="14" ry="17" fill="#E7A94B"/>
+  <ellipse cx="164" cy="214" rx="4.5" ry="14" fill="#1C2B27"/><ellipse cx="236" cy="214" rx="4.5" ry="14" fill="#1C2B27"/>
+  <path d="M190 246h20l-10 12Z" fill="#E77962"/>
+  <path d="M200 258v8m0 0c-8 8-18 8-24 2m24-2c8 8 18 8 24 2" fill="none" stroke="#1C2B27" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M150 256l-58-8m58 18-54 12m204-22 58-8m-58 18 54 12" stroke="#1C2B27" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+</svg>

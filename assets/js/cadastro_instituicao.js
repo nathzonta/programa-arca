@@ -1,41 +1,24 @@
-$(function () {
+// Cadastro de instituição (etapa 2 de 2): liga a organização à conta do representante
 
-    var K_FORM = '.cadastro-form';
-    var K_SUBMIT = '.cadastro-form button[type="submit"]';
+var formCadastro = qs('.cadastro-form');
+var representanteId = sessionStorage.getItem('representante_id');
 
-    var representanteId = sessionStorage.getItem('representante_id');
+// Só chega aqui quem acabou de cadastrar o representante
+if (!representanteId) {
+    window.location.href = './cadastro_representante.html';
+} else {
+    ligarLimpezaDeErros(formCadastro);
 
-    if (!representanteId) {
-        window.alert('Acesso invalido. Faca o cadastro de representante primeiro.');
-        window.location.href = './cadastro_representante.html';
-        return;
-    }
-
-    $(K_SUBMIT).on('click', function (e) {
+    formCadastro.addEventListener('submit', function (e) {
         e.preventDefault();
+        if (!validarFormulario(formCadastro)) return;
 
-        var dados = getValoresInput(K_FORM);
-
-        if (!dados) {
-            window.alert('Preencha os campos da instituicao.');
-            return;
-        }
-
-        var camposObrigatorios = {
-            'nome-instituicao': 'Nome da Instituicao',
-            'cnpj': 'CNPJ',
-            'email': 'E-mail de contato'
-        };
-
-        for (var campo in camposObrigatorios) {
-            if (!dados[campo] || dados[campo].trim() === '') {
-                window.alert('Preencha o campo: ' + camposObrigatorios[campo]);
-                return;
-            }
-        }
+        var dados = getValoresInput(formCadastro);
+        var botao = qs('button[type="submit"]', formCadastro);
+        ocupado(botao, true);
 
         criarInstituicao({
-            nome: dados['nome-instituicao'] || '',
+            nome: dados['nome-instituicao'].trim(),
             cnpj: dados.cnpj || '',
             email: dados.email || '',
             telefone: dados.celular || '',
@@ -45,27 +28,18 @@ $(function () {
             descricao: dados.descricao || ''
         })
         .then(function (novaInstituicao) {
-            return atualizarUsuario(parseInt(representanteId), {
+            return atualizarUsuario(parseInt(representanteId, 10), {
                 id_empresa: novaInstituicao.id
-            }).then(function (usuarioAtualizado) {
-                return { instituicao: novaInstituicao, usuario: usuarioAtualizado };
             });
         })
-        .then(function (resultado) {
+        .then(function (usuarioAtualizado) {
             sessionStorage.removeItem('representante_id');
-            salvarSessao(resultado.usuario);
-
-            window.alert('Instituicao cadastrada com sucesso!');
+            salvarSessao(usuarioAtualizado);
             window.location.href = './listagem_animais.html';
         })
         .catch(function (erro) {
-            window.alert('Erro ao cadastrar instituicao: ' + erro.message);
+            ocupado(botao, false);
+            toast('Erro ao cadastrar a instituição: ' + erro.message, 'erro');
         });
     });
-
-    $(K_FORM).on('submit', function (e) {
-        e.preventDefault();
-        $(K_SUBMIT).trigger('click');
-    });
-
-});
+}

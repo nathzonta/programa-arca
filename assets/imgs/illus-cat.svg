@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 180" role="img" aria-label="Gato sentado diante de um arco">
+  <path d="M20 180V90C20 48 54 14 96 14s76 34 76 76v90Z" fill="#E3EADF"/>
+  <circle cx="142" cy="46" r="16" fill="#E7A94B"/>
+  <path d="M62 180v-44c0-26 16-44 38-44s38 18 38 44v44Z" fill="#193C35"/>
+  <circle cx="100" cy="76" r="30" fill="#193C35"/>
+  <path d="M75 60 69 26l26 17ZM125 60l6-34-26 17Z" fill="#193C35"/>
+  <circle cx="90" cy="74" r="3.6" fill="#E7A94B"/><circle cx="110" cy="74" r="3.6" fill="#E7A94B"/>
+  <path d="M96 84h8l-4 5Z" fill="#E77962"/>
+  <path d="M136 176c26 0 32-30 14-42" fill="none" stroke="#193C35" stroke-width="10" stroke-linecap="round"/>
+</svg>

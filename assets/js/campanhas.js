@@ -1,79 +1,68 @@
-let sessao = null;
-let campanhasFiltradas = [];
+// Tela de campanhas para o cidadão: agenda com filtro por tipo
 
-$(document).ready(function () {
-    if (!protegerRota(['cidadao', 'representante'])) {
-        return;
-    }
+var sessao = null;
+var campanhas = [];
+var tipoAtual = '';
+
+if (protegerRota(['cidadao', 'representante'])) {
     sessao = getSessao();
+    montarMenu('campanhas');
+    iniciar();
+}
 
-    carregarDadosSidebar();
-    inicializarFiltros();
-    carregarCampanhas();
-});
+function iniciar() {
+    listarCampanhas().then(function (lista) {
+        campanhas = lista;
+        renderizarCampanhas();
+    });
 
-function carregarCampanhas() {
-    listarCampanhas().then(function (todasCampanhas) {
-        campanhasFiltradas = todasCampanhas;
-        renderizarCampanhas(campanhasFiltradas);
+    qs('#filtro-tipo').addEventListener('click', function (e) {
+        var chip = e.target.closest('.chip');
+        if (!chip) return;
+        qsa('.chip', qs('#filtro-tipo')).forEach(function (c) {
+            c.setAttribute('aria-pressed', String(c === chip));
+        });
+        tipoAtual = chip.dataset.tipo;
+        renderizarCampanhas();
     });
 }
 
-function renderizarCampanhas(lista) {
-    let $grid = $('#campanhas-grid');
-    if (!$grid.length) return;
+// Monta uma linha da agenda (também usada pela página inicial)
+function linhaAgenda(campanha, indice) {
+    var data = extrairData(campanha.data);
+    return '<article class="agenda__item entrada" style="--i:' + Math.min(indice, 8) + '">' +
+        '<div class="agenda__data" aria-hidden="true">' +
+            (data ? '<span class="agenda__dia">' + data.dia + '</span><span class="agenda__mes">' + data.mes + '</span>' : icone('calendario', 'icone--grande')) +
+        '</div>' +
+        '<div class="agenda__corpo">' +
+            '<div>' + etiquetaCampanha(campanha.tipo) + '</div>' +
+            '<h2 class="agenda__titulo">' + esc(campanha.titulo) + '</h2>' +
+            '<p class="agenda__texto">' + textoComNegrito(campanha.descricao || '') + '</p>' +
+        '</div>' +
+        '<div class="agenda__lado">' +
+            '<div class="agenda__foto"><img src="' + esc(campanha.imagem || IMG_PADRAO) + '" alt="" loading="lazy"></div>' +
+            '<div class="agenda__info">' +
+                '<span>' + icone('calendario') + esc(campanha.data || '') + '</span>' +
+                '<span>' + icone('mapa') + esc(campanha.local || '') + '</span>' +
+            '</div>' +
+        '</div>' +
+    '</article>';
+}
 
-    console.log(lista);
+function renderizarCampanhas() {
+    var area = qs('#campanhas-grid');
+    var lista = campanhas.filter(function (c) { return !tipoAtual || c.tipo === tipoAtual; });
 
     if (lista.length === 0) {
-        $grid.html('<p style="empty">Nenhuma campanha encontrada.</p>');
+        area.innerHTML =
+            '<div class="vazio">' +
+                '<img src="./assets/imgs/illus-cat.svg" alt="">' +
+                '<h3>Nenhuma campanha encontrada</h3>' +
+                '<p>' + (tipoAtual ? 'Não há campanhas deste tipo por enquanto. Volte em breve.' : 'Ainda não há campanhas cadastradas. Volte em breve.') + '</p>' +
+            '</div>';
         return;
     }
 
-    const tipos = {
-        "Castração": "sucesso",
-        "Feira de Adoção": "aviso",
-        "Vacinação": "info"
-    }
-
-    let html = '';
-    $.each(lista, function (i, campanha) {
-        html +=
-        '<div class="col-12 col-md-3 card card-campanha p-1" data-id="' + campanha.id + '">' +
-            '<div class="card-body d-flex flex-column justify-content-between gap-4">' +
-                '<img class="col-12" style="border-radius: 15px;" src="' + (campanha.imagem || './assets/imgs/placeholder.png') + '" alt="' + (campanha.titulo || '') + '">' +
-                '<div class="card-campanha-text mx-4">' +
-                    '<h4>' + (campanha.titulo || '') + '</h4>' +
-                    '<span class="badge-arca badge-arca-' + (tipos[campanha.tipo]) + ' mb-2 me-1">' + (campanha.tipo) + '</span>' +
-                    '<p class="corpo corpo-sm text-muted mt-2">' + (campanha.descricao || '') + '</p>' +
-                '</div>' +
-                '<div class="card-campanha-infos mx-4">' +
-                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.data || '') + '</p>' +
-                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.local || '') + '</p>' +
-                '</div>' +
-            '</div>' +
-        '</div>';
-    });
-
-    $grid.html(html);
-}
-
-function inicializarFiltros() {
-    $('#filtro-tipo').on('change', aplicarFiltros);
-
-    let observer = new MutationObserver(aplicarFiltros);
-    $('.sidebar-filtros .select-arca').each(function () {
-        observer.observe(this, { childList: true, subtree: true, attributes: true });
-    });
-}
-
-function aplicarFiltros() {
-    let tipo = $('#filtro-tipo').val() || '';
-
-    listarCampanhas().then(function (todasCampanhas) {
-        campanhasFiltradas = todasCampanhas.filter(function (c) {
-            return !tipo || c.tipo === tipo;
-        });
-        renderizarCampanhas(campanhasFiltradas);
-    });
+    area.innerHTML = '<p class="contagem">' + lista.length + (lista.length === 1 ? ' campanha' : ' campanhas') + '</p>' +
+        '<div class="agenda">' + lista.map(linhaAgenda).join('') + '</div>';
 }

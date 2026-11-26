@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" role="img" aria-label="Ilustração de um cachorro: Nina">
+  <rect width="400" height="500" fill="#FBEBCF"/>
+  <circle cx="318" cy="92" r="34" fill="#E7A94B" opacity=".9"/>
+  <path d="M70 500V392C70 330 128 292 200 292s130 38 130 100v108Z" fill="#2B2B2B"/>
+  <ellipse cx="200" cy="432" rx="58" ry="78" fill="#EDE6D6"/>
+  <path d="M96 500v-60a24 24 0 0 1 48 0v60Zm160 0v-60a24 24 0 0 1 48 0v60Z" fill="#EDE6D6"/>
+  <rect x="112" y="142" width="176" height="164" rx="82" fill="#2B2B2B"/>
+  
+  <path d="M126 168C84 172 74 252 104 292c24-12 40-60 38-110Z" fill="#161616"/>
+  <path d="M274 168c42 4 52 84 22 124-24-12-40-60-38-110Z" fill="#161616"/>
+  <ellipse cx="200" cy="258" rx="56" ry="44" fill="#EDE6D6"/>
+  <ellipse cx="200" cy="238" rx="17" ry="12" fill="#1C2B27"/>
+  <circle cx="162" cy="208" r="9" fill="#1C2B27"/><circle cx="238" cy="208" r="9" fill="#1C2B27"/>
+  <circle cx="165" cy="205" r="3" fill="#fff"/><circle cx="241" cy="205" r="3" fill="#fff"/>
+  <path d="M200 250v14m0 0c-10 12-24 12-30 2m30-2c10 12 24 12 30 2" fill="none" stroke="#1C2B27" stroke-width="4" stroke-linecap="round"/>
+  <path d="M188 268h24v14a12 12 0 0 1-24 0Z" fill="#E77962"/>
+</svg>

@@ -1,68 +1,63 @@
-let usuarioLogado = null;
+// Tela de login
 
-$(function () {
+var usuarioLogado = null;
 
-    var K_FORM = '.login-form';
-    var K_SUBMIT = '.login-form button[type="submit"]';
+var formLogin = qs('.login-form');
+var dialogoPerfil = qs('#modal-perfil');
 
-    $(K_SUBMIT).on('click', function (e) {
-        e.preventDefault();
-        var dados = getValoresInput(K_FORM);
-        if (!dados) {
-            window.alert('Preencha os campos de login.');
-            return;
-        }
-        if (!dados.email || dados.email.trim() === '') {
-            window.alert('Preencha o campo de email.');
-            return;
-        }
-        if (!dados.senha || dados.senha.trim() === '') {
-            window.alert('Preencha o campo de senha.');
-            return;
-        }
-        login(dados.email.trim(), dados.senha);
-    });
+ligarMostrarSenha();
+ligarLimpezaDeErros(formLogin);
+ligarDialogo(dialogoPerfil);
 
-    $(K_FORM).on('submit', function (e) {
-        e.preventDefault();
-        $(K_SUBMIT).trigger('click');
-    });
+// Vindo do cadastro: mostra a mensagem de sucesso
+if (new URLSearchParams(window.location.search).get('cadastro') === 'ok') {
+    qs('#login-sucesso').hidden = false;
+}
 
-    $('#modal-perfil-representante').on('click', function () {
-        loginComo('representante');
-    });
+formLogin.addEventListener('submit', function (e) {
+    e.preventDefault();
+    qs('#login-erro').hidden = true;
 
-    $('#modal-perfil-cidadao').on('click', function () {
-        loginComo('cidadao');
-    });
+    if (!validarFormulario(formLogin)) return;
 
-    $('#modal-perfil-close').on('click', function () {
-        $('#modal-perfil').toggleClass('escondido');
-    });
+    var dados = getValoresInput(formLogin);
+    login(dados.email.trim(), dados.senha);
 });
 
+qs('#modal-perfil-representante').addEventListener('click', function () { loginComo('representante'); });
+qs('#modal-perfil-cidadao').addEventListener('click', function () { loginComo('cidadao'); });
+qs('#modal-perfil-close').addEventListener('click', function () { dialogoPerfil.close(); });
+
+function mostrarErroLogin(mensagem) {
+    qs('#login-erro-texto').textContent = mensagem;
+    qs('#login-erro').hidden = false;
+}
+
 function login(email, password) {
+    var botao = qs('#btn-login');
+    ocupado(botao, true);
+
     buscarUsuarioPorEmail(email)
         .then(function (usuario) {
-            if (!usuario) {
-                window.alert('Usuario nao encontrado.');
-                return;
-            }
-            if (usuario.senha !== MD5(password)) {
-                window.alert('Senha incorreta.');
+            // A mesma mensagem para e-mail e senha errados: não revela quais e-mails existem
+            if (!usuario || usuario.senha !== MD5(password)) {
+                mostrarErroLogin('E-mail ou senha incorretos. Confira os dados e tente de novo.');
                 return;
             }
 
             usuarioLogado = usuario;
 
             if (usuario.id_empresa !== null && usuario.id_empresa !== undefined) {
-                $('#modal-perfil').toggleClass('escondido');
+                dialogoPerfil.showModal();
             } else {
                 loginComo('cidadao');
             }
         })
         .catch(function (erro) {
-            window.alert('Erro ao realizar login: ' + erro.message);
+            mostrarErroLogin('Algo deu errado ao entrar (' + erro.message + '). Tente novamente.');
+        })
+        .then(function () {
+            ocupado(botao, false);
         });
 }
 
@@ -75,11 +70,6 @@ function loginComo(tipo) {
     }
 
     salvarSessao(usuarioLogado);
-    $('#modal-perfil').removeClass('escondido');
 
-    if (tipo === 'representante') {
-        window.location.href = './listagem_animais.html';
-    } else {
-        window.location.href = './adocao.html';
-    }
+    window.location.href = tipo === 'representante' ? './listagem_animais.html' : './adocao.html';
 }

@@ -6,107 +6,52 @@
     <title>Histórico de ações - Programa Arca</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="./assets/css/style.css"/>
-    <link rel="stylesheet" href="./assets/css/layout_interno.css"/>
-    <link rel="stylesheet" href="./assets/css/forms.css"/>
-    <link rel="stylesheet" href="./assets/css/historico.css"/>
-    <link rel="shortcut icon" href="./assets/imgs/prefeitura.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..700,0..100,0..1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/interno.css">
+    <link rel="icon" href="./assets/imgs/favicon.svg" type="image/svg+xml">
 </head>
 <body>
-    <div class="sistema-container">
-        <aside class="sidebar col-10 col-md-2" id="sidebar">
-            <div class="sidebar-header">
-                <img src="./assets/imgs/Logo.svg" alt="Logo Programa Arca" class="sidebar-logo">
-                <div class="sidebar-brand">
-                    <span class="sidebar-brand-arca">Programa Arca</span>
-                    <span class="sidebar-brand-sub">Prefeitura da Serra</span>
-                </div>
-            </div>
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 
-            <p class="sidebar-label">Sistema interno</p>
+    <div class="app">
+        <aside class="menu" id="menu"></aside>
+        <div class="veu" id="veu" hidden></div>
 
-            <nav class="sidebar-menu">
-                <div class="sidebar-menu-item active">
-                    <button class="sidebar-menu-toggle" data-menu="adocao">
-                        <img src="./assets/imgs/icons/pata.svg" alt="" class="sidebar-menu-icon">
-                        <span>Adoção</span>
-                        <img src="./assets/imgs/icons/select-icon.svg" alt="" class="sidebar-menu-arrow">
-                    </button>
-                    <ul class="sidebar-submenu open m-0" id="submenu-adocao">
-                        <li><a href="./adocao.html">Encontre seu companheiro</a></li>
-                        <li><a href="./favoritados.html">Favoritados</a></li>
-                        <li><a href="./historico.html" class="active corpo-sm">Histórico de Ações</a></li>
-                    </ul>
-                </div>
-                <div class="sidebar-menu-item">
-                    <button class="sidebar-menu-toggle" data-menu="campanhas">
-                        <img src="./assets/imgs/icons/megafone.svg" alt="" class="sidebar-menu-icon">
-                        <span>Campanhas</span>
-                        <img src="./assets/imgs/icons/select-icon.svg" alt="" class="sidebar-menu-arrow">
-                    </button>
-                    <ul class="sidebar-submenu" id="submenu-campanhas">
-                        <li><a href="./campanhas.html">Visualizar campanhas</a></li>
-                    </ul>
-                </div>
-            </nav>
+        <div class="principal">
+            <header class="barra-mobile" id="barra-mobile"></header>
 
-            <p class="sidebar-label">Filtro</p>
-
-            <div class="sidebar-filtros">
-                <div class="form-group-arca">
-                    <label for="filtro-acao">Ação</label>
-                    <select id="filtro-acao">
-                        <option value="">Selecione uma ação</option>
-                        <option value="favorito">Favoritado</option>
-                        <option value="interesse">Demonstrou interesse em adotar</option>
-                    </select>
-                    <div class="select-arca" data-select="filtro-acao"></div>
+            <main class="conteudo" id="conteudo">
+                <div class="cabecalho-pagina entrada">
+                    <div>
+                        <span class="sobrelinha">Adoção</span>
+                        <h1>Seu <em>caminho</em> até aqui</h1>
+                        <p>Tudo o que você favoritou ou pelo que demonstrou interesse, do mais recente ao mais antigo.</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="sidebar-user mt-auto">
-                <div class="sidebar-user-avatar">
-                    <img src="./assets/imgs/avatar-exemplo.jpg" alt="Avatar">
+                <div class="filtros entrada" style="--i:1">
+                    <div>
+                        <p class="campo__rotulo" id="rotulo-filtro-acao">Filtrar por ação</p>
+                        <div class="chips" id="filtro-acao" role="group" aria-labelledby="rotulo-filtro-acao">
+                            <button type="button" class="chip" data-acao="" aria-pressed="true">Todas</button>
+                            <button type="button" class="chip" data-acao="interessado" aria-pressed="false">Interesse em adotar</button>
+                            <button type="button" class="chip" data-acao="favorito" aria-pressed="false">Favoritado</button>
+                            <button type="button" class="chip" data-acao="desfavoritado" aria-pressed="false">Removido dos favoritos</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="sidebar-user-info">
-                    <span class="sidebar-user-name" id="side-user-name">Cidadao</span>
-                    <span class="sidebar-user-email" id="side-user-email">cidadao@exemplo.com</span>
-                </div>
-            </div>
-        </aside>
 
-        <div class="main-content">
-            <header class="topbar">
-                <button class="topbar-menu-btn col-2" id="menu-toggle">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </button>
-                <nav class="topbar-breadcrumb">
-                    <img class="topbar-icon d-none d-md-block" src="./assets/imgs/icons/janela.svg" alt="">
-                    <span class="topbar-breadcrumb-separator d-none d-md-block"></span>
-                    <span>Adoção</span>
-                    <svg width="8" height="12" viewBox="0 0 8 12" fill="none"><path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    <span>Histórico de ações</span>
-                </nav>
-            </header>
-
-            <main class="content-area">
-                <div class="historico-grid" id="historico-grid">
-                </div>
+                <div id="historico-grid" aria-live="polite"></div>
             </main>
 
-            <footer class="main-footer">
-                <p>© 2026 Programa Arca</p>
-            </footer>
+            <footer class="rodape-interno">© 2026 Programa Arca · Prefeitura da Serra</footer>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="./assets/js/funcoes.js"></script>
     <script src="./assets/js/conexao_bd.js"></script>
-    <script src="./assets/js/select.js"></script>
-    <script src="./assets/js/historico.js"></script>
     <script src="./assets/js/sistema.js"></script>
+    <script src="./assets/js/historico.js"></script>
 </body>
 </html>

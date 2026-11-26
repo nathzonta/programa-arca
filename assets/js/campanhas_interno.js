@@ -1,255 +1,267 @@
-let campanhaEditando = null;
-let campanhasFiltradas = [];
-let sessao = null;
+// Tela do representante: gerenciar as campanhas da organização
 
-// Quando o DOM iniciar, inicializamos tudo e verificamos se a pessoa pode ver a tela sempre
-$(document).ready(function () {
-    if (!protegerRota(['representante'])) {
-        return;
-    }
+var campanhaEditando = null;
+var campanhasDaOrg = [];
+var imagemNova = null;
+var sessao = null;
+
+if (protegerRota(['representante'])) {
     sessao = getSessao();
+    montarMenu('campanhas_interno');
+    iniciar();
+}
 
-    carregarDadosSidebar();
+function iniciar() {
     inicializarModal();
     inicializarFiltros();
-    inicializarPreview();
+    inicializarTabela();
     carregarCampanhas();
-});
+}
 
 function carregarCampanhas() {
-    listarCampanhas().then(function (todasCampanhas) {
-        campanhasFiltradas = todasCampanhas.filter(function (c) {
+    listarCampanhas().then(function (todas) {
+        campanhasDaOrg = todas.filter(function (c) {
             return c.fk_instituicao === sessao.id_empresa;
         });
-        renderizarCampanhas(campanhasFiltradas);
+        aplicarFiltros();
     });
 }
 
+// ---------- Data: o banco guarda "11/07/2026 às 12h até 16h" ----------
+
+function montarTextoData(dia, inicio, fim) {
+    function hora(h) {
+        var p = h.split(':');
+        return Number(p[0]) + 'h' + (p[1] !== '00' ? p[1] : '');
+    }
+    var d = dia.split('-');
+    return d[2] + '/' + d[1] + '/' + d[0] + ' às ' + hora(inicio) + ' até ' + hora(fim);
+}
+
+// Faz o caminho contrário, para preencher os campos ao editar
+function lerTextoData(texto) {
+    var m = /(\d{2})\/(\d{2})\/(\d{4})\D+(\d{1,2})h(\d{2})?\D+(\d{1,2})h(\d{2})?/.exec(texto || '');
+    if (!m) return null;
+    function dois(n) { return ('0' + n).slice(-2); }
+    return {
+        dia: m[3] + '-' + m[2] + '-' + m[1],
+        inicio: dois(m[4]) + ':' + (m[5] || '00'),
+        fim: dois(m[6]) + ':' + (m[7] || '00')
+    };
+}
+
+// ---------- Tabela ----------
+
+function renderizarCampanhas(lista) {
+    var area = qs('#campanhas-grid');
+
+    if (campanhasDaOrg.length === 0) {
+        area.innerHTML =
+            '<div class="vazio">' +
+                '<img src="./assets/imgs/illus-cat.svg" alt="">' +
+                '<h3>Nenhuma campanha cadastrada</h3>' +
+                '<p>Crie a primeira campanha para divulgar sua ação para a cidade.</p>' +
+                '<button type="button" class="botao botao--dourado" data-novo>' + icone('mais') + 'Nova campanha</button>' +
+            '</div>';
+        return;
+    }
+
+    if (lista.length === 0) {
+        area.innerHTML = '<div class="vazio"><h3>Nenhuma campanha encontrada</h3><p>Nenhuma campanha combina com os filtros. Tente limpar a busca.</p></div>';
+        return;
+    }
+
+    var linhas = lista.map(function (c) {
+        return '<tr>' +
+            '<td class="tabela__celula-principal">' +
+                '<div class="tabela__principal">' +
+                    '<div class="tabela__foto tabela__foto--paisagem"><img src="' + esc(c.imagem || IMG_PADRAO) + '" alt="" loading="lazy"></div>' +
+                    '<div><div class="tabela__nome">' + esc(c.titulo) + '</div>' + etiquetaCampanha(c.tipo) + '</div>' +
+                '</div>' +
+            '</td>' +
+            '<td data-rotulo="Quando">' + esc(c.data || '') + '</td>' +
+            '<td data-rotulo="Onde">' + esc(c.local || '') + '</td>' +
+            '<td><div class="tabela__acoes">' +
+                '<button type="button" class="botao botao--texto botao--pequeno" data-editar="' + c.id + '" aria-label="Editar ' + esc(c.titulo) + '">' + icone('editar') + 'Editar</button>' +
+                '<button type="button" class="botao botao--texto-perigo botao--pequeno" data-excluir="' + c.id + '" aria-label="Excluir ' + esc(c.titulo) + '">' + icone('lixeira') + 'Excluir</button>' +
+            '</div></td>' +
+        '</tr>';
+    }).join('');
+
+    area.innerHTML =
+        '<p class="contagem">' + lista.length + (lista.length === 1 ? ' campanha' : ' campanhas') + '</p>' +
+        '<div class="tabela-wrap"><table class="tabela tabela--campanhas">' +
+            '<caption class="sr-only">Campanhas da organização</caption>' +
+            '<thead><tr><th scope="col">Campanha</th><th scope="col">Quando</th><th scope="col">Onde</th><th scope="col"><span class="sr-only">Ações</span></th></tr></thead>' +
+            '<tbody>' + linhas + '</tbody>' +
+        '</table></div>';
+}
+
+function inicializarTabela() {
+    qs('#campanhas-grid').addEventListener('click', function (e) {
+        var editar = e.target.closest('[data-editar]');
+        var excluir = e.target.closest('[data-excluir]');
+
+        if (e.target.closest('[data-novo]')) {
+            abrirModal();
+        } else if (editar) {
+            buscarCampanhaPorId(Number(editar.dataset.editar)).then(function (c) {
+                if (c) abrirModal(c);
+            });
+        } else if (excluir) {
+            var id = Number(excluir.dataset.excluir);
+            var campanha = campanhasDaOrg.find(function (c) { return c.id === id; });
+            confirmar({
+                titulo: 'Excluir esta campanha?',
+                mensagem: (campanha ? '"' + campanha.titulo + '" ' : 'A campanha ') + 'deixa de aparecer para a cidade. Essa ação não pode ser desfeita.',
+                botao: 'Excluir',
+                perigo: true
+            }).then(function (ok) {
+                if (!ok) return;
+                removerCampanha(id).then(function () {
+                    toast('Campanha excluída.', 'sucesso');
+                    carregarCampanhas();
+                });
+            });
+        }
+    });
+}
+
+// ---------- Diálogo ----------
+
 function inicializarModal() {
-    $('#btn-nova-campanha').on('click', function() { 
-        abrirModal(); // Tem que chamar assim se não a bomba da arrow function manda this
-    });
-    
-    $('#modal-close').on('click', fecharModal); // Xzinho em cima
-    $('#btn-cancelar').on('click', fecharModal); // Pelo botão mesmo
+    var dialogo = qs('#modal-campanha');
+    var form = qs('#form-campanha');
 
-    // Fecha clicando fora do modal, na parte escura atrás
-    $('#modal-campanha').on('click', function (e) {
-        if (e.target === this) {
-            fecharModal();
+    ligarDialogo(dialogo);
+    ligarLimpezaDeErros(form);
+    dialogo.addEventListener('close', function () {
+        campanhaEditando = null;
+        imagemNova = null;
+        form.reset();
+        limparErros(form);
+    });
+
+    qs('#btn-nova-campanha').addEventListener('click', function () { abrirModal(); });
+
+    form.addEventListener('input', atualizarPreview);
+    form.addEventListener('change', atualizarPreview);
+
+    qs('#campanha-imagem').addEventListener('change', function (e) {
+        var arquivo = e.target.files[0];
+        if (!arquivo) {
+            imagemNova = null;
+            atualizarPreview();
+            return;
         }
+        lerImagem(arquivo, 900).then(function (url) {
+            imagemNova = url;
+            atualizarPreview();
+        }).catch(function () {
+            imagemNova = null;
+            e.target.value = '';
+            toast('Esse arquivo não parece ser uma imagem. Escolha outro.', 'erro');
+        });
     });
 
-    $('#form-campanha').on('submit', function (e) {
+    form.addEventListener('submit', function (e) {
         e.preventDefault();
+        if (!validarFormulario(form)) return;
 
-        if (validarFormulario('#form-campanha')) {
-            salvarCampanha();
+        var dados = getValoresInput(form);
+        if (dados.campanha_fim <= dados.campanha_inicio) {
+            mostrarErroCampo(qs('#campanha-fim'), 'O horário de término deve ser depois do início.');
+            qs('#campanha-fim').focus();
+            return;
         }
+        salvarCampanha();
     });
 }
 
 function abrirModal(campanha) {
     campanhaEditando = campanha || null;
-    $('#modal-title').text(campanha ? 'Editar campanha' : 'Nova campanha');
-    $('#modal-alert').removeClass('visible');
+    imagemNova = null;
+    var form = qs('#form-campanha');
+    form.reset();
+    limparErros(form);
+
+    qs('#modal-title').textContent = campanha ? 'Editar campanha' : 'Nova campanha';
 
     if (campanha) {
-        preencherFormulario(campanha);
-    } else {
-        limparFormulario();
+        qs('#campanha-nome').value = campanha.titulo || '';
+        qs('#campanha-tipo').value = campanha.tipo || '';
+        qs('#campanha-descricao').value = campanha.descricao || '';
+        qs('#campanha-local').value = campanha.local || '';
+        var data = lerTextoData(campanha.data);
+        if (data) {
+            qs('#campanha-dia').value = data.dia;
+            qs('#campanha-inicio').value = data.inicio;
+            qs('#campanha-fim').value = data.fim;
+        }
     }
 
-    $('#modal-campanha').addClass('open');
     atualizarPreview();
-}
-
-function fecharModal() {
-    $('#modal-campanha').removeClass('open');
-    campanhaEditando = null;
-    limparFormulario();
-    limparErros();
-}
-
-function preencherFormulario(campanha) {
-    $('#campanha-nome').val(campanha.titulo || '');
-    $('#campanha-tipo').val(campanha.tipo || '');
-    $('#campanha-descricao').val(campanha.descricao || '');
-    $('#campanha-data').val(campanha.data || '');
-    $('#campanha-local').val(campanha.local || '');
-    $('#preview-img').attr('src', campanha.imagem || './assets/imgs/placeholder.png');
-
-    setTimeout(function () {
-        if (typeof iniciarSelects === 'function') {
-            iniciarSelects();
-        }
-        atualizarPreview();
-    }, 100);
-}
-
-function limparFormulario() {
-    $('#form-campanha')[0].reset();
-    $('#campanha-imagem').val('');
-    $('#preview-nome').text('Nome da organizacao');
-    $('#preview-tipo').text('Tipo de campanha').attr('class', 'badge-arca mb-2 me-1');
-    $('#preview-descricao').text('Descricao da campanha...');
-    $('#preview-data').html('<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">Data do evento');
-    $('#preview-local').html('<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">Local do evento');
-    $('#preview-img').attr('src', './assets/imgs/placeholder.png');
-
-    setTimeout(function () {
-        if (typeof iniciarSelects === 'function') {
-            iniciarSelects();
-        }
-    }, 100);
-}
-
-function inicializarPreview() {
-    $('[data-preview]').on('input change', atualizarPreview);
-    
-    let observer = new MutationObserver(atualizarPreview);
-    $('.select-arca').each(function () {
-        observer.observe(this, { 
-            childList: true, 
-            subtree: true, 
-            attributes: true 
-        });
-    });
+    qs('#modal-campanha').showModal();
 }
 
 function atualizarPreview() {
-    const dados = getValoresInput('#form-campanha');
+    var d = getValoresInput('#form-campanha');
+    var fotoAtual = campanhaEditando ? campanhaEditando.imagem : IMG_PADRAO;
 
-    const tipos = {
-        "Castração": "sucesso",
-        "Feira de Adoção": "aviso",
-        "Vacinação": "info"
-    }
-
-    $('#preview-nome').text(dados['campanha_nome'] || 'Nome da organizacao');
-    $('#preview-descricao').text(dados['campanha_descricao'] || 'Descrição da campanha...');
-    $('#preview-tipo').text(dados['campanha_tipo'] || 'Tipo de campanha').attr('class', `badge-arca badge-arca-${tipos[dados['campanha_tipo']]} mb-2 me-1`)
-    $('#preview-data').html('<img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (dados['campanha_data'] || 'Data do evento') );
-    $('#preview-local').html('<img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + (dados['campanha_local'] || 'Local do evento'));
-
-    let fileInput = document.getElementById('campanha-imagem');
-    if (fileInput && fileInput.files && fileInput.files[0]) {
-        let reader = new FileReader();
-        reader.onload = function (e) {
-            $('#preview-img').attr('src', e.target.result);
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-    }
+    qs('#preview-nome').textContent = d.campanha_nome || 'Título da campanha';
+    qs('#preview-descricao').innerHTML = textoComNegrito(d.campanha_descricao || 'Descrição da campanha...');
+    qs('#preview-tipo').innerHTML = etiquetaCampanha(d.campanha_tipo || 'Tipo de campanha');
+    qs('#preview-local').textContent = d.campanha_local || 'Local do evento';
+    qs('#preview-img').src = imagemNova || fotoAtual || IMG_PADRAO;
+    qs('#preview-data').textContent = (d.campanha_dia && d.campanha_inicio && d.campanha_fim)
+        ? montarTextoData(d.campanha_dia, d.campanha_inicio, d.campanha_fim)
+        : 'Data do evento';
 }
 
 function salvarCampanha() {
-    const dados = getValoresInput('#form-campanha');
+    var dados = getValoresInput('#form-campanha');
+    var botao = qs('#btn-salvar');
 
-    let objetoCampanha = {
-        titulo: dados['campanha_nome'],
-        descricao: dados['campanha_descricao'],
-        imagem: './assets/imgs/placeholder.png',
-        tipo: dados['campanha_tipo'],
-        data: dados['campanha_data'],
-        local: dados['campanha_local'],
+    var objeto = {
+        titulo: dados.campanha_nome.trim(),
+        descricao: dados.campanha_descricao.trim(),
+        imagem: imagemNova || (campanhaEditando ? campanhaEditando.imagem : IMG_PADRAO),
+        tipo: dados.campanha_tipo,
+        data: montarTextoData(dados.campanha_dia, dados.campanha_inicio, dados.campanha_fim),
+        local: dados.campanha_local.trim(),
         fk_instituicao: sessao.id_empresa
     };
 
-    if (campanhaEditando) {
-        atualizarCampanha(campanhaEditando.id, objetoCampanha).then(function () {
-            carregarCampanhas();
-            fecharModal();
-        });
-    } else {
-        criarCampanha(objetoCampanha).then(function () {
-            carregarCampanhas();
-            fecharModal();
-        });
-    }
+    ocupado(botao, true);
+    var operacao = campanhaEditando ? atualizarCampanha(campanhaEditando.id, objeto) : criarCampanha(objeto);
+
+    operacao.then(function () {
+        toast(campanhaEditando ? 'Campanha atualizada.' : 'Campanha publicada.', 'sucesso');
+        qs('#modal-campanha').close();
+        carregarCampanhas();
+    }).catch(function () {
+        toast('Não foi possível salvar. O armazenamento do navegador pode estar cheio.', 'erro');
+    }).then(function () {
+        ocupado(botao, false);
+    });
 }
 
-function renderizarCampanhas(lista) {
-    let $grid = $('#campanhas-grid');
-    if (!$grid.length) return;
-
-    if (lista.length === 0) {
-        $grid.html('<p style="text-align: center; color: #737373; width: 100%;">Nenhuma campanha encontrada.</p>');
-        return;
-    }
-
-    const tipos = {
-        "Castração": "sucesso",
-        "Feira de Adoção": "aviso",
-        "Vacinação": "info"
-    }
-
-    let html = '';
-    $.each(lista, function (i, campanha) {
-        html +=
-        '<div class="col-12 col-md-3 card card-campanha p-1" data-id="' + campanha.id + '">' +
-            '<div class="card-body d-flex flex-column justify-content-between gap-4">' +
-                '<img class="col-12" style="border-radius: 15px;" src="' + (campanha.imagem || './assets/imgs/placeholder.png') + '" alt="' + (campanha.titulo || '') + '">' +
-                '<div class="card-campanha-text mx-4">' +
-                    '<h4 class="d-flex justify-content-between">' + (campanha.titulo || '') +
-                        '<span class="card-campanha-edit btn-editar-campanha" data-id="' + campanha.id + '">' +
-                            '<img src="./assets/imgs/icons/editar.svg">' +
-                        '</span>' +
-                    '</h4>' +
-                    '<span class="badge-arca badge-arca-' + (tipos[campanha.tipo]) + ' mb-2 me-1">' + (campanha.tipo) + '</span>' +
-                    '<p class="corpo corpo-sm text-muted mt-2">' + (campanha.descricao || '') + '</p>' +
-                '</div>' +
-                '<div class="card-campanha-infos mx-4">' +
-                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/calendario.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.data || '') + '</p>' +
-                    '<p class="corpo corpo-micro mb-2"><img src="./assets/imgs/icons/mapa.svg" class="me-2" style="width: 16px; height: 16px;">' + (campanha.local || '') + '</p>' +
-                '</div>' +
-                '<div class="mx-4 mb-2">' +
-                    '<button class="btn-excluir-campanha" data-id="' + campanha.id + '" style="border:none; background:none; color:#e74c3c; cursor:pointer; font-size:12px;">Excluir</button>' +
-                '</div>' +
-            '</div>' +
-        '</div>';
-    });
-
-    $grid.html(html);
-}
-
-$(document).on('click', '.btn-editar-campanha', function () {
-    let id = $(this).data('id');
-    buscarCampanhaPorId(id).then(function (campanha) {
-        if (campanha) abrirModal(campanha);
-    });
-});
-
-$(document).on('click', '.btn-excluir-campanha', function () {
-    let id = $(this).data('id');
-    if (confirm('Tem certeza que deseja excluir esta campanha?')) {
-        removerCampanha(id).then(function () {
-            carregarCampanhas();
-        });
-    }
-});
+// ---------- Filtros ----------
 
 function inicializarFiltros() {
-    $('#filtro-nome').on('input', aplicarFiltros);
-    $('#filtro-local').on('input', aplicarFiltros);
-
-    let observer = new MutationObserver(aplicarFiltros);
-    $('.sidebar-filtros .select-arca').each(function () {
-        observer.observe(this, { childList: true, subtree: true, attributes: true });
-    });
+    qs('#filtro-nome').addEventListener('input', aplicarFiltros);
+    qs('#filtro-local').addEventListener('input', aplicarFiltros);
+    qs('#filtro-tipo').addEventListener('change', aplicarFiltros);
 }
 
 function aplicarFiltros() {
-    let nome = ($('#filtro-nome').val() || '').toLowerCase();
-    let local = ($('#filtro-local').val() || '').toLowerCase();
-    let tipo = $('#filtro-tipo').val() || '';
+    var nome = normalizar(qs('#filtro-nome').value);
+    var local = normalizar(qs('#filtro-local').value);
+    var tipo = qs('#filtro-tipo').value;
 
-    listarCampanhas().then(function (todasCampanhas) {
-        campanhasFiltradas = todasCampanhas.filter(function (c) {
-            return c.fk_instituicao === sessao.id_empresa &&
-                (!nome || (c.titulo || '').toLowerCase().indexOf(nome) > -1) &&
-                (!local || (c.local || '').toLowerCase().indexOf(local) > -1) &&
-                (!tipo || c.tipo === tipo);
-        });
-        renderizarCampanhas(campanhasFiltradas);
-    });
+    renderizarCampanhas(campanhasDaOrg.filter(function (c) {
+        return (!nome || normalizar(c.titulo).indexOf(nome) > -1) &&
+               (!local || normalizar(c.local).indexOf(local) > -1) &&
+               (!tipo || c.tipo === tipo);
+    }));
 }
